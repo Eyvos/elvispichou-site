@@ -10,13 +10,13 @@ export const site = {
   description:
     "Développeur web freelance à Toulouse : outils sur mesure pour TPE et PME, sites vitrines pour indépendants et commerçants. Un interlocuteur unique, du besoin jusqu'à la mise en ligne.",
   // TODO : remplacer par l'adresse définitive une fois le domaine acheté.
-  email: 'contact@elvispichou.fr',
+  email: 'pichou.elvis@gmail.com',
   location: 'Toulouse — missions 100 % à distance',
   availability: 'Disponible pour de nouveaux projets',
   links: {
     malt: 'https://www.malt.fr/profile/elvispichou',
     linkedin: null as string | null, // TODO
-    github: null as string | null, // TODO
+    github: 'https://github.com/Eyvos',
     calendar: null as string | null, // TODO : lien Cal.com « Appel découverte 20 min »
     cv: null as string | null, // TODO : '/elvis-pichou-cv.pdf' une fois le PDF dans /public
   },

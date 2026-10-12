@@ -30,7 +30,7 @@ Règle (D-17) : **toute nouvelle section de l'accueil reçoit une entrée de men
 - Menu principal (≥ 1024 px) : Offres · Réalisations · Qui je suis, **à plat, sans cercle** (D-28) ; **la section visible est soulignée d'un trait d'accent** (`aria-current`, D-75) ; ombre sous l'en-tête dès le défilement.
 - Accès discret « Profil technique » (D-05) dans le menu : texte simple à droite (≥ 1024 px, actif sur `/profil`), dans le menu mobile et en pied de page.
 - Sous les deux cartes de l'accueil : **bloc visible** « Vous voulez en savoir plus sur mes compétences ? » + bouton secondaire « Voir mon profil technique » (D-27, D-36, D-41).
-- **Disponibilité toujours visible** : pilule « Disponible » dès 768 px, pastille verte près du logo en dessous, pilule dans le menu mobile.
+- **Disponibilité** : plus affichée dans la barre de navigation (D-76) ; elle reste sur `/profil`.
 - Bouton d'action : « Parler de mon projet » (« Contact » en version courte). Bascule clair/sombre toujours présente.
 - **Menu mobile** (< 1024 px) : bouton burger, panneau plein écran, mêmes entrées numérotées que le menu principal + Profil technique, disponibilité et bouton d'action en bas ;
   défilement de la page verrouillé, focus gardé dans le menu ; se ferme au clic sur un lien, hors du panneau et avec Échap (D-75).

@@ -1,6 +1,14 @@
 ---
 import { site } from '../config/site';
 
+// Tracés 24×24 par défaut en `currentColor` (GitHub : logo officiel ; Malt : symbole seul (sans le mot), tracé Simple Icons, CC0 ; e-mail : dessin générique).
+const viewBoxes: Record<string, string> = { Malt: '0 9.398 6.02 6.021' };
+const icons: Record<string, string> = {
+  GitHub:
+    '<path fill="currentColor" d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.87-1.37-3.87-1.37-.52-1.33-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.19 1.76 1.19 1.03 1.76 2.69 1.25 3.35.96.1-.75.4-1.25.73-1.54-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.28 1.18-3.09-.12-.29-.51-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.78 0c2.2-1.49 3.17-1.18 3.17-1.18.62 1.59.23 2.76.11 3.05.74.81 1.18 1.83 1.18 3.09 0 4.42-2.7 5.4-5.26 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5Z"/>',
+  Malt: '<path fill="currentColor" d="M3.499 13.563l-.21.21.619.618c.304.304.79.598 1.244.144.339-.34.26-.695.073-.98-.06.004-1.726.008-1.726.008zm-.963-2.325.21-.21-.608-.607c-.304-.303-.765-.621-1.243-.143-.351.35-.273.692-.087.97Zm2.86.416c-.037.043-1.511 1.524-1.511 1.524h1.154c.43 0 .981-.101.981-.777 0-.496-.296-.683-.624-.747zm-3.244-.031H.981c-.43 0-.981.135-.981.778 0 .479.307.676.641.745.04-.046 1.511-1.523 1.511-1.523zm1.484 3.04-.618-.618-.608.607a2.613 2.613 0 0 1-.137.128c.07.333.266.639.745.639s.676-.307.745-.641c-.043-.037-.085-.073-.127-.115zM2.41 10.15l.608.607.618-.618a2.25 2.25 0 0 1 .128-.118c-.065-.327-.251-.623-.747-.623s-.682.297-.746.625c.046.04.092.08.14.127zm2.742.117c-.455-.454-.94-.16-1.244.144l-2.87 2.87c-.303.303-.621.765-.143 1.243.478.478.94.16 1.243-.143l2.87-2.87c.304-.304.598-.79.144-1.244Z"/>',
+  Email: '<rect x="2" y="4" width="20" height="16" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="m3 7 9 6 9-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>',
+};
 const socials = [
   { label: 'Malt', href: site.links.malt },
   { label: 'LinkedIn', href: site.links.linkedin },
@@ -8,16 +16,16 @@ const socials = [
 ].filter((s): s is { label: string; href: string } => Boolean(s.href));
 ---
 
-<footer class="mt-24 border-t border-line [main:has(#contact)+&]:mt-0">
-  <div class="container-page grid gap-10 py-12 sm:grid-cols-[1.5fr_1fr_1fr]">
+<footer class="mt-16 border-t border-line [main:has(#contact)+&]:mt-0">
+  <div class="container-page grid gap-6 py-8 sm:grid-cols-[1.5fr_1fr_1fr]">
     <div>
       <p class="font-display text-lg font-semibold">Elvis Pichou<span class="text-accent-fg">.</span></p>
-      <p class="mt-2 max-w-sm text-sm text-muted">{site.tagline}</p>
-      <p class="mt-4 text-sm text-muted">{site.location}</p>
+      <p class="mt-1 max-w-sm text-sm text-muted">{site.tagline}</p>
+      <p class="mt-2 text-sm text-muted">{site.location}</p>
     </div>
     <div>
       <p class="text-sm font-semibold">Le site</p>
-      <ul class="mt-3 space-y-2 text-sm text-muted">
+      <ul class="mt-2 space-y-1.5 text-sm text-muted">
         <li><a class="hover:text-ink" href="/#offre">Offres</a></li>
         <li><a class="hover:text-ink" href="/#realisations">Réalisations</a></li>
         <li><a class="hover:text-ink" href="/profil" data-umami-event="profil-footer">Profil technique</a></li>
@@ -26,15 +34,25 @@ const socials = [
     </div>
     <div>
       <p class="text-sm font-semibold">Ailleurs</p>
-      <ul class="mt-3 space-y-2 text-sm text-muted">
+      <ul class="mt-2 space-y-1.5 text-sm text-muted">
         {socials.map((s) => (
-          <li><a class="hover:text-ink" href={s.href} rel="me noopener" target="_blank">{s.label}</a></li>
+          <li>
+            <a class="inline-flex items-center gap-2 hover:text-ink" href={s.href} rel="me noopener" target="_blank">
+              {icons[s.label] && <svg class="size-4 shrink-0" viewBox={viewBoxes[s.label] ?? '0 0 24 24'} aria-hidden="true" set:html={icons[s.label]} />}
+              {s.label}
+            </a>
+          </li>
         ))}
-        <li><a class="hover:text-ink" href={`mailto:${site.email}`}>{site.email}</a></li>
+        <li>
+          <a class="inline-flex items-center gap-2 hover:text-ink" href={`mailto:${site.email}`}>
+            <svg class="size-4 shrink-0" viewBox="0 0 24 24" aria-hidden="true" set:html={icons.Email} />
+            {site.email}
+          </a>
+        </li>
       </ul>
     </div>
   </div>
-  <div class="container-page flex flex-col gap-2 border-t border-line py-6 text-[13px] text-muted sm:flex-row sm:justify-between">
+  <div class="container-page flex flex-col gap-1 border-t border-line py-4 text-[13px] text-muted sm:flex-row sm:justify-between">
     <p>© {new Date().getFullYear()} {site.name}</p>
     <p>Site statique conçu avec Astro · sans cookie · <a class="underline hover:text-ink" href="/profil#ce-site">comment il est fait</a></p>
   </div>

@@ -7,10 +7,9 @@ const onProfile = Astro.url.pathname.replace(/\/$/, '') === navProfile.href;
 
 <header class="sticky top-0 z-40 border-b border-line bg-bg/95 backdrop-blur transition-shadow data-[scrolled]:shadow-[0_8px_24px_-16px_rgb(0_0_0/0.6)]" data-header>
   <div class="container-page flex h-16 items-center justify-between gap-3">
-    <!-- Marque + disponibilité (pastille seule sous 768 px, pilule complète dès md) -->
+    <!-- Marque -->
     <a href="/" class="flex shrink-0 items-center gap-2 font-display text-base font-semibold tracking-tight" aria-label={`${site.name}, accueil`}>
       <span>Elvis Pichou<span class="text-accent-fg">.</span></span>
-      <span class="size-2 rounded-full bg-ok md:hidden" role="img" aria-label="Disponible"></span>
     </a>
 
     <!-- Menu principal (≥ 1024 px) : entrées à plat, section visible soulignée (D-28) -->
@@ -23,23 +22,21 @@ const onProfile = Astro.url.pathname.replace(/\/$/, '') === navProfile.href;
             </a>
           </li>
         ))}
+        <li aria-hidden="true" class="mx-2 h-4 w-px bg-line-strong"></li>
+        <li>
+          <a
+            href={navProfile.href}
+            aria-current={onProfile ? 'page' : undefined}
+            class="nav-link"
+            data-umami-event="profil-nav"
+          >
+            {navProfile.label}
+          </a>
+        </li>
       </ul>
     </nav>
 
     <div class="flex items-center gap-2 sm:gap-3">
-      <a
-        href={navProfile.href}
-        aria-current={onProfile ? 'page' : undefined}
-        class="hidden text-sm font-semibold text-muted underline-offset-4 transition hover:text-ink hover:underline aria-[current=page]:text-ink aria-[current=page]:underline lg:block"
-        data-umami-event="profil-nav"
-      >
-        {navProfile.label}
-      </a>
-
-      <p class="hidden items-center gap-2 rounded-full border border-line-strong px-3 py-1.5 text-xs font-bold uppercase tracking-[0.08em] md:flex">
-        <span class="size-2 rounded-full bg-ok" aria-hidden="true"></span>Disponible
-      </p>
-
       <button
         type="button"
         data-theme-toggle
@@ -100,9 +97,6 @@ const onProfile = Astro.url.pathname.replace(/\/$/, '') === navProfile.href;
       </ul>
 
       <div class="mt-auto flex flex-col gap-4 pt-8">
-        <p class="flex items-center gap-2 self-start rounded-full border border-line-strong px-3 py-1.5 text-xs font-bold uppercase tracking-[0.08em]">
-          <span class="size-2 rounded-full bg-ok" aria-hidden="true"></span>{site.availability}
-        </p>
         <a href="/#contact" data-mobile-link class="btn btn-primary w-full" data-umami-event="cta-header-mobile">Parler de mon projet</a>
       </div>
     </nav>
@@ -134,10 +128,12 @@ const onProfile = Astro.url.pathname.replace(/\/$/, '') === navProfile.href;
   .nav-link:hover {
     color: var(--color-ink);
   }
-  .nav-link[aria-current='true'] {
+  .nav-link[aria-current='true'],
+  .nav-link[aria-current='page'] {
     color: var(--color-ink);
   }
-  .nav-link[aria-current='true']::after {
+  .nav-link[aria-current='true']::after,
+  .nav-link[aria-current='page']::after {
     transform: scaleX(1);
   }
   @media (prefers-reduced-motion: reduce) {
