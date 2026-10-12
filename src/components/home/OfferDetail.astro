@@ -1,0 +1,169 @@
+---
+import { offers, checkIcon as Check, stepIcons } from '../../data/offers';
+import { ArrowRight } from '@lucide/astro';
+---
+
+<section id="offre" class="border-y border-line bg-surface pt-10 pb-16 sm:pt-12 sm:pb-20" data-offers>
+  <div class="container-page">
+    <div class="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+      <h2 class="text-3xl font-medium sm:text-4xl">Ce que je fais pour vous</h2>
+      <div role="tablist" aria-label="Choisir une offre" class="flex max-w-full flex-col gap-1.5 rounded-[1.6rem] border border-line bg-bg p-1.5 sm:inline-flex sm:flex-row sm:self-start sm:rounded-full">
+        {offers.map((o, i) => {
+          const TabIcon = o.tabIcon;
+          return (
+            <button
+              type="button"
+              role="tab"
+              id={`tab-${o.id}`}
+              data-offer={o.id}
+              aria-controls={`offre-${o.id}`}
+              aria-selected={i === 0 ? 'true' : 'false'}
+              tabindex={i === 0 ? 0 : -1}
+              class="inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-bold transition aria-selected:bg-accent aria-selected:text-accent-ink hover:not-aria-selected:text-accent-fg"
+              data-umami-event="offre-tab"
+              data-umami-event-offre={o.id}
+            >
+              <TabIcon class="size-4" aria-hidden="true" />{o.tab}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+
+    {offers.map((o, i) => (
+      <div
+        role="tabpanel"
+        id={`offre-${o.id}`}
+        aria-labelledby={`tab-${o.id}`}
+        data-panel
+        data-offer={o.id}
+        hidden={i !== 0}
+        tabindex="0"
+        class="mt-10 focus-visible:outline-none"
+      >
+        <!-- 1. Accroche -->
+        <div class="max-w-4xl">
+          <p class="inline-flex rounded-full bg-ink px-4 py-1.5 text-sm font-bold tracking-[0.06em] text-bg uppercase">{o.audience}</p>
+          <h3 class="mt-4 font-sans text-2xl leading-[1.2] font-semibold sm:text-3xl">{o.headline}</h3>
+          <p class="mt-2 text-lg leading-relaxed text-muted">{o.intro}</p>
+        </div>
+
+        <!-- 2. Plus-value : quatre tuiles -->
+        <p class="mt-9 text-xl font-semibold">Ce que ça change pour vous</p>
+        <ul class="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          {o.why.map((w) => {
+            const WhyIcon = w.icon;
+            return (
+              <li class="rounded-card border border-line bg-bg p-5">
+                <span class="grid size-11 place-items-center rounded-2xl bg-accent-soft text-accent-fg">
+                  <WhyIcon class="size-6" aria-hidden="true" />
+                </span>
+                <h5 class="mt-3 font-heading text-lg leading-tight font-semibold">{w.title}</h5>
+                <p class="mt-1.5 text-[15px] leading-snug text-muted">{w.text}</p>
+              </li>
+            );
+          })}
+        </ul>
+
+        <!-- 3. Comment ça se passe : bandeau plein, frise numérotée -->
+        <div class="mt-4 rounded-card bg-surface-2 p-6 sm:p-7">
+          <p class="text-xl font-semibold">Comment je travaille</p>
+          <ol class="mt-5 grid gap-6 lg:grid-cols-3 lg:gap-6">
+            {o.steps.map((s, k) => {
+              const StepIcon = stepIcons[k];
+              return (
+                <li class="relative flex gap-4">
+                  <span class="relative grid size-14 shrink-0 place-items-center rounded-full bg-accent text-accent-ink">
+                    <StepIcon class="size-6" aria-hidden="true" />
+                    <span class="absolute -top-1 -right-1 grid size-6 place-items-center rounded-full border border-line-strong bg-bg text-xs font-bold text-ink">{k + 1}</span>
+                  </span>
+                  <div>
+                    <h5 class="font-heading text-lg leading-tight font-semibold">{s.title}</h5>
+                    <p class="mt-1.5 text-[15px] leading-snug text-muted">{s.text}</p>
+                  </div>
+                </li>
+              );
+            })}
+          </ol>
+        </div>
+
+        <!-- 4. Ce que vous obtenez + appel à l'action -->
+        <div class="mt-4 grid gap-4 lg:grid-cols-[1.5fr_1fr]">
+          <div class="rounded-card border border-line bg-bg p-6 sm:p-7">
+            <p class="text-xl font-semibold">Ce que vous obtenez</p>
+            <ul class="mt-4 space-y-2.5 text-base leading-snug">
+              {o.gets.map((g) => (
+                <li class="flex gap-3"><Check class="mt-0.5 size-5 shrink-0 text-accent-fg" aria-hidden="true" />{g}</li>
+              ))}
+            </ul>
+            {o.examples.length > 0 && (
+              <ul class="mt-5 flex flex-wrap gap-2" aria-label="Exemples">
+                {o.examples.map((e) => <li class="rounded-full border border-line-strong px-3.5 py-1.5 text-sm">{e}</li>)}
+              </ul>
+            )}
+          </div>
+          <div class="flex flex-col justify-center gap-4 rounded-card border border-line-strong bg-bg p-6 sm:p-7">
+            <p class="font-heading text-2xl leading-tight font-semibold">Un projet en tête ? Parlons-en.</p>
+            <p class="text-base text-muted">{o.price}</p>
+            <a href={o.cta.href} class="btn btn-primary mt-1 self-start !px-7 !py-4 !text-base" data-umami-event={`cta-offre-${o.id}`}>
+              {o.cta.label} <ArrowRight class="size-5" aria-hidden="true" />
+            </a>
+          </div>
+        </div>
+      </div>
+    ))}
+    <noscript><style>[data-panel][hidden] { display: block !important; }</style></noscript>
+  </div>
+</section>
+
+<script>
+  const root = document.querySelector<HTMLElement>('[data-offers]');
+  if (root) {
+    const tabs = [...root.querySelectorAll<HTMLButtonElement>('[role="tab"]')];
+    const panels = [...root.querySelectorAll<HTMLElement>('[data-panel]')];
+    const ids = tabs.map((t) => t.dataset.offer!);
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function select(id: string) {
+      tabs.forEach((t) => {
+        const on = t.dataset.offer === id;
+        t.setAttribute('aria-selected', String(on));
+        t.tabIndex = on ? 0 : -1;
+      });
+      panels.forEach((p) => (p.hidden = p.dataset.offer !== id));
+    }
+    const scrollToOffers = () => root!.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' });
+    const fromHash = () => {
+      const id = location.hash.replace('#offre-', '');
+      if (location.hash.startsWith('#offre-') && ids.includes(id)) { select(id); scrollToOffers(); }
+    };
+
+    tabs.forEach((tab, i) => {
+      tab.addEventListener('click', () => {
+        select(tab.dataset.offer!);
+        history.replaceState(null, '', `#offre-${tab.dataset.offer}`);
+      });
+      tab.addEventListener('keydown', (e) => {
+        const next = { ArrowRight: i + 1, ArrowLeft: i - 1, Home: 0, End: tabs.length - 1 }[e.key];
+        if (next === undefined) return;
+        e.preventDefault();
+        const target = tabs[(next + tabs.length) % tabs.length];
+        target.focus(); target.click();
+      });
+    });
+
+    // Clic sur une carte d'offre (accueil) ou lien externe vers #offre-… : bascule l'onglet puis défile.
+    document.addEventListener('click', (e) => {
+      const a = (e.target as Element).closest<HTMLAnchorElement>('a[href*="#offre-"]');
+      if (!a) return;
+      const id = a.getAttribute('href')!.split('#offre-')[1];
+      if (!ids.includes(id)) return;
+      e.preventDefault();
+      select(id);
+      history.pushState(null, '', `#offre-${id}`);
+      scrollToOffers();
+    });
+    addEventListener('hashchange', fromHash);
+    if (location.hash.startsWith('#offre-')) setTimeout(fromHash, 50);
+  }
+</script>

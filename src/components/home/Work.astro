@@ -1,0 +1,34 @@
+---
+import { getCollection } from 'astro:content';
+import { ArrowRight } from '@lucide/astro';
+import CaseCard from '../ui/CaseCard.astro';
+
+// Ordre voulu (D-66) : Trik3r, Chariot, Gendarmerie, puis la carte « parcours ».
+const order = ['trik3r', 'chariot', 'gendarmerie'];
+const cases = (await getCollection('realisations')).sort((a, b) => order.indexOf(a.id) - order.indexOf(b.id));
+---
+
+<section id="realisations" class="border-y border-line bg-surface pt-10 pb-20 sm:pt-14 sm:pb-24">
+  <div class="container-page">
+    <p class="eyebrow">Réalisations</p>
+    <h2 class="section-title">Les applications que j’ai conçues, livrées et fait vivre.</h2>
+
+    <div class="mt-10 grid gap-5 md:grid-cols-2">
+      {cases.map((c) => <CaseCard entry={c} />)}
+
+      <div class="flex min-w-0 flex-col gap-5 self-start rounded-card bg-accent p-7 text-accent-ink sm:p-8">
+        <p class="text-xs font-bold tracking-[0.1em] uppercase">Et pour vous ?</p>
+        <h3 class="font-heading text-2xl leading-tight font-semibold sm:text-3xl">Votre projet pourrait être le prochain.</h3>
+        <p class="text-base leading-relaxed xl:text-lg">
+          Un tableur à remplacer, un processus à automatiser ou une idée à lancer : on commence par comprendre votre activité, et le prix est fixé par écrit avant de démarrer.
+        </p>
+        <div class="flex flex-wrap items-center gap-x-6 gap-y-3">
+          <a href="/?projet=outil#contact" class="inline-flex items-center justify-center gap-3 rounded-full bg-accent-ink px-6 py-3.5 text-base font-bold whitespace-nowrap text-accent transition hover:brightness-95" data-umami-event="work-devis">
+            Demander un devis <ArrowRight class="size-5 shrink-0" aria-hidden="true" />
+          </a>
+          <a href="/profil" class="text-sm font-semibold underline underline-offset-4 hover:no-underline" data-umami-event="work-profil">Voir mon profil technique</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

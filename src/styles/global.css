@@ -1,0 +1,141 @@
+@import "tailwindcss";
+@import "@fontsource-variable/inter";
+@import "@fontsource-variable/unbounded";
+@import "@fontsource-variable/space-grotesk";
+@import "@fontsource/space-mono/400.css";
+@import "@fontsource/space-mono/700.css";
+
+/* Grand écran de bureau, haut : il reste de la place sous le hero, on agrandit le haut (D-54). */
+@custom-variant tall (@media (min-width: 1024px) and (min-height: 960px));
+
+/*
+ * Palette « Cobalt et crème ». Sombre par défaut ; le thème clair s'active avec
+ * data-theme="light" (posé avant le premier rendu par le script de BaseLayout).
+ * --c-accent : fonds (boutons, carte 1). --c-accent-fg : texte accentué, éclairci en sombre pour le contraste.
+ */
+:root {
+  color-scheme: dark;
+  --c-bg: #0f1016;
+  --c-surface: #161821;
+  --c-surface-2: #23242e;
+  --c-ink: #f3f0e8;
+  --c-muted: #adadb6;
+  --c-line: #2c2e3a;
+  --c-line-strong: #6a6c7e;
+  --c-accent: #3f54f5;
+  --c-accent-ink: #ffffff;
+  --c-accent-fg: #94a1ff;
+  --c-accent-soft: #1c2247;
+  --c-ok: #4fc58a;
+  --c-ok-fg: #6ddba6;
+  --c-ok-soft: #123826;
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+  --c-bg: #f3f0e8;
+  --c-surface: #fbf9f4;
+  --c-surface-2: #e3ddcf;
+  --c-ink: #15151a;
+  --c-muted: #45454c;
+  --c-line: #d6d0c1;
+  --c-line-strong: #8a8577;
+  --c-accent: #2b44ff;
+  --c-accent-ink: #ffffff;
+  --c-accent-fg: #1c2fc4;
+  --c-accent-soft: #dfe3ff;
+  --c-ok: #1b8a52;
+  --c-ok-fg: #0d5230;
+  --c-ok-soft: #d3ecdc;
+}
+
+@theme inline {
+  --color-bg: var(--c-bg);
+  --color-surface: var(--c-surface);
+  --color-surface-2: var(--c-surface-2);
+  --color-ink: var(--c-ink);
+  --color-muted: var(--c-muted);
+  --color-line: var(--c-line);
+  --color-line-strong: var(--c-line-strong);
+  --color-accent: var(--c-accent);
+  --color-accent-ink: var(--c-accent-ink);
+  --color-accent-fg: var(--c-accent-fg);
+  --color-accent-soft: var(--c-accent-soft);
+  --color-ok: var(--c-ok);
+  --color-ok-fg: var(--c-ok-fg);
+  --color-ok-soft: var(--c-ok-soft);
+
+  /* Texte courant : Inter (lisible). Space Mono est réservé aux petits labels en capitales et aux URL. */
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Space Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-display: "Unbounded Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-heading: "Space Grotesk Variable", ui-sans-serif, system-ui, sans-serif;
+
+  --radius-card: 1.875rem;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 5rem;
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    @apply bg-bg text-ink font-sans text-base leading-7 antialiased;
+  }
+  /* Unbounded (large, expressif) pour les grands titres ; Space Grotesk, plus lisible, dès que le titre est petit. */
+  h1, h2 {
+    @apply font-display tracking-tight text-balance;
+  }
+  h3, h4 {
+    @apply font-heading tracking-tight text-balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
+  /* Tailwind 4 ne pose plus cursor:pointer sur les boutons : on le rétablit pour tout ce qui est cliquable. */
+  a[href], button:not(:disabled), [role="button"]:not([aria-disabled="true"]), [role="tab"], summary, select, label:has(input[type="radio"]), label:has(input[type="checkbox"]) {
+    cursor: pointer;
+  }
+  button:disabled, [aria-disabled="true"] {
+    cursor: not-allowed;
+  }
+  ::selection {
+    @apply bg-accent text-accent-ink;
+  }
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-accent-fg;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+
+@layer components {
+  .container-page {
+    @apply mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8;
+  }
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-bold transition disabled:opacity-100 disabled:brightness-75;
+  }
+  .btn-primary {
+    @apply bg-accent text-accent-ink hover:brightness-110;
+  }
+  .btn-ghost {
+    @apply border border-line-strong bg-surface text-ink hover:border-ink;
+  }
+  .eyebrow {
+    @apply text-xs font-bold uppercase tracking-[0.1em] text-accent-fg;
+  }
+  .section-title {
+    @apply mt-3 text-2xl font-medium sm:text-3xl;
+  }
+  /* Rendu des contenus Markdown (études de cas) */
+  .prose-case h2 { @apply mt-12 mb-4 font-heading text-2xl font-semibold; }
+  .prose-case h3 { @apply mt-8 mb-3 text-lg font-medium; }
+  .prose-case p { @apply my-4 leading-relaxed text-muted; }
+  .prose-case ul { @apply my-4 space-y-2 pl-5 list-disc text-muted marker:text-accent-fg; }
+  .prose-case strong { @apply text-ink font-bold; }
+}

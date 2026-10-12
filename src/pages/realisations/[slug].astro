@@ -1,0 +1,129 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { site } from '../../config/site';
+import BrowserFrame from '../../components/ui/BrowserFrame.astro';
+import { getScreenshot } from '../../lib/assets';
+import { ArrowUpRight } from '@lucide/astro';
+
+export async function getStaticPaths() {
+  const cases = await getCollection('realisations');
+  return cases.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+interface Props { entry: CollectionEntry<'realisations'> }
+
+const { entry } = Astro.props;
+const d = entry.data;
+const { Content } = await render(entry);
+const shot = getScreenshot(entry.id);
+const kindLabel = { site: 'Site vitrine', outil: 'Outil sur mesure', produit: 'Produit SaaS' }[d.kind];
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'CreativeWork',
+  name: d.title,
+  description: d.summary,
+  creator: { '@id': `${site.url}/#person` },
+  about: d.sector,
+  keywords: d.underTheHood.stack.join(', '),
+};
+---
+
+<BaseLayout title={d.title} description={d.summary} jsonLd={jsonLd}>
+  <article>
+    <header class="border-b border-line">
+      <div class="container-page grid gap-12 py-14 sm:py-20 lg:grid-cols-[1.15fr_1fr] lg:items-center">
+        <div>
+        <a href="/#realisations" class="text-sm text-muted hover:text-ink">← Toutes les réalisations</a>
+        <div class="mt-8 flex flex-wrap items-center gap-2 text-[13px]">
+          <span class="rounded-full bg-accent-soft px-2.5 py-1 font-medium text-accent-fg">{kindLabel}</span>
+          <span class="text-muted">{d.client} · {d.sector}</span>
+        </div>
+        <h1 class="mt-5 max-w-4xl text-3xl font-medium leading-tight sm:text-4xl">{d.title}</h1>
+        <p class="mt-6 max-w-2xl text-lg leading-relaxed text-muted">{d.summary}</p>
+
+        <dl class="mt-10 grid gap-6 text-sm sm:grid-cols-3">
+          <div><dt class="text-muted">Client</dt><dd class="mt-1 font-medium">{d.client}</dd></div>
+          <div><dt class="text-muted">Période</dt><dd class="mt-1 font-medium">{d.period}</dd></div>
+          <div><dt class="text-muted">Mon rôle</dt><dd class="mt-1 font-medium">{d.role}</dd></div>
+        </dl>
+        {d.keyFacts && (
+          <ul class="mt-8 grid gap-3 sm:grid-cols-3">
+            {d.keyFacts.map((f) => (
+              <li class="rounded-2xl border border-line bg-surface px-4 py-3">
+                <p class="font-display text-xl font-semibold text-accent-fg">{f.value}</p>
+                <p class="mt-1 text-sm leading-snug">{f.label}</p>
+              </li>
+            ))}
+          </ul>
+        )}
+        </div>
+        <div>
+          {shot && <BrowserFrame url={d.url} label={d.confidential ? 'application interne · confidentiel' : undefined} image={shot} alt={`Capture de ${d.client}`} />}
+          {d.url && (
+            <a href={d.url} target="_blank" rel="noopener" class="mt-4 inline-flex items-center gap-1.5 text-sm font-bold text-accent-fg hover:underline" data-umami-event="case-visit">
+              Voir le site : {new URL(d.url).host}<ArrowUpRight class="size-4" aria-hidden="true" />
+            </a>
+          )}
+        </div>
+      </div>
+    </header>
+
+    <div class="container-page grid gap-14 py-14 lg:grid-cols-[1fr_20rem]">
+      <div class="min-w-0">
+        <div class="rounded-2xl bg-surface-2 p-6">
+          <p class="text-xs font-bold uppercase tracking-[0.1em] text-muted">Le problème</p>
+          <p class="mt-2 leading-relaxed">{d.problem}</p>
+        </div>
+
+        <div class="prose-case max-w-2xl">
+          <Content />
+        </div>
+
+        {d.testimonial && (
+          <figure class="mt-12 border-l-4 border-accent pl-6">
+            <blockquote class="font-display text-xl leading-snug">« {d.testimonial.quote} »</blockquote>
+            <figcaption class="mt-3 text-sm text-muted">{d.testimonial.author}</figcaption>
+          </figure>
+        )}
+
+        <details class="group mt-14 rounded-2xl border border-line bg-surface" data-umami-event="case-under-the-hood">
+          <summary class="flex cursor-pointer list-none items-center justify-between gap-4 p-6 font-semibold [&::-webkit-details-marker]:hidden">
+            <span><span class="font-mono text-accent-fg">&lt;/&gt;</span>&nbsp; Sous le capot <span class="font-normal text-muted">· pour les profils techniques</span></span>
+            <span class="text-muted transition group-open:rotate-45" aria-hidden="true">+</span>
+          </summary>
+          <div class="border-t border-line p-6">
+            <ul class="flex flex-wrap gap-2">
+              {d.underTheHood.stack.map((t) => (
+                <li class="rounded-md border border-line bg-bg px-2.5 py-1 font-mono text-[13px]">{t}</li>
+              ))}
+            </ul>
+            <ul class="mt-6 space-y-3 text-sm leading-relaxed text-muted">
+              {d.underTheHood.highlights.map((h) => (
+                <li class="flex gap-3"><span class="text-accent-fg" aria-hidden="true">→</span>{h}</li>
+              ))}
+            </ul>
+          </div>
+        </details>
+      </div>
+
+      <aside class="lg:sticky lg:top-24 lg:self-start">
+        <div class="rounded-card border border-line bg-surface p-6">
+          <p class="text-xs font-bold uppercase tracking-[0.1em] text-muted">Résultats</p>
+          <ul class="mt-4 space-y-3 text-sm">
+            {d.outcomes.map((o) => <li class="flex gap-2.5"><span class="text-ok-fg" aria-hidden="true">●</span>{o}</li>)}
+          </ul>
+        </div>
+        <div class="mt-4 rounded-card bg-ink p-6 text-bg">
+          <p class="font-display text-lg font-semibold">Un besoin similaire ?</p>
+          <p class="mt-2 text-sm text-bg">Parlons-en : premier échange gratuit et sans engagement.</p>
+          <p class="mt-2 text-sm text-bg">Code et documentation transmis, points réguliers à chaque livraison.</p>
+          <a href={`/?projet=${d.kind === 'site' ? 'site' : 'outil'}#contact`} class="btn btn-primary mt-5 w-full" data-umami-event="cta-case">
+            Parler de mon projet
+          </a>
+        </div>
+      </aside>
+    </div>
+  </article>
+</BaseLayout>

@@ -1,0 +1,30 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { site } from '../config/site';
+---
+
+<BaseLayout title="Mentions légales" noindex>
+  <div class="container-page max-w-3xl py-16 prose-case">
+    <h1 class="text-3xl font-medium">Mentions légales</h1>
+    <h2>Éditeur</h2>
+    <p>
+      {site.name}, entrepreneur individuel. <br />
+      <!-- TODO : SIRET, adresse de domiciliation -->
+      SIRET : à compléter · Adresse : à compléter<br />
+      Contact : <a class="underline" href={`mailto:${site.email}`}>{site.email}</a>
+    </p>
+    <h2>Hébergement</h2>
+    <p>Vercel Inc., 440 N Barranca Ave #4133, Covina, CA 91723, États-Unis.</p>
+    <h2>Données personnelles</h2>
+    <p>
+      Les informations envoyées via le formulaire de contact servent uniquement à répondre à votre demande.
+      Elles sont transmises par email et ne sont pas stockées dans une base de données. Vous pouvez demander
+      leur suppression à tout moment par email.
+    </p>
+    <h2>Cookies et mesure d'audience</h2>
+    <p>
+      Ce site ne dépose aucun cookie. La mesure d'audience est réalisée avec Umami, un outil anonyme qui
+      ne collecte aucune donnée personnelle et ne suit pas les visiteurs d'un site à l'autre.
+    </p>
+  </div>
+</BaseLayout>
