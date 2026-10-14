@@ -40,7 +40,7 @@ Règle (D-17) : **toute nouvelle section de l'accueil reçoit une entrée de men
 - Les deux cartes de l'accueil **ne mènent pas au formulaire**. Un clic sélectionne l'onglet correspondant dans la section détail et fait
   défiler jusqu'à elle. L'URL devient `/#offre-site` ou `/#offre-outil` (lien direct partageable).
 - Onglets : « Transformation digitale » (par défaut) puis « Site vitrine » (D-37). Sans JavaScript, les deux panneaux s'affichent l'un sous l'autre.
-- Titre de section « Ce que je fais pour vous » + onglets. Contenu de chaque panneau (`src/data/offers.ts`, D-60) : badge public + titre-promesse + intro ; 4 tuiles « Ce que ça change pour vous » ; bandeau « Comment ça se passe » (3 étapes) ; « Ce que vous obtenez » + **un seul** bouton « Demander un devis » vers le formulaire pré-rempli (`/?projet=site|outil#contact`), avec la phrase de prix. Pas de preuve dans cette section.
+- Titre de section « Ce que je fais pour vous » + onglets. Contenu de chaque panneau (`src/data/offers.ts`, D-60) : deux colonnes (D-78) : à gauche badge public + titre-promesse + intro + « Par exemple » (D-82, D-83), à droite les 3 raisons « Ce que ça change pour vous » (D-80). Dessous, sur toute la largeur, « Comment je travaille » en 3 étapes (D-85) en frise avec pastilles d'icône (D-79, D-83), et **un seul** bouton : sous « Par exemple » dans la colonne de la promesse sur grand écran, après la méthode sur mobile (D-85, sans phrase de prix) (libellé du hero, D-84) vers le formulaire pré-rempli (`/?projet=site|outil#contact`). Sans carte. Pas de preuve dans cette section.
 
 ## Études de cas (D-08)
 
