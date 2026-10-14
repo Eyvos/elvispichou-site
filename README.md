@@ -1,7 +1,7 @@
-# elvispichou.fr
+# elvispichou.com
 
 Site vitrine et portfolio d'**Elvis Pichou**, développeur web freelance à Toulouse.
-En ligne : **[elvispichou.fr](https://elvispichou.fr)**
+En ligne : **[elvispichou.com](https://elvispichou.com)**
 
 Le site présente deux offres (outils sur mesure, sites vitrines), des études de cas et une page technique pour les recruteurs.
 Il est conçu pour être rapide, accessible et sobre : pages statiques, JavaScript uniquement là où il sert.
@@ -24,7 +24,7 @@ Il est conçu pour être rapide, accessible et sobre : pages statiques, JavaScri
 | Style | Tailwind CSS 4 et tokens CSS |
 | Contenu | Content Collections (Markdown + schéma Zod) |
 | Polices | Inter, Unbounded, Space Grotesk, Space Mono (auto-hébergées, `@fontsource`) |
-| Hébergement | Vercel (`@astrojs/vercel`) |
+| Hébergement | Cloudflare (`@astrojs/cloudflare`) |
 | E-mail | [Resend](https://resend.com) |
 | Analytics | [Umami](https://umami.is), sans cookie, optionnel |
 

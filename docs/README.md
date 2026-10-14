@@ -1,4 +1,4 @@
-# Documentation du projet elvispichou.fr
+# Documentation du projet elvispichou.com
 
 Cette documentation est la **source de vérité** du site. Elle consigne les règles de design, les décisions fonctionnelles et
 toutes les décisions prises au fil des échanges avec Claude. Si le code et la doc se contredisent, on tranche explicitement

@@ -62,7 +62,7 @@ Convention : on dépose un fichier au bon nom, il apparaît. Sans fichier, un re
 | Fichier | Où |
 |---|---|
 | `src/assets/elvis.jpg` (.png/.webp) | Photo du hero **et** de « Qui je suis » (sinon monogramme EP) |
-| `src/assets/realisations/<slug>.png` | Capture dans la carte et l'en-tête de l'étude de cas |
+| `src/assets/realisations/<slug>.(png|jpg|webp)` | Capture dans la carte et l'en-tête de l'étude de cas |
 | `src/assets/logos/<id>.svg` (.png) | Logo dans « Ils m'ont fait confiance » (id : `clients` dans `src/config/site.ts`) |
 
 URL affichées : champ `url` du frontmatter de l'étude de cas et `clients[].url` (`src/config/site.ts`).
@@ -74,7 +74,7 @@ interlocuteur, des outils faits pour durer). Ce bloc ne doit pas devenir un CV (
 
 ## Contact
 
-Champs : type de projet (outil / site / autre), nom, email, entreprise, budget indicatif, message (≥ 20 caractères). Validation côté serveur,
+Mise en page (D-87, D-88) : à gauche une frise en 3 étapes (ce qui se passe après l'envoi) puis email, sans lieu ; à droite un formulaire d'un seul tenant, sans étapes numérotées. Champs : type de projet (pastilles outil / site / autre), nom, email, entreprise, message (≥ 20 caractères), budget indicatif (pastilles, pas de menu déroulant). Validation côté serveur,
 anti-spam (champ piège + délai de 3 s), fonctionne sans JavaScript. Accusé de réception envoyé au prospect. Aucun stockage en base.
 
 ## Profil technique
@@ -85,5 +85,5 @@ anti-spam (champ piège + délai de 3 s), fonctionne sans JavaScript. Accusé de
 ## Conventions de contenu
 
 - Français, vouvoiement, casse de phrase (D-04 : jamais « outil métier »).
-- Les liens à `null` dans `src/config/site.ts` ne s'affichent pas (LinkedIn, GitHub, CV, calendrier).
+- Les liens à `null` dans `src/config/site.ts` ne s'affichent pas (CV, calendrier).
 - Toute ancre `#x` doit pointer vers un `id` existant (contrôlé par l'audit).

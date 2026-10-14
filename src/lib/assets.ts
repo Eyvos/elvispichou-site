@@ -3,7 +3,7 @@ import type { ImageMetadata } from 'astro';
 /**
  * Images « par convention » : on dépose un fichier au bon nom, il apparaît sur le site.
  *   src/assets/elvis.(jpg|png|webp)          → photo de profil
- *   src/assets/realisations/<slug>.(png|jpg) → capture d'écran d'une réalisation
+ *   src/assets/realisations/<slug>.(png|jpg|webp) → capture d'écran d'une réalisation
  *   src/assets/logos/<id>.(svg|png)          → logo d'un client (id : voir config/site.ts)
  */
 type Img = ImageMetadata;

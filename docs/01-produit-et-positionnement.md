@@ -38,7 +38,7 @@ Conséquence : l'accueil ne liste pas de stack ; la technique vit dans `/profil`
 
 - Nom : **Elvis Pichou** (nom propre, pas de nom de studio) (D-03).
 - Basé à Toulouse, **missions 100 % à distance**.
-- Domaine visé : `elvispichou.fr` (principal) + `elvispichou.com` en redirection (libres au 29/09/2026, pas encore achetés).
+- Domaine : `elvispichou.com` (D-94).
 
 ## Offres et vocabulaire (D-04)
 

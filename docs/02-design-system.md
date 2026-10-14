@@ -117,6 +117,7 @@ Hiérarchie d'accueil (D-40, D-44) : sur-titre « Développeur web freelance » 
 - Tout `<button>` a un `type` et un nom accessible. Toute image a un `alt`. Tout lien `target="_blank"` a un `rel`.
 - Mouvement réduit respecté (`prefers-reduced-motion`).
 - Cibles tactiles ≥ 40 px.
+- Lien `target="_blank"` : texte masqué « (nouvelle fenêtre) ». Champ de formulaire : message d'erreur propre relié par `aria-describedby`, jamais la couleur seule (D-98).
 
 ## Interdits (issus des retours d'Elvis)
 

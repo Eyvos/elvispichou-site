@@ -1,4 +1,5 @@
 import type { APIRoute } from 'astro';
+import { env } from 'cloudflare:workers';
 import { contactSchema, deliverContact, looksLikeSpam } from '../../lib/contact';
 
 export const prerender = false;
@@ -27,9 +28,9 @@ export const POST: APIRoute = async ({ request, redirect }) => {
 
   try {
     await deliverContact(parsed.data, {
-      apiKey: import.meta.env.RESEND_API_KEY,
-      from: import.meta.env.CONTACT_FROM,
-      to: import.meta.env.CONTACT_TO,
+      apiKey: env.RESEND_API_KEY,
+      from: env.CONTACT_FROM,
+      to: env.CONTACT_TO,
     });
     return reply(true, 200);
   } catch (err) {

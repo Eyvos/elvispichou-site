@@ -67,8 +67,9 @@ const caseIds = new Set(cases.map((c) => c.id));
       <div class="mt-9 flex flex-wrap gap-3">
         <a href="/#contact" class="btn btn-primary" data-umami-event="profil-contact">Me proposer une mission</a>
         {site.links.cv && <a href={site.links.cv} class="btn btn-ghost" download data-umami-event="cv-download">Télécharger le CV (PDF)</a>}
-        <a href={site.links.malt} class="btn btn-ghost" target="_blank" rel="noopener me">Profil Malt</a>
-        {site.links.github && <a href={site.links.github} class="btn btn-ghost" target="_blank" rel="noopener me">GitHub</a>}
+        <a href={site.links.malt} class="btn btn-ghost" target="_blank" rel="noopener me">Profil Malt<span class="sr-only"> (nouvelle fenêtre)</span></a>
+        {site.links.linkedin && <a href={site.links.linkedin} class="btn btn-ghost" target="_blank" rel="noopener me">LinkedIn<span class="sr-only"> (nouvelle fenêtre)</span></a>}
+        {site.links.github && <a href={site.links.github} class="btn btn-ghost" target="_blank" rel="noopener me">GitHub<span class="sr-only"> (nouvelle fenêtre)</span></a>}
       </div>
     </div>
   </section>

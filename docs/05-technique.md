@@ -9,7 +9,7 @@
 | Contenu | Content Collections (Markdown + schéma Zod) pour les études de cas |
 | Icônes | `@lucide/astro` |
 | Polices (auto-hébergées) | Inter, Unbounded, Space Grotesk, Space Mono (paquets `@fontsource`) |
-| Hébergement | Vercel (adaptateur `@astrojs/vercel`) |
+| Hébergement | Cloudflare Workers (adaptateur `@astrojs/cloudflare`) |
 | Formulaire | Route serveur `src/pages/api/contact.ts`, validation Zod, envoi via Resend |
 | Analytics | Umami (sans cookie), script chargé si `PUBLIC_UMAMI_WEBSITE_ID` est défini |
 | SEO | Sitemap, canonical, Open Graph, JSON-LD `Person` + `ProfessionalService` |
@@ -32,7 +32,7 @@ Sans clé Resend, les demandes s'affichent dans la console (développement).
 
 `cta-header`, `cta-hero-contact`, `offre-site`, `offre-outil`, `offre-tab`, `cta-offre-site`, `cta-offre-outil`, `proof-site`, `proof-outil`,
 `profil-nav`, `profil-home`, `profil-footer`, `case-open`, `case-under-the-hood`, `case-visit`, `client-link`, `cta-case`, `die-roll`,
-`contact-submit`, `contact-success`, `cv-download`, `cta-calendar`.
+`contact-submit`, `contact-success`, `cta-mailto`, `cv-download`, `cta-calendar`.
 
 ## Contrôles automatiques (`scripts/audit.mjs`)
 
@@ -65,5 +65,5 @@ bonnes pratiques ≥ 95, SEO = 100. Le contrôle `npm run audit` est exécuté a
 ## Limites connues
 
 - Chrome n'est pas installé sur la machine de développement : Lighthouse ne tourne qu'en CI.
-- Vercel utilise Node 24 pour les fonctions ; le développement local tourne en Node 23.
+- Les fonctions s'exécutent sur le runtime Workers de Cloudflare (pas Node) ; secrets lus via `cloudflare:workers` (`.dev.vars` en local).
 - Le dé est un canvas 2D : pas de WebGL, pas de dépendance.

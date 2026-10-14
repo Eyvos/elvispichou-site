@@ -1,36 +1,73 @@
 ---
+import { PenLine, MailCheck, Phone, Mail } from '@lucide/astro';
 import { site } from '../../config/site';
 
+const projectTypes = [
+  { v: 'outil', l: 'Un outil sur mesure' },
+  { v: 'site', l: 'Un site vitrine' },
+  { v: 'autre', l: 'Autre' },
+];
+
+const budgets = [
+  { v: '', l: 'Je ne sais pas encore' },
+  { v: 'Moins de 2 000 €', l: 'Moins de 2 000 €' },
+  { v: '2 000 – 5 000 €', l: '2 000 – 5 000 €' },
+  { v: '5 000 – 15 000 €', l: '5 000 – 15 000 €' },
+  { v: 'Plus de 15 000 €', l: 'Plus de 15 000 €' },
+];
+
+const steps = [
+  { Icon: PenLine, title: 'Vous écrivez', text: 'Quelques lignes suffisent, même si le besoin est encore flou.' },
+  { Icon: MailCheck, title: 'Je vous réponds sous 24 h ouvrées', text: 'Avec de premières pistes, sans engagement.' },
+  { Icon: Phone, title: 'On en parle', text: 'De vive voix si vous le souhaitez, sinon par email.' },
+];
 ---
 
 <section id="contact" class="border-t border-line bg-surface pt-10 pb-20 sm:pt-14 sm:pb-24">
-  <div class="container-page grid gap-12 lg:grid-cols-[1fr_1.3fr]">
+  <div class="container-page grid gap-12 lg:grid-cols-[1fr_1.45fr] lg:gap-10">
     <div>
       <p class="eyebrow">Contact</p>
       <h2 class="section-title">Parlons de votre projet.</h2>
       <p class="mt-5 max-w-md leading-relaxed text-muted">
-        Décrivez votre besoin en quelques lignes, même s'il est encore flou. Je vous réponds sous 24 h ouvrées
-        avec des premières pistes, sans engagement.
+        Décrivez votre besoin en quelques lignes, même s'il est encore flou. Pas de jargon : on parle de votre activité, pas de technique.
       </p>
-      <dl class="mt-10 space-y-5 text-sm">
+
+      <!-- Ce qui se passe après l'envoi : rassure les prospects qui n'ont jamais travaillé avec un freelance -->
+      <ol class="mt-10">
+        {steps.map(({ Icon, title, text }, i) => (
+          <li class="relative flex gap-4 pb-8 last:pb-0">
+            {i < steps.length - 1 && <span class="absolute top-12 bottom-1 left-[1.375rem] w-px bg-line-strong" aria-hidden="true"></span>}
+            <span class="relative grid size-11 shrink-0 place-items-center rounded-2xl bg-accent-soft text-accent-fg">
+              <Icon class="size-5" aria-hidden="true" />
+            </span>
+            <div class="pt-0.5">
+              <p class="font-heading font-semibold">{title}</p>
+              <p class="mt-1 text-sm leading-relaxed text-muted">{text}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+
+      <dl class="mt-10 space-y-5 border-t border-line pt-8 text-sm">
         <div>
-          <dt class="text-muted">Email</dt>
-          <dd class="mt-1 font-medium"><a class="hover:text-accent-fg" href={`mailto:${site.email}`}>{site.email}</a></dd>
+          <dt class="text-muted">Vous préférez écrire directement ?</dt>
+          <dd class="mt-2">
+            <a class="btn btn-ghost" href={`mailto:${site.email}`} data-umami-event="cta-mailto">
+              <Mail class="size-4" aria-hidden="true" />
+              M'écrire par email
+            </a>
+          </dd>
         </div>
         {site.links.calendar && (
           <div>
             <dt class="text-muted">Vous préférez parler ?</dt>
             <dd class="mt-1">
               <a class="font-medium text-accent-fg" href={site.links.calendar} target="_blank" rel="noopener" data-umami-event="cta-calendar">
-                Réserver un appel de 20 min →
+                Réserver un appel de 20 min <span aria-hidden="true">→</span><span class="sr-only"> (nouvelle fenêtre)</span>
               </a>
             </dd>
           </div>
         )}
-        <div>
-          <dt class="text-muted">Où</dt>
-          <dd class="mt-1 font-medium">{site.location}</dd>
-        </div>
       </dl>
     </div>
 
@@ -41,15 +78,13 @@ import { site } from '../../config/site';
       class="rounded-card border border-line bg-bg p-6 sm:p-9"
       novalidate
     >
+      <p class="mb-6 text-sm text-muted">Les champs marqués d’un <span class="text-accent-fg">*</span> sont obligatoires.</p>
+
       <fieldset>
-        <legend class="text-sm font-semibold">Votre projet concerne</legend>
-        <div class="mt-3 grid gap-2 sm:grid-cols-3">
-          {[
-            { v: 'outil', l: 'Un outil sur mesure' },
-            { v: 'site', l: 'Un site' },
-            { v: 'autre', l: 'Autre' },
-          ].map((o, i) => (
-            <label class="cursor-pointer rounded-xl border border-line px-4 py-3 text-sm transition has-checked:border-accent has-checked:bg-accent-soft has-checked:font-medium">
+        <legend class="text-sm font-medium">Votre projet concerne</legend>
+        <div class="mt-2 flex flex-wrap gap-2">
+          {projectTypes.map((o, i) => (
+            <label class="choice rounded-full border border-line px-4 py-2 text-sm">
               <input type="radio" name="projectType" value={o.v} class="sr-only" checked={i === 2} />
               {o.l}
             </label>
@@ -57,36 +92,45 @@ import { site } from '../../config/site';
         </div>
       </fieldset>
 
-      <div class="mt-6 grid gap-5 sm:grid-cols-2">
-        <label class="block text-sm">
-          <span class="font-medium">Nom <span class="text-accent-fg" aria-hidden="true">*</span></span>
-          <input name="name" required autocomplete="name" maxlength="100" class="field" />
-        </label>
-        <label class="block text-sm">
-          <span class="font-medium">Email <span class="text-accent-fg" aria-hidden="true">*</span></span>
-          <input name="email" type="email" required autocomplete="email" maxlength="200" class="field" />
-        </label>
-        <label class="block text-sm">
-          <span class="font-medium">Entreprise</span>
-          <input name="company" autocomplete="organization" maxlength="120" class="field" />
-        </label>
-        <label class="block text-sm">
-          <span class="font-medium">Budget indicatif</span>
-          <select name="budget" class="field">
-            <option value="">Je ne sais pas encore</option>
-            <option>Moins de 2 000 €</option>
-            <option>2 000 – 5 000 €</option>
-            <option>5 000 – 15 000 €</option>
-            <option>Plus de 15 000 €</option>
-          </select>
-        </label>
+      <div class="mt-6">
+        <div class="grid gap-5 sm:grid-cols-2">
+          <label class="block text-sm">
+            <span class="font-medium">Nom <span class="text-accent-fg" aria-hidden="true">*</span></span>
+            <input name="name" required aria-describedby="err-name" autocomplete="name" maxlength="100" class="field" />
+            <span id="err-name" data-err class="mt-1 block text-sm font-medium text-accent-fg"></span>
+          </label>
+          <label class="block text-sm">
+            <span class="font-medium">Email <span class="text-accent-fg" aria-hidden="true">*</span></span>
+            <input name="email" type="email" required aria-describedby="err-email" autocomplete="email" maxlength="200" class="field" />
+            <span id="err-email" data-err class="mt-1 block text-sm font-medium text-accent-fg"></span>
+          </label>
+          <label class="block text-sm sm:col-span-2">
+            <span class="font-medium">Entreprise</span>
+            <input name="company" autocomplete="organization" maxlength="120" class="field" />
+          </label>
+        </div>
       </div>
 
-      <label class="mt-5 block text-sm">
-        <span class="font-medium">Votre besoin <span class="text-accent-fg" aria-hidden="true">*</span></span>
-        <textarea name="message" required minlength="20" maxlength="5000" rows="5" class="field resize-y"
-          placeholder="Ex. : je gère mes devis sur Excel et je perds du temps à relancer mes clients…"></textarea>
-      </label>
+      <div class="mt-5">
+        <label class="block text-sm">
+          <span class="font-medium">Votre besoin <span class="text-accent-fg" aria-hidden="true">*</span></span>
+          <textarea name="message" required minlength="20" maxlength="5000" rows="6" aria-describedby="err-message" class="field min-h-40 resize-y"
+            placeholder="Ex. : je gère mes devis sur Excel et je perds du temps à relancer mes clients…"></textarea>
+          <span id="err-message" data-err class="mt-1 block text-sm font-medium text-accent-fg"></span>
+        </label>
+
+        <fieldset class="mt-5">
+          <legend class="text-sm font-medium">Budget indicatif <span class="text-muted font-normal">(facultatif)</span></legend>
+          <div class="mt-2 flex flex-wrap gap-2">
+            {budgets.map((b, i) => (
+              <label class="choice rounded-full border border-line px-4 py-2 text-sm">
+                <input type="radio" name="budget" value={b.v} class="sr-only" checked={i === 0} />
+                {b.l}
+              </label>
+            ))}
+          </div>
+        </fieldset>
+      </div>
 
       <!-- Anti-spam : champ piège invisible + horodatage -->
       <div class="hidden" aria-hidden="true">
@@ -94,8 +138,9 @@ import { site } from '../../config/site';
       </div>
       <input type="hidden" name="startedAt" value="" />
 
-      <p class="mt-5 text-[13px] leading-relaxed text-muted">
-        Vos informations servent uniquement à répondre à votre demande. Elles ne sont ni stockées en base, ni transmises à des tiers.
+      <p class="mt-7 text-[13px] leading-relaxed text-muted">
+        Vos informations servent uniquement à répondre à votre demande. Elles ne sont ni vendues ni utilisées pour de la prospection ;
+        détails et droits dans les <a class="underline hover:text-ink" href="/mentions-legales#donnees">mentions légales</a>.
       </p>
 
       <div class="mt-6 flex flex-wrap items-center gap-4">
@@ -111,10 +156,14 @@ import { site } from '../../config/site';
 <style>
   @reference "../../styles/global.css";
   .field {
-    @apply mt-1.5 block w-full rounded-2xl border border-line-strong bg-bg px-4 py-3 text-base text-ink transition placeholder:text-muted focus:border-accent focus:outline-none sm:text-sm;
+    @apply mt-1.5 block w-full rounded-2xl border border-line-strong bg-bg px-4 py-3 text-base text-ink transition placeholder:text-muted focus:border-accent-fg sm:text-sm;
   }
   .field[aria-invalid='true'] {
     @apply border-accent;
+  }
+  /* Choix à pastilles (type de projet, budget) : remplace les menus du navigateur */
+  .choice {
+    @apply transition has-checked:border-accent has-checked:bg-accent-soft has-checked:font-medium has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-accent-fg hover:border-line-strong;
   }
 </style>
 
@@ -128,6 +177,7 @@ import { site } from '../../config/site';
       statusEl.className = `text-sm ${ok ? 'text-ok-fg' : 'text-accent-fg'}`;
     };
     const SUCCESS = 'Merci, votre message est bien parti. Je vous réponds sous 24 h ouvrées.';
+    const FALLBACK = 'Le message n’a pas pu être envoyé. Réessayez dans un instant, ou écrivez-moi directement par email.';
     (form.elements.namedItem('startedAt') as HTMLInputElement).value = String(Date.now());
 
     // Préselection depuis les cartes d'offre : /?projet=site#contact
@@ -140,7 +190,7 @@ import { site } from '../../config/site';
     // Retour du repli sans JS
     const envoi = params.get('envoi');
     if (envoi) {
-      setStatus(envoi === 'ok' ? SUCCESS : 'Le message n’a pas pu être envoyé. Écrivez-moi directement par email.', envoi === 'ok');
+      setStatus(envoi === 'ok' ? SUCCESS : FALLBACK, envoi === 'ok');
     }
 
     form.addEventListener('submit', async (e) => {
@@ -149,28 +199,37 @@ import { site } from '../../config/site';
       form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('[required]').forEach((f) => {
         const ok = f.checkValidity();
         f.setAttribute('aria-invalid', String(!ok));
+        const err = form.querySelector<HTMLElement>(`#err-${f.name}`);
+        if (err) {
+          err.textContent = ok ? '' : f.validity.valueMissing ? 'Ce champ est obligatoire.'
+            : f.validity.typeMismatch ? 'Saisissez une adresse email valide, par exemple nom@exemple.fr.'
+            : f.validity.tooShort ? 'Écrivez au moins 20 caractères.' : 'Valeur invalide.';
+        }
         if (!ok && valid) { f.focus(); valid = false; }
       });
       if (!valid) {
-        setStatus('Merci de compléter les champs obligatoires (message : 20 caractères minimum).', false);
+        setStatus('Le formulaire contient des erreurs : corrigez les champs signalés.', false);
         return;
       }
 
       submit.disabled = true;
       submit.textContent = 'Envoi…';
       try {
-        const res = await fetch(form.action, {
+        // URL absolue sur l'origine courante : évite toute dépendance à <base> ou à un chemin relatif.
+        const res = await fetch('/api/contact', {
           method: 'POST',
           headers: { Accept: 'application/json' },
           body: new FormData(form),
         });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error ?? 'Erreur');
+        // Une réponse qui n'est pas du JSON (page d'erreur de l'hébergeur, 404…) ne doit pas afficher de message technique.
+        const data = await res.json().catch(() => null);
+        if (!res.ok || !data?.ok) throw new Error(data?.error ?? FALLBACK);
         form.reset();
         setStatus(SUCCESS, true);
         (window as any).umami?.track('contact-success');
       } catch (err) {
-        setStatus((err as Error).message, false);
+        // « Failed to fetch » (TypeError réseau) : message lisible plutôt que le texte du navigateur.
+        setStatus(err instanceof TypeError ? FALLBACK : (err as Error).message, false);
       } finally {
         submit.disabled = false;
         submit.textContent = 'Envoyer ma demande';

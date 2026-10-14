@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://elvispichou.fr/sitemap-index.xml
+Sitemap: https://elvispichou.com/sitemap-index.xml

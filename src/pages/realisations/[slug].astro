@@ -35,7 +35,7 @@ const jsonLd = {
     <header class="border-b border-line">
       <div class="container-page grid gap-12 py-14 sm:py-20 lg:grid-cols-[1.15fr_1fr] lg:items-center">
         <div>
-        <a href="/#realisations" class="inline-block text-sm text-muted transition duration-200 hover:-translate-x-1 hover:text-ink">← Toutes les réalisations</a>
+        <a href="/#realisations" class="inline-block text-sm text-muted transition duration-200 hover:-translate-x-1 hover:text-ink"><span aria-hidden="true">←</span> Toutes les réalisations</a>
         <div class="mt-8 flex flex-wrap items-center gap-2 text-[13px]">
           <span class="rounded-full bg-accent-soft px-2.5 py-1 font-medium text-accent-fg">{kindLabel}</span>
           <span class="text-muted">{d.client} · {d.sector}</span>
@@ -63,7 +63,7 @@ const jsonLd = {
           {shot && <BrowserFrame url={d.url} label={d.confidential ? 'application interne · confidentiel' : undefined} image={shot} alt={`Capture de ${d.client}`} />}
           {d.url && (
             <a href={d.url} target="_blank" rel="noopener" class="group mt-4 inline-flex items-center gap-1.5 text-sm font-bold text-accent-fg hover:underline" data-umami-event="case-visit">
-              Voir le site : {new URL(d.url).host}<ArrowUpRight class="size-4 transition group-hover:-translate-y-0.5 group-hover:translate-x-0.5" aria-hidden="true" />
+              Voir le site : {new URL(d.url).host}<span class="sr-only"> (nouvelle fenêtre)</span><ArrowUpRight class="size-4 transition group-hover:-translate-y-0.5 group-hover:translate-x-0.5" aria-hidden="true" />
             </a>
           )}
         </div>
@@ -90,7 +90,7 @@ const jsonLd = {
 
         <details class="group mt-14 rounded-2xl border border-line bg-surface" data-umami-event="case-under-the-hood">
           <summary class="flex cursor-pointer list-none items-center justify-between gap-4 p-6 font-semibold [&::-webkit-details-marker]:hidden">
-            <span><span class="font-mono text-accent-fg">&lt;/&gt;</span>&nbsp; Sous le capot <span class="font-normal text-muted">· pour les profils techniques</span></span>
+            <span><span class="font-mono text-accent-fg" aria-hidden="true">&lt;/&gt;</span>&nbsp; Sous le capot <span class="font-normal text-muted">· pour les profils techniques</span></span>
             <span class="text-muted transition group-open:rotate-45" aria-hidden="true">+</span>
           </summary>
           <div class="border-t border-line p-6">
@@ -108,7 +108,7 @@ const jsonLd = {
         </details>
       </div>
 
-      <aside class="lg:sticky lg:top-24 lg:self-start">
+      <div class="lg:sticky lg:top-24 lg:self-start">
         <div class="rounded-card border border-line bg-surface p-6">
           <p class="text-xs font-bold uppercase tracking-[0.1em] text-muted">Résultats</p>
           <ul class="mt-4 space-y-3 text-sm">
@@ -123,7 +123,7 @@ const jsonLd = {
             Parler de mon projet
           </a>
         </div>
-      </aside>
+      </div>
     </div>
   </article>
 </BaseLayout>

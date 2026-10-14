@@ -22,7 +22,8 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
-.vercel
+.wrangler/
+.dev.vars
 
 # Claude Code (réglages et skills locaux)
 .claude/

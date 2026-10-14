@@ -4,7 +4,7 @@
  */
 export const site = {
   name: 'Elvis Pichou',
-  url: 'https://elvispichou.fr',
+  url: 'https://elvispichou.com',
   role: 'Développeur web freelance',
   tagline: 'Je conçois des outils web qui simplifient le travail des entreprises.',
   description:
@@ -13,9 +13,18 @@ export const site = {
   email: 'pichou.elvis@gmail.com',
   location: 'Toulouse — missions 100 % à distance',
   availability: 'Disponible pour de nouveaux projets',
+  /** Mentions légales : à renseigner avant la mise en ligne (null = « à compléter » affiché sur la page). */
+  legal: {
+    status: 'entrepreneur individuel' as string | null,
+    siret: null as string | null,
+    address: null as string | null, // adresse professionnelle (domiciliation possible)
+    vat: null as string | null, // n° de TVA intracommunautaire, ou null si franchise en base
+    vatFranchise: true as boolean, // TVA non applicable, art. 293 B du CGI
+    mediator: null as string | null, // médiateur de la consommation (obligatoire pour les clients particuliers)
+  },
   links: {
     malt: 'https://www.malt.fr/profile/elvispichou',
-    linkedin: null as string | null, // TODO
+    linkedin: 'https://www.linkedin.com/in/elvis-pichou' as string | null,
     github: 'https://github.com/Eyvos',
     calendar: null as string | null, // TODO : lien Cal.com « Appel découverte 20 min »
     cv: null as string | null, // TODO : '/elvis-pichou-cv.pdf' une fois le PDF dans /public

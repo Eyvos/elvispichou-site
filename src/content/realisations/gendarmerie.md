@@ -6,7 +6,7 @@ kind: outil
 period: 2022 – 2026
 role: Développeur full-stack, puis responsable de plusieurs applications régionales
 summary: "Quatre ans à concevoir et faire évoluer des applications utilisées au quotidien par les équipes, de 100 à 3 000 utilisateurs selon les projets, jusqu'à une application nationale."
-cardNote: "Parmi elles, une application de recrutement de réservistes : chaque département saisit ses candidatures, et un seul bouton envoie les convocations par courriel. Les services concernés ont remonté un gain de temps considérable."
+cardNote: "J'ai remplacé le papier et les tableurs par des applications que les équipes utilisent chaque jour : moins d'erreurs, un gain de temps considérable."
 problem: "Des processus suivis sur papier, sur tableur ou sur des logiciels vieillissants : trop peu complets pour une gestion en temps réel, sujets aux erreurs et coûteux en temps pour les équipes."
 keyFacts:
   - { value: "4 ans", label: "au sein de la Gendarmerie nationale" }

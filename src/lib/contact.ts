@@ -1,4 +1,5 @@
 import { z } from 'astro/zod';
+import { receiptHtml, receiptSubject, receiptText } from './email-template';
 
 export const contactSchema = z.object({
   projectType: z.enum(['site', 'outil', 'autre']).default('autre'),
@@ -18,7 +19,7 @@ export function looksLikeSpam(form: FormData): boolean {
   return Number.isFinite(startedAt) && startedAt > 0 && Date.now() - startedAt < 3000;
 }
 
-const typeLabel = { site: 'Site', outil: 'Outil sur mesure', autre: 'Autre' } as const;
+const typeLabel = { site: 'Site vitrine', outil: 'Outil sur mesure', autre: 'Autre' } as const;
 
 const escape = (s: string) =>
   s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
@@ -33,7 +34,7 @@ async function sendEmail(apiKey: string, payload: Record<string, unknown>) {
 }
 
 /**
- * Envoie la demande (à moi) et un accusé de réception (au prospect) via l'API Resend.
+ * Envoie la demande (à moi, bloquant) et un accusé de réception (au prospect, non bloquant) via l'API Resend.
  * Sans clé API (développement local), la demande est simplement affichée dans la console.
  */
 export async function deliverContact(req: ContactRequest, env: { apiKey?: string; from?: string; to?: string }) {
@@ -59,18 +60,18 @@ export async function deliverContact(req: ContactRequest, env: { apiKey?: string
 <p style="white-space:pre-wrap">${escape(req.message)}</p>`,
   });
 
-  await sendEmail(env.apiKey, {
-    from: env.from,
-    to: req.email,
-    subject: 'Votre demande est bien reçue',
-    text: `Bonjour ${req.name},
-
-Merci pour votre message, je l'ai bien reçu. Je reviens vers vous sous 24 h ouvrées avec des premières pistes.
-
-Pour rappel, votre demande :
-${req.message}
-
-À très vite,
-Elvis Pichou`,
-  });
+  // L'accusé de réception est un plus : s'il échoue (adresse refusée, domaine non vérifié), la demande reste reçue.
+  const receipt = { name: req.name, message: req.message, projectLabel: typeLabel[req.projectType], budget: req.budget };
+  try {
+    await sendEmail(env.apiKey, {
+      from: env.from,
+      to: req.email,
+      reply_to: env.to,
+      subject: receiptSubject(),
+      html: receiptHtml(receipt),
+      text: receiptText(receipt),
+    });
+  } catch (err) {
+    console.error('[contact] accusé de réception non envoyé :', err);
+  }
 }

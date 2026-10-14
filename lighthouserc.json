@@ -1,7 +1,7 @@
 {
   "ci": {
     "collect": {
-      "staticDistDir": ".vercel/output/static",
+      "staticDistDir": "dist/client",
       "url": ["/", "/profil/", "/realisations/trik3r/"],
       "numberOfRuns": 1
     },

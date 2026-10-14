@@ -119,7 +119,7 @@ const umamiSrc = import.meta.env.PUBLIC_UMAMI_SRC ?? 'https://cloud.umami.is/scr
     {umamiId && <script defer src={umamiSrc} data-website-id={umamiId} is:inline />}
   </head>
   <body class="min-h-dvh flex flex-col">
-    <div class="loader" role="status" aria-live="polite" data-loader>
+    <div class="loader" aria-hidden="true" data-loader>
       <div class="loader-panel">
         <p class="loader-brand">Elvis Pichou<span>.</span></p>
         <p class="loader-tagline">Un créatif au service de votre entreprise</p>
@@ -142,7 +142,7 @@ const umamiSrc = import.meta.env.PUBLIC_UMAMI_SRC ?? 'https://cloud.umami.is/scr
       Aller au contenu
     </a>
     <Header />
-    <main id="contenu" class="flex-1">
+    <main id="contenu" tabindex="-1" class="flex-1 focus:outline-none">
       <slot />
     </main>
     <Footer />

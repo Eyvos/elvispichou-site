@@ -15,9 +15,9 @@ const marks: Record<string, { icon: typeof Leaf; bg: string }> = {
 
 <div class="py-10 sm:py-12">
   <div class="container-page xl:max-w-[96rem] xl:px-6">
-    <ul class="grid gap-3 sm:grid-cols-2 xl:grid-cols-[9.5rem_repeat(4,minmax(0,1fr))]">
+    <ul aria-labelledby="clients-titre" class="grid gap-3 sm:grid-cols-2 xl:grid-cols-[9.5rem_repeat(4,minmax(0,1fr))]">
       <li class="sm:col-span-2 xl:col-span-1 xl:flex xl:items-center">
-        <p class="font-heading text-lg leading-tight font-semibold xl:text-xl">Ils m'ont fait confiance</p>
+        <h2 id="clients-titre" class="font-heading text-lg leading-tight font-semibold xl:text-xl">Ils m'ont fait confiance</h2>
       </li>
       {clients.map((c) => {
         const logo = getLogo(c.id);
@@ -32,7 +32,7 @@ const marks: Record<string, { icon: typeof Leaf; bg: string }> = {
             ) : (
               /* Tuile toujours claire : les logos sombres restent lisibles en thème sombre. */
               <span data-audit-ignore="tuile logo toujours claire : les logos sombres restent lisibles en thème sombre" class="grid relative size-16 shrink-0 overflow-hidden rounded-2xl bg-[#f3f0e8] text-[#15151a] transition duration-300 group-hover:scale-105 group-hover:-rotate-3">
-                {logo && <Image src={logo} alt={`Logo ${c.name}`} class="absolute inset-2.5 size-[calc(100%-1.25rem)] object-contain" />}
+                {logo && <Image src={logo} alt="" class="absolute inset-2.5 size-[calc(100%-1.25rem)] object-contain" />}
               </span>
             )}
             <div class="flex min-w-0 flex-col self-stretch">
@@ -41,7 +41,7 @@ const marks: Record<string, { icon: typeof Leaf; bg: string }> = {
               <p class="mt-auto pt-1 text-[13px]">
                 {c.url ? (
                   <a href={c.url} target="_blank" rel="noopener" class="font-bold whitespace-nowrap text-accent-fg underline-offset-2 hover:underline" data-umami-event="client-link" data-umami-event-client={c.id}>
-                    {new URL(c.url).host}
+                    {new URL(c.url).host}<span class="sr-only"> (nouvelle fenêtre)</span>
                   </a>
                 ) : c.case ? (
                   <a href={`/realisations/${c.case}`} class="inline-flex items-center gap-0.5 group font-bold text-accent-fg hover:underline">
