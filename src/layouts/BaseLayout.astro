@@ -3,6 +3,7 @@ import '../styles/global.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import { site } from '../config/site';
+import loaderCss from '../styles/loader.css?raw';
 
 interface Props {
   title?: string;
@@ -71,6 +72,39 @@ const umamiSrc = import.meta.env.PUBLIC_UMAMI_SRC ?? 'https://cloud.umami.is/scr
       catch { document.documentElement.dataset.theme = 'dark'; }
     </script>
 
+    <!-- Styles de l'écran de chargement en ligne : le dé et les textes n'attendent ni la feuille de style ni le fond. -->
+    <style is:inline set:html={loaderCss} />
+    <!-- Écran de chargement : le fond couvre la page dès le premier rendu (aucun contenu visible avant lui) ; le dé et les textes
+         n'apparaissent que si la page n'est pas prête au bout de 0,45 s. Pose aussi `.js` pour les apparitions. -->
+    <script is:inline>
+      (function () {
+        var d = document, h = d.documentElement, shown = false, tick;
+        h.classList.add('js', 'loading');
+        setTimeout(function () { if (!window.__reveal) h.classList.remove('js'); }, 6000);
+        var timer = setTimeout(function () {
+          if (d.readyState === 'complete') return;
+          shown = true;
+          h.classList.add('loader-show');
+          tick = setInterval(function () {
+            var n = d.querySelector('[data-loader-num]');
+            if (n) n.textContent = String(1 + Math.floor(Math.random() * 19));
+          }, 110);
+        }, 450);
+        function finish() {
+          clearTimeout(timer);
+          if (!shown) { h.classList.remove('loading'); return; }
+          shown = false;
+          clearInterval(tick);
+          var n = d.querySelector('[data-loader-num]');
+          if (n) n.textContent = '20';
+          h.classList.add('loader-done');
+          setTimeout(function () { h.classList.remove('loading', 'loader-show', 'loader-done'); }, 1000);
+        }
+        addEventListener('load', finish);
+        setTimeout(finish, 15000);
+      })();
+    </script>
+
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="fr_FR" />
     <meta property="og:site_name" content={site.name} />
@@ -85,6 +119,25 @@ const umamiSrc = import.meta.env.PUBLIC_UMAMI_SRC ?? 'https://cloud.umami.is/scr
     {umamiId && <script defer src={umamiSrc} data-website-id={umamiId} is:inline />}
   </head>
   <body class="min-h-dvh flex flex-col">
+    <div class="loader" role="status" aria-live="polite" data-loader>
+      <div class="loader-panel">
+        <p class="loader-brand">Elvis Pichou<span>.</span></p>
+        <p class="loader-tagline">Un créatif au service de votre entreprise</p>
+        <div class="loader-stage" aria-hidden="true">
+          <div class="loader-bounce">
+            <svg class="loader-die" viewBox="0 0 120 120" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round">
+              <polygon points="60,6 106,33 106,87 60,114 14,87 14,33" />
+              <polygon points="60,30 92,82 28,82" />
+              <path d="M60 30V6M60 30L14 33M60 30L106 33M92 82L106 33M92 82L106 87M92 82L60 114M28 82L14 33M28 82L14 87M28 82L60 114" stroke-width="1.8" />
+              <text class="num" x="60" y="62" stroke="none" data-loader-num>20</text>
+            </svg>
+          </div>
+          <div class="loader-shadow"></div>
+        </div>
+        <p class="loader-rule"><span>Seul un succès au dé permettra l'affichage du site.</span></p>
+        <span class="loader-bar" aria-hidden="true"></span>
+      </div>
+    </div>
     <a href="#contenu" class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 btn btn-primary">
       Aller au contenu
     </a>
@@ -93,5 +146,55 @@ const umamiSrc = import.meta.env.PUBLIC_UMAMI_SRC ?? 'https://cloud.umami.is/scr
       <slot />
     </main>
     <Footer />
+    <!-- Apparitions au défilement : cibles auto-détectées dans chaque section, plus tout élément déjà marqué data-reveal. -->
+    <script is:inline>
+      (function () {
+        var d = document, h = d.documentElement;
+        if (!h.classList.contains('js')) return;
+        function mark(el, kind, delay) {
+          if (el.hasAttribute('data-reveal')) return;
+          el.setAttribute('data-reveal', kind);
+          el.style.setProperty('--rd', delay + 'ms');
+        }
+        d.querySelectorAll('main section:not(#accueil)').forEach(function (sec) {
+          var box = sec.querySelector(':scope > .container-page') || sec.firstElementChild || sec;
+          Array.prototype.forEach.call(box.children, function (c, i) {
+            if (c.matches('ul, ol, dl')) {
+              Array.prototype.forEach.call(c.children, function (k, j) { mark(k, 'up', Math.min(j, 6) * 90); });
+            } else {
+              mark(c, c.matches('h1, h2') ? 'title' : 'up', Math.min(i, 3) * 70);
+            }
+          });
+        });
+        d.querySelectorAll('main > :not(section) .container-page > *, footer .container-page > *').forEach(function (c, i) {
+          mark(c, 'up', Math.min(i, 4) * 80);
+        });
+        d.querySelectorAll('[data-reveal-delay]').forEach(function (el) {
+          el.style.setProperty('--rd', el.getAttribute('data-reveal-delay') + 'ms');
+        });
+        var items = d.querySelectorAll('[data-reveal]');
+        window.__reveal = true;
+        function run() {
+          if (!('IntersectionObserver' in window)) { items.forEach(function (el) { el.classList.add('is-in'); }); return; }
+          var io = new IntersectionObserver(function (entries) {
+            entries.forEach(function (e) {
+              if (!e.isIntersecting) return;
+              var el = e.target;
+              io.unobserve(el);
+              el.classList.add('is-in');
+              // Fin d'animation : on retire l'attribut pour que le survol (transform) reprenne ses propres transitions.
+              var wait = 1100 + (parseFloat(el.style.getPropertyValue('--rd')) || 0);
+              setTimeout(function () { el.removeAttribute('data-reveal'); el.classList.remove('is-in'); el.style.removeProperty('--rd'); }, wait);
+            });
+          }, { rootMargin: '0px 0px -8% 0px', threshold: 0 });
+          items.forEach(function (el) { io.observe(el); });
+        }
+        // Derrière l'écran de chargement, on attend qu'il se retire pour que les apparitions soient vues.
+        if (h.classList.contains('loading')) {
+          var mo = new MutationObserver(function () { if (!h.classList.contains('loading')) { mo.disconnect(); run(); } });
+          mo.observe(h, { attributes: true, attributeFilter: ['class'] });
+        } else run();
+      })();
+    </script>
   </body>
 </html>

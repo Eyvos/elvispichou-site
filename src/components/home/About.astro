@@ -65,8 +65,8 @@ const reasons = [
         {reasons.map((r) => {
           const Icon = r.icon;
           return (
-            <li class="rounded-card border border-line bg-surface p-5">
-              <span class="grid size-10 place-items-center rounded-2xl bg-accent-soft text-accent-fg"><Icon class="size-5" aria-hidden="true" /></span>
+            <li class="group lift rounded-card border border-line bg-surface p-5">
+              <span class="grid size-10 place-items-center rounded-2xl bg-accent-soft text-accent-fg transition duration-300 group-hover:rotate-6 group-hover:scale-110 group-hover:bg-accent group-hover:text-accent-ink"><Icon class="size-5" aria-hidden="true" /></span>
               <h3 class="mt-4 text-base leading-snug font-semibold">{r.title}</h3>
               <p class="mt-2 text-[13px] leading-relaxed text-muted">{r.text}</p>
             </li>

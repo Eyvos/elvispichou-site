@@ -125,3 +125,10 @@ Hiérarchie d'accueil (D-40, D-44) : sur-titre « Développeur web freelance » 
 - Couleurs en dur dans les composants (`bg-[#…]`) hors exception documentée.
 - Texte gris pâle ou semi-transparent.
 - Thèmes plaqués (jeu de rôle littéral, affiche de concert, dossier administratif, boutique).
+
+## Mouvement (D-96)
+
+- **Chargement** : écran avec un d20 qui roule, visible seulement si la page tarde (> 0,7 s) ; le dé s'arrête sur 20. Code : balisage et scripts dans `BaseLayout.astro`, styles `.loader*` dans `global.css`.
+- **Apparitions** : attribut `data-reveal` (`up`, `title`, `left`, `right`, `zoom`, `pop`) et `data-reveal-delay` (ms). Les sections de l'accueil hors hero sont balisées automatiquement ; l'attribut est retiré après l'animation pour laisser le survol agir.
+- **Survols** : classe `.lift` (carte qui se soulève), `.btn` (relief), micro-rotations des icônes. Réservés à la souris (`@media (hover: hover)` pour `.lift`).
+- **Mouvement réduit** : toutes les animations et transitions sont coupées (règle globale).

@@ -40,7 +40,7 @@ const onProfile = Astro.url.pathname.replace(/\/$/, '') === navProfile.href;
       <button
         type="button"
         data-theme-toggle
-        class="grid size-10 place-items-center rounded-full border border-line-strong text-ink transition hover:border-ink"
+        class="grid size-10 place-items-center rounded-full border border-line-strong text-ink transition duration-300 hover:-rotate-12 hover:scale-105 hover:border-ink active:scale-95"
         aria-label="Passer en thème clair"
       >
         <svg data-icon-sun class="hidden size-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
@@ -58,7 +58,7 @@ const onProfile = Astro.url.pathname.replace(/\/$/, '') === navProfile.href;
       <button
         type="button"
         data-menu-toggle
-        class="grid size-10 place-items-center rounded-full border border-line-strong text-ink transition hover:border-ink lg:hidden"
+        class="grid size-10 place-items-center rounded-full border border-line-strong text-ink transition duration-300 hover:border-ink active:scale-95 lg:hidden"
         aria-label="Ouvrir le menu"
         aria-expanded="false"
         aria-controls="mobile-menu"
@@ -127,6 +127,9 @@ const onProfile = Astro.url.pathname.replace(/\/$/, '') === navProfile.href;
   }
   .nav-link:hover {
     color: var(--color-ink);
+  }
+  .nav-link:hover::after {
+    transform: scaleX(0.4);
   }
   .nav-link[aria-current='true'],
   .nav-link[aria-current='page'] {

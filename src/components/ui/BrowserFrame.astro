@@ -23,7 +23,7 @@ const host = url ? new URL(url).host : label;
   </div>
   <div class:list={[ratio, 'bg-surface-2']}>
     {image ? (
-      <Image src={image} alt={alt} widths={[480, 800, 1200]} sizes="(min-width: 1024px) 560px, 90vw" class="size-full object-cover object-top" />
+      <Image src={image} alt={alt} widths={[480, 800, 1200]} sizes="(min-width: 1024px) 560px, 90vw" class="size-full object-cover object-top transition duration-700 ease-out group-hover:scale-105" />
     ) : (
       // Repère visuel tant qu'il n'y a pas de capture : maquette abstraite, masquée aux lecteurs d'écran.
       <div class="flex size-full flex-col gap-3 p-6" aria-hidden="true">

@@ -24,14 +24,14 @@ const marks: Record<string, { icon: typeof Leaf; bg: string }> = {
         const mark = marks[c.id];
         const Mark = mark?.icon;
         return (
-          <li class="flex items-center gap-4 rounded-card border border-line bg-surface px-4 py-3">
+          <li class="group lift flex items-center gap-4 rounded-card border border-line bg-surface px-4 py-3">
             {mark && Mark ? (
-              <span data-audit-ignore="logo de substitution : icône de la discipline sur fond de couleur" class={`grid size-16 shrink-0 place-items-center rounded-2xl text-white ${mark.bg}`}>
+              <span data-audit-ignore="logo de substitution : icône de la discipline sur fond de couleur" class={`grid size-16 shrink-0 place-items-center rounded-2xl text-white transition duration-300 group-hover:scale-105 group-hover:-rotate-3 ${mark.bg}`}>
                 <Mark class="size-8" aria-hidden="true" />
               </span>
             ) : (
               /* Tuile toujours claire : les logos sombres restent lisibles en thème sombre. */
-              <span data-audit-ignore="tuile logo toujours claire : les logos sombres restent lisibles en thème sombre" class="grid relative size-16 shrink-0 overflow-hidden rounded-2xl bg-[#f3f0e8] text-[#15151a]">
+              <span data-audit-ignore="tuile logo toujours claire : les logos sombres restent lisibles en thème sombre" class="grid relative size-16 shrink-0 overflow-hidden rounded-2xl bg-[#f3f0e8] text-[#15151a] transition duration-300 group-hover:scale-105 group-hover:-rotate-3">
                 {logo && <Image src={logo} alt={`Logo ${c.name}`} class="absolute inset-2.5 size-[calc(100%-1.25rem)] object-contain" />}
               </span>
             )}

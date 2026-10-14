@@ -118,13 +118,24 @@
     @apply mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8;
   }
   .btn {
-    @apply inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-bold transition disabled:opacity-100 disabled:brightness-75;
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-bold transition duration-200 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.97] disabled:opacity-100 disabled:brightness-75 disabled:hover:translate-y-0;
   }
   .btn-primary {
-    @apply bg-accent text-accent-ink hover:brightness-110;
+    @apply bg-accent text-accent-ink hover:brightness-110 hover:shadow-[0_12px_26px_-10px_var(--c-accent)];
   }
   .btn-ghost {
-    @apply border border-line-strong bg-surface text-ink hover:border-ink;
+    @apply border border-line-strong bg-surface text-ink hover:border-ink hover:shadow-[0_10px_22px_-14px_rgb(0_0_0/0.7)];
+  }
+  /* Carte qui se soulève au survol (souris uniquement). */
+  .lift {
+    transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.35s, border-color 0.25s;
+  }
+  @media (hover: hover) {
+    .lift:hover {
+      transform: translateY(-6px);
+      border-color: var(--c-line-strong);
+      box-shadow: 0 22px 40px -22px rgb(0 0 0 / 0.65);
+    }
   }
   .eyebrow {
     @apply text-xs font-bold uppercase tracking-[0.1em] text-accent-fg;
@@ -139,3 +150,27 @@
   .prose-case ul { @apply my-4 space-y-2 pl-5 list-disc text-muted marker:text-accent-fg; }
   .prose-case strong { @apply text-ink font-bold; }
 }
+
+/* ── Apparitions au défilement ──
+   `.js` est posé par le script d'en-tête (et retiré s'il n'a pas démarré après 6 s : le contenu reste lisible sans JS).
+   Les éléments à révéler reçoivent data-reveal ; l'attribut est retiré une fois l'animation finie pour rendre la main au survol. */
+.js [data-reveal] {
+  opacity: 0;
+  transform: translate3d(0, 32px, 0);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1), filter 0.8s ease;
+  transition-delay: var(--rd, 0ms);
+}
+.js [data-reveal="left"] { transform: translate3d(-48px, 0, 0); }
+.js [data-reveal="right"] { transform: translate3d(48px, 0, 0); }
+.js [data-reveal="zoom"] { transform: scale(0.92) translate3d(0, 24px, 0); }
+.js [data-reveal="pop"] { transform: scale(0.4) rotate(-120deg); transition-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1); }
+.js [data-reveal="title"] { transform: translate3d(0, 40px, 0); filter: blur(10px); }
+.js [data-reveal].is-in { opacity: 1; transform: none; filter: none; }
+
+/* Entrée de l'en-tête */
+[data-header] { animation: header-in 0.7s cubic-bezier(0.16, 1, 0.3, 1) backwards; }
+@keyframes header-in { from { transform: translateY(-100%); opacity: 0; } }
+
+/* Survols : liens du pied de page */
+footer a { transition: color 0.15s, transform 0.2s; }
+footer a:hover { transform: translateY(-2px); }

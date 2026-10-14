@@ -33,7 +33,7 @@ const offers = [
   <div class="container-page flex flex-col gap-10 lg:justify-between lg:gap-12 tall:gap-8">
     <div class="grid gap-x-12 gap-y-6 lg:gap-x-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
       {/* Identité : photo, métier et preuve, regroupés sur le côté (D-44). Sur mobile : au-dessus du titre. */}
-      <div class="order-first flex items-center gap-4 lg:order-none lg:col-start-2 lg:row-start-1 lg:gap-8 tall:w-[270px] tall:flex-col tall:items-start tall:gap-8">
+      <div data-reveal="right" data-reveal-delay="200" class="order-first flex items-center gap-4 lg:order-none lg:col-start-2 lg:row-start-1 lg:gap-8 tall:w-[270px] tall:flex-col tall:items-start tall:gap-8">
         {/* Le conteneur ne rogne pas : la pastille de lieu dépasse à moitié sous la photo (D-56). */}
         <div class="relative size-[72px] shrink-0 sm:size-20 lg:size-auto lg:aspect-[4/5] lg:w-[150px] tall:aspect-auto tall:h-[280px] tall:w-full">
           <div class="absolute inset-0 overflow-hidden rounded-2xl border border-line bg-surface-2 lg:rounded-card">
@@ -66,7 +66,7 @@ const offers = [
       </div>
 
       <div class="@container min-w-0 lg:col-start-1 lg:row-start-1">
-        <h1 class="w-full font-display text-[clamp(1.05rem,5.4cqw,2.9rem)] leading-[1.5] font-normal">
+        <h1 data-reveal="title" data-reveal-delay="80" class="w-full font-display text-[clamp(1.05rem,5.4cqw,2.9rem)] leading-[1.5] font-normal">
           <span class="sr-only">Je conçois des outils web qui simplifient le travail des entreprises.</span>
           <span aria-hidden="true">
             Je conçois des outils web qui
@@ -85,8 +85,10 @@ const offers = [
       {offers.map((o, i) => (
         <>
           <article
+            data-reveal="zoom"
+            data-reveal-delay={i === 0 ? '350' : '500'}
             class:list={[
-              'group relative flex flex-col rounded-card p-7 sm:p-9',
+              'group lift relative flex flex-col rounded-card p-7 sm:p-9',
               i === 0
                 ? 'bg-accent pb-20 text-accent-ink lg:pb-9'
                 : 'border border-line-strong bg-surface-2 pt-16 text-ink lg:pt-9',
@@ -139,7 +141,7 @@ const offers = [
               <button
                 type="button"
                 data-die-btn
-                class="pointer-events-auto grid cursor-pointer place-items-center rounded-full bg-bg p-2.5"
+                data-reveal="pop" data-reveal-delay="800" class="pointer-events-auto grid cursor-pointer place-items-center rounded-full bg-bg p-2.5 transition duration-300 hover:scale-110 hover:-rotate-12 active:scale-95"
                 aria-label="Lancer le dé pour changer le verbe du titre"
               >
                 <canvas data-die width="208" height="208" class="size-[88px] text-ink md:size-[104px]" aria-hidden="true"></canvas>
@@ -152,7 +154,7 @@ const offers = [
     </div>
 
     {/* Accès profil : volontairement discret (D-45), sans bordure, plus petit que les offres. */}
-    <div class="flex flex-col gap-4 rounded-card bg-surface px-6 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-8">
+    <div data-reveal="up" data-reveal-delay="650" class="flex flex-col gap-4 rounded-card bg-surface px-6 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-8">
       <div>
         <h2 class="font-heading text-base font-semibold sm:text-lg">Vous voulez en savoir plus sur mes compétences ?</h2>
         <p class="mt-1 text-[15px] text-muted">Technologies maîtrisées, expériences, disponibilité : tout se trouve sur mon profil.</p>

@@ -1,0 +1,104 @@
+/* ── Écran de chargement : un d20 qui roule, affiché seulement si le site tarde (> 0,7 s) ── */
+html.loading { overflow: hidden; }
+.loader {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.75rem;
+  background:
+    radial-gradient(circle 30rem at 50% 38%, color-mix(in srgb, var(--c-accent) 14%, var(--c-bg)) 0%, var(--c-bg) 100%);
+  color: var(--c-ink);
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease, visibility 0s linear 0.4s;
+}
+html.loading .loader {
+  visibility: visible;
+  opacity: 1;
+  pointer-events: auto;
+  transition: opacity 0.25s ease;
+}
+.loader-brand { font-family: "Unbounded Variable", ui-sans-serif, system-ui, sans-serif; font-size: 1.5rem; font-weight: 600; letter-spacing: -0.02em; }
+.loader-brand span { color: var(--c-accent-fg); }
+.loader-tagline { margin-top: 0.5rem; margin-bottom: 1.25rem; font-size: 1.125rem; font-weight: 600; line-height: 1.4; text-wrap: balance; }
+.loader-rule { margin-top: 1.5rem; }
+.loader-rule span {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--c-muted);
+}
+.loader-bar { margin-top: 1.25rem; width: 12rem; height: 3px; border-radius: 3px; background: var(--c-line); overflow: hidden; }
+.loader-bar::after { content: ""; display: block; width: 40%; height: 100%; background: var(--c-accent); border-radius: 3px; animation: loader-bar 1.2s ease-in-out infinite; }
+html.loader-done .loader-bar::after { animation: none; width: 100%; }
+@keyframes loader-bar { 0% { transform: translateX(-100%); } 100% { transform: translateX(250%); } }
+/* Grain de pellicule : bruit fractal en surimpression, au-dessus du dégradé et sous les textes. */
+.loader::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0.33 0.33 0.33 0 0 0.33 0.33 0.33 0 0 0.33 0.33 0.33 0 0 0 0 0 0 1'/%3E%3CfeComponentTransfer%3E%3CfeFuncR type='linear' slope='2.4' intercept='-0.7'/%3E%3CfeFuncG type='linear' slope='2.4' intercept='-0.7'/%3E%3CfeFuncB type='linear' slope='2.4' intercept='-0.7'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 240px 240px;
+  mix-blend-mode: soft-light;
+  opacity: 1;
+}
+.loader-panel {
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: min(32rem, calc(100% - 2rem));
+  text-align: center;
+}
+.loader-stage { position: relative; margin-top: 1.75rem; width: 7.5rem; height: 9rem; }
+.loader-bounce { position: absolute; inset: 0 0 auto; animation: die-bounce 1.1s cubic-bezier(0.3, 0, 0.5, 1) infinite; }
+.loader-die { display: block; width: 7.5rem; height: 7.5rem; animation: die-spin 1.1s ease-in-out infinite; }
+.loader-die .num { fill: currentColor; font: 700 22px "Space Mono", ui-monospace, monospace; text-anchor: middle; dominant-baseline: central; }
+.loader-shadow {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 4.5rem;
+  height: 0.6rem;
+  margin-left: -2.25rem;
+  border-radius: 50%;
+  background: var(--c-surface-2);
+  animation: die-shadow 1.1s cubic-bezier(0.3, 0, 0.5, 1) infinite;
+}
+html.loader-done .loader-bounce { animation: die-land 0.6s cubic-bezier(0.2, 0.9, 0.3, 1.4) both; }
+html.loader-done .loader-die { animation: none; }
+html.loader-done .loader-die .num { fill: var(--c-accent-fg); }
+html.loader-done .loader-shadow { animation: none; }
+@keyframes die-bounce {
+  0%, 100% { transform: translateY(0); }
+  45% { transform: translateY(-1.9rem); }
+  75% { transform: translateY(0); }
+  88% { transform: translateY(-0.5rem); }
+}
+@keyframes die-spin {
+  0% { transform: perspective(500px) rotateY(-28deg) rotateZ(0deg); }
+  50% { transform: perspective(500px) rotateY(28deg) rotateZ(190deg); }
+  100% { transform: perspective(500px) rotateY(-28deg) rotateZ(360deg); }
+}
+@keyframes die-shadow {
+  0%, 100% { transform: scaleX(1); }
+  45% { transform: scaleX(0.55); }
+}
+@keyframes die-land {
+  0% { transform: translateY(-1.2rem) scale(0.92); }
+  60% { transform: translateY(0) scale(1.18); }
+  100% { transform: translateY(0) scale(1); }
+}
+
+
+html.loader-show .loader-panel { opacity: 1; }
