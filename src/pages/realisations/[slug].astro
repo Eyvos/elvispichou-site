@@ -35,7 +35,7 @@ const jsonLd = {
     <header class="border-b border-line">
       <div class="container-page grid gap-12 py-14 sm:py-20 lg:grid-cols-[1.15fr_1fr] lg:items-center">
         <div>
-        <a href="/#realisations" class="text-sm text-muted hover:text-ink">← Toutes les réalisations</a>
+        <a href="/#realisations" class="inline-block text-sm text-muted transition duration-200 hover:-translate-x-1 hover:text-ink">← Toutes les réalisations</a>
         <div class="mt-8 flex flex-wrap items-center gap-2 text-[13px]">
           <span class="rounded-full bg-accent-soft px-2.5 py-1 font-medium text-accent-fg">{kindLabel}</span>
           <span class="text-muted">{d.client} · {d.sector}</span>
@@ -62,8 +62,8 @@ const jsonLd = {
         <div>
           {shot && <BrowserFrame url={d.url} label={d.confidential ? 'application interne · confidentiel' : undefined} image={shot} alt={`Capture de ${d.client}`} />}
           {d.url && (
-            <a href={d.url} target="_blank" rel="noopener" class="mt-4 inline-flex items-center gap-1.5 text-sm font-bold text-accent-fg hover:underline" data-umami-event="case-visit">
-              Voir le site : {new URL(d.url).host}<ArrowUpRight class="size-4" aria-hidden="true" />
+            <a href={d.url} target="_blank" rel="noopener" class="group mt-4 inline-flex items-center gap-1.5 text-sm font-bold text-accent-fg hover:underline" data-umami-event="case-visit">
+              Voir le site : {new URL(d.url).host}<ArrowUpRight class="size-4 transition group-hover:-translate-y-0.5 group-hover:translate-x-0.5" aria-hidden="true" />
             </a>
           )}
         </div>

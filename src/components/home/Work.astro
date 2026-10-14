@@ -23,10 +23,10 @@ const cases = (await getCollection('realisations')).sort((a, b) => order.indexOf
           Un tableur à remplacer, un processus à automatiser ou une idée à lancer : on commence par comprendre votre activité, et le prix est fixé par écrit avant de démarrer.
         </p>
         <div class="flex flex-wrap items-center gap-x-6 gap-y-3">
-          <a href="/?projet=outil#contact" class="inline-flex items-center justify-center gap-3 rounded-full bg-accent-ink px-6 py-3.5 text-base font-bold whitespace-nowrap text-accent transition hover:brightness-95" data-umami-event="work-devis">
-            Demander un devis <ArrowRight class="size-5 shrink-0" aria-hidden="true" />
+          <a href="/?projet=outil#contact" class="group inline-flex items-center justify-center gap-3 rounded-full bg-accent-ink px-6 py-3.5 text-base font-bold whitespace-nowrap text-accent transition duration-200 hover:-translate-y-0.5 hover:brightness-95 hover:shadow-[0_12px_26px_-10px_rgb(0_0_0/0.5)] active:translate-y-0 active:scale-[0.97]" data-umami-event="work-devis">
+            Demander un devis <ArrowRight class="size-5 shrink-0 transition group-hover:translate-x-1" aria-hidden="true" />
           </a>
-          <a href="/profil" class="text-sm font-semibold underline underline-offset-4 hover:no-underline" data-umami-event="work-profil">Voir mon profil technique</a>
+          <a href="/profil" class="text-sm font-semibold underline underline-offset-4 transition-all duration-200 hover:underline-offset-8" data-umami-event="work-profil">Voir mon profil technique</a>
         </div>
       </div>
     </div>

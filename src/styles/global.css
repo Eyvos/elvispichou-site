@@ -120,6 +120,8 @@
   .btn {
     @apply inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-bold transition duration-200 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.97] disabled:opacity-100 disabled:brightness-75 disabled:hover:translate-y-0;
   }
+  .btn > svg { @apply transition-transform duration-200; }
+  .btn:hover > svg { @apply translate-x-0.5; }
   .btn-primary {
     @apply bg-accent text-accent-ink hover:brightness-110 hover:shadow-[0_12px_26px_-10px_var(--c-accent)];
   }

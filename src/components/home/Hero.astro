@@ -124,7 +124,7 @@ const offers = [
               <a
                 href={`#offre-${o.id}`}
                 class:list={[
-                  'mt-auto flex w-full items-center justify-center gap-3 self-start rounded-full px-6 py-3.5 text-base font-bold whitespace-nowrap transition group-hover:brightness-110 after:absolute after:inset-0 after:rounded-card sm:w-auto',
+                  'mt-auto flex w-full items-center justify-center gap-3 self-start rounded-full px-6 py-3.5 text-base font-bold whitespace-nowrap transition duration-200 group-hover:brightness-110 group-hover:shadow-[0_12px_26px_-10px_rgb(0_0_0/0.5)] group-active:scale-[0.97] after:absolute after:inset-0 after:rounded-card sm:w-auto',
                   // Sur la carte accent : pastille blanche, texte en accent (≥ 5,5:1 sur les deux thèmes, la pastille ink tombait à 2,9:1 en clair).
                   i === 0 ? 'bg-accent-ink text-accent' : 'bg-ink text-bg',
                 ]}

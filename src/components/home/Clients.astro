@@ -44,8 +44,8 @@ const marks: Record<string, { icon: typeof Leaf; bg: string }> = {
                     {new URL(c.url).host}
                   </a>
                 ) : c.case ? (
-                  <a href={`/realisations/${c.case}`} class="inline-flex items-center gap-0.5 font-bold text-accent-fg hover:underline">
-                    Étude de cas<ArrowUpRight class="size-3.5" aria-hidden="true" />
+                  <a href={`/realisations/${c.case}`} class="inline-flex items-center gap-0.5 group font-bold text-accent-fg hover:underline">
+                    Étude de cas<ArrowUpRight class="size-3.5 transition group-hover:-translate-y-0.5 group-hover:translate-x-0.5" aria-hidden="true" />
                   </a>
                 ) : null}
               </p>
