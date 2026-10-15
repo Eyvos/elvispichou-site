@@ -59,7 +59,7 @@ Verbes du titre (D-39) : simplifient · automatisent · rendent visible · accé
 
 ## Ton
 
-- Vouvoiement, phrases courtes, concrètes, orientées bénéfice pour le client.
+- Site en français et en anglais (D-109) : l'anglais est une traduction fidèle, sans fait ni chiffre ajouté. Français : vouvoiement ; anglais : « you ». Phrases courtes, concrètes, orientées bénéfice pour le client.
 - On parle du problème du client (« devis refaits à la main », « planning par SMS »), pas du livrable technique.
 - Casse de phrase partout (majuscule initiale seulement). Pas de jargon sans explication sur l'accueil.
 - Humour léger permis autour du dé (« échec critique »), jamais au détriment de la clarté d'un message commercial.

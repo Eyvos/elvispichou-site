@@ -1,0 +1,125 @@
+---
+import { site } from '../../config/site';
+
+/** Legal notice in English. Courtesy translation of `LegalFr.astro` (the French text prevails): keep both aligned. */
+const { legal } = site;
+const todo = 'to be completed';
+const status = legal.status === 'entrepreneur individuel' ? 'sole trader (entrepreneur individuel)' : legal.status;
+const updated = 'October 15, 2026';
+---
+
+<h1 class="text-3xl font-medium">Legal notice</h1>
+<p>In accordance with French law no. 2004-575 of 21 June 2004 on confidence in the digital economy (LCEN) and the General Data Protection Regulation (GDPR). Last updated: {updated}.</p>
+<p>This English version is a courtesy translation. In case of discrepancy, the French version prevails.</p>
+
+<h2>Site publisher</h2>
+<p>
+  <strong>{site.name}</strong>, {status ?? todo}, working as a freelance web developer.<br />
+  SIRET: {legal.siret ?? todo}<br />
+  Address: {legal.address ?? todo}<br />
+  {legal.vat ? <>EU VAT number: {legal.vat}<br /></> : legal.vatFranchise ? <>VAT not applicable, article 293 B of the French General Tax Code<br /></> : null}
+  Email: <a class="underline" href={`mailto:${site.email}`}>{site.email}</a>
+</p>
+<p><strong>Publication director:</strong> {site.name}.</p>
+
+<h2>Hosting</h2>
+<p>
+  Cloudflare, Inc., 101 Townsend St, San Francisco, CA 94107, United States ·
+  <a class="underline" href="https://www.cloudflare.com" rel="noopener" target="_blank">cloudflare.com<span class="sr-only"> (opens in a new window)</span></a>.
+</p>
+
+<h2>Intellectual property</h2>
+<p>
+  The texts, layout, graphic design and code of this site are the property of {site.name}, unless stated otherwise.
+  The source code is published under the MIT licence on <a class="underline" href={site.links.github} rel="noopener" target="_blank">GitHub<span class="sr-only"> (opens in a new window)</span></a>;
+  the licence does not cover the texts, images, or the brands and logos shown.
+</p>
+<p>
+  The names, logos and screenshots of the clients and projects mentioned (French National Gendarmerie, Trik3r Collecte and others) belong to their
+  respective owners and are shown as professional references. For any removal or correction request,
+  write to the address above.
+</p>
+
+<h2 id="donnees">Personal data</h2>
+<h3>Data controller</h3>
+<p>{site.name}, at the contact details given above.</p>
+
+<h3>Contact form</h3>
+<ul>
+  <li><strong>Data:</strong> name, email address, company and budget (optional), project type and message content.</li>
+  <li><strong>Purpose:</strong> answering your request and, where applicable, preparing a quote.</li>
+  <li><strong>Legal basis:</strong> pre-contractual measures taken at your request, then legitimate interest in following up the relationship (art. 6.1 b and f of the GDPR).</li>
+  <li><strong>Retention period:</strong> for the duration of the exchange, then at most 3 years after the last contact if no contract is concluded; if a contract is concluded, for the legal retention period of commercial and accounting records.</li>
+  <li><strong>Recipients:</strong> {site.name} only. No data is sold or transferred for commercial purposes.</li>
+</ul>
+
+<h3>Processors and transfers outside the European Union</h3>
+<p>
+  The message passes through technical service providers: Cloudflare (hosting and execution of the form), Resend (sending of emails) and
+  {site.name}'s email provider. These providers may process data in the United States; transfers are covered by
+  the European Commission's standard contractual clauses or by the EU–US Data Privacy Framework.
+  The form does not store any request in a database of its own.
+</p>
+
+<h3>Your rights</h3>
+<p>
+  You have the right to access, rectify, erase, object to, restrict and port your data.
+  To exercise them, write to <a class="underline" href={`mailto:${site.email}`}>{site.email}</a>; you will receive an answer
+  within one month. If you disagree, you may lodge a complaint with the
+  <a class="underline" href="https://www.cnil.fr/fr/plaintes" rel="noopener" target="_blank">CNIL (French data protection authority)<span class="sr-only"> (opens in a new window)</span></a>.
+</p>
+
+<h2>Cookies and audience measurement</h2>
+<p>
+  This site does not set any cookie or tracker requiring your consent. Traffic is measured with Umami, a cookie-free tool
+  that does not collect any personal data and does not allow a visitor to be tracked from one site to another; your data is not
+  cross-referenced with other sources. Fonts are hosted on the site itself: no request is sent to a third-party font service.
+  Your choice of light or dark theme is remembered in your browser (local storage), only for your display comfort. The site language is
+  determined by the address of the page you visit and is not stored.
+</p>
+
+<h2>External links</h2>
+<p>
+  This site links to third-party sites (projects, professional profiles). {site.name} has no control over their content and
+  accepts no responsibility for their practices.
+</p>
+
+<h2 id="accessibilite">Accessibility</h2>
+<p>
+  {site.name} is committed to making this site accessible, in accordance with article 47 of French law no. 2005-102 of 11 February 2005, aiming for level AA
+  of the French accessibility guidelines (RGAA) and of WCAG 2.2.
+</p>
+<p>
+  <strong>Conformance status:</strong> not formally assessed. No full RGAA audit has been carried out. Automated checks
+  (axe-core, on all pages, in light and dark themes) report no issue and the site can be navigated with a keyboard, but these checks
+  only cover part of the criteria: the site is therefore not declared compliant.
+</p>
+<p>
+  <strong>Measures in place:</strong> light or dark theme of your choice, high colour contrast, skip link, keyboard navigation,
+  respect for your system's "reduce motion" setting, and a button to pause the home page headline animation.
+</p>
+<p>
+  <strong>Reporting a problem:</strong> if you cannot access some content, write to
+  <a class="underline" href={`mailto:${site.email}`}>{site.email}</a>; you will receive an answer within 10 working days, with an
+  accessible alternative if needed. If it does not satisfy you, you can refer the matter to the
+  <a class="underline" href="https://formulaire.defenseurdesdroits.fr" rel="noopener" target="_blank">Défenseur des droits (French Rights Defender)<span class="sr-only"> (opens in a new window)</span></a>.
+</p>
+
+<h2>Liability</h2>
+<p>
+  The content of the site is provided for information purposes and may be modified at any time. {site.name} endeavours to ensure its
+  accuracy but cannot be held liable for any error, omission or temporary unavailability of the site.
+</p>
+
+<h2>Terms of sale and mediation</h2>
+<p>
+  Services are not sold online: each assignment is covered by a written quote specifying the scope, price, deadlines
+  and payment terms, which are binding between the parties.
+</p>
+<p>
+  For a client acting as a consumer, any dispute may be submitted free of charge to a consumer mediator:
+  {legal.mediator ?? todo}.
+</p>
+
+<h2>Applicable law</h2>
+<p>This site and its terms of use are governed by French law. Any dispute falls within the jurisdiction of the competent courts.</p>

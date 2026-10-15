@@ -1,0 +1,18 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import LegalFr from '../../components/legal/LegalFr.astro';
+import LegalEn from '../../components/legal/LegalEn.astro';
+import { useI18n, langStaticPaths } from '../../i18n';
+
+export function getStaticPaths() {
+  return langStaticPaths();
+}
+
+const { lang, t } = useI18n(Astro.url);
+---
+
+<BaseLayout title={t.legal.title} noindex>
+  <div class="container-page max-w-3xl py-16 prose-case">
+    {lang === 'fr' ? <LegalFr /> : <LegalEn />}
+  </div>
+</BaseLayout>

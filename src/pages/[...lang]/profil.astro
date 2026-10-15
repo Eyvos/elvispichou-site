@@ -1,21 +1,30 @@
 ---
-import { getCollection } from 'astro:content';
 import { Image } from 'astro:assets';
 import { MapPin } from '@lucide/astro';
-import BaseLayout from '../layouts/BaseLayout.astro';
-import { site } from '../config/site';
-import { getPhoto } from '../lib/assets';
-import { icons, viewBoxes } from '../lib/social-icons';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { site } from '../../config/site';
+import { getCases } from '../../lib/cases';
+import { useI18n, localePath, langStaticPaths } from '../../i18n';
+import { getPhoto } from '../../lib/assets';
+import { icons, viewBoxes } from '../../lib/social-icons';
 
+export function getStaticPaths() {
+  return langStaticPaths();
+}
+
+const { lang, t } = useI18n(Astro.url);
+const p = t.profile;
 const photo = getPhoto();
 
+// Les compétences sont des identifiants : noms propres tels quels, 'unit-tests' et 'geolocation' traduits (`profile.skills`).
 const stack = [
-  { group: 'Frontend', items: ['TypeScript', 'React', 'Next.js', 'Astro', 'Tailwind CSS'] },
-  { group: 'Backend', items: ['Node.js', 'NestJS', 'Symfony', 'API REST', 'Socket.IO'] },
-  { group: 'Données', items: ['PostgreSQL', 'MongoDB', 'Redis'] },
-  { group: 'Infra & qualité', items: ['Docker', 'GitHub Actions', 'GitLab CI', 'Traefik', 'Grafana', 'Linux', 'Tests unitaires'] },
-  { group: 'Intégrations', items: ['Stripe', 'Keycloak', 'Webhooks', 'Géolocalisation', 'FullCalendar'] },
-];
+  { group: 'frontend', items: ['TypeScript', 'React', 'Next.js', 'Astro', 'Tailwind CSS'] },
+  { group: 'backend', items: ['Node.js', 'NestJS', 'Symfony', 'API REST', 'Socket.IO'] },
+  { group: 'data', items: ['PostgreSQL', 'MongoDB', 'Redis'] },
+  { group: 'infra', items: ['Docker', 'GitHub Actions', 'GitLab CI', 'Traefik', 'Grafana', 'Linux', 'unit-tests'] },
+  { group: 'integrations', items: ['Stripe', 'Keycloak', 'Webhooks', 'geolocation', 'FullCalendar'] },
+] as const;
+const skillLabel = (id: string) => (p.skills as Record<string, string>)[id] ?? id;
 
 /**
  * `skills` doit reprendre les libellés de `stack` : un clic sur une expérience met ces puces en évidence.
@@ -24,54 +33,28 @@ const stack = [
  */
 const experiences = [
   {
-    id: 'chariot',
-    period: '2025 → aujourd’hui',
-    title: 'Cofondateur & développeur full-stack',
-    org: 'Chariot (SaaS)',
-    text: 'Architecture microservices NestJS, temps réel Socket.IO, multi-bases MongoDB/PostgreSQL, Keycloak, Stripe, CI/CD complète jusqu’au déploiement automatisé.',
-    skills: ['TypeScript', 'React', 'Next.js', 'NestJS', 'Node.js', 'API REST', 'MongoDB', 'PostgreSQL', 'Redis', 'Socket.IO', 'Keycloak', 'Stripe', 'Webhooks', 'Docker', 'Traefik', 'Grafana', 'GitHub Actions', 'Tests unitaires'],
+    id: 'chariot' as const,
+    skills: ['TypeScript', 'React', 'Next.js', 'NestJS', 'Node.js', 'API REST', 'MongoDB', 'PostgreSQL', 'Redis', 'Socket.IO', 'Keycloak', 'Stripe', 'Webhooks', 'Docker', 'Traefik', 'Grafana', 'GitHub Actions', 'unit-tests'],
   },
   {
-    id: 'gendarmerie',
-    period: '2022 → 2026',
-    title: 'Développeur full-stack',
-    org: 'Gendarmerie nationale',
-    text: 'Application nationale et applications régionales (200 à 2 000 utilisateurs). Recueil du besoin, Next.js/NestJS/PostgreSQL, migration de monolithes Symfony, boilerplate commun, formation des alternants.',
-    skills: ['React', 'Next.js', 'NestJS', 'Node.js', 'Symfony', 'PostgreSQL', 'Tailwind CSS', 'Docker', 'GitLab CI', 'Linux', 'API REST', 'Géolocalisation', 'FullCalendar', 'Tests unitaires'],
+    id: 'gendarmerie' as const,
+    skills: ['React', 'Next.js', 'NestJS', 'Node.js', 'Symfony', 'PostgreSQL', 'Tailwind CSS', 'Docker', 'GitLab CI', 'Linux', 'API REST', 'geolocation', 'FullCalendar', 'unit-tests'],
   },
   {
-    id: 'trik3r',
-    period: '2024 · 6 mois',
-    title: 'Développeur, mission freelance',
-    org: 'Trik3r Collecte',
-    text: 'Plateforme complète from scratch : commande, réservation, moteur de tarification, Stripe, back-office avec rôles et permissions. En production.',
-    skills: ['TypeScript', 'React', 'Next.js', 'NestJS', 'Node.js', 'Tailwind CSS', 'API REST', 'MongoDB', 'Stripe', 'Webhooks', 'Géolocalisation', 'Docker', 'Tests unitaires'],
+    id: 'trik3r' as const,
+    skills: ['TypeScript', 'React', 'Next.js', 'NestJS', 'Node.js', 'Tailwind CSS', 'API REST', 'MongoDB', 'Stripe', 'Webhooks', 'geolocation', 'Docker', 'unit-tests'],
   },
   {
-    id: 'lortal',
-    period: '2026 · mission freelance',
-    title: 'Contenu et référencement d’un site WordPress',
-    org: 'Stéphanie Lortal, sophrologue',
-    text: 'Ajout de contenu et amélioration du référencement (SEO) sur un site WordPress existant, hors de ma stack habituelle.',
+    id: 'lortal' as const,
     skills: [] as string[],
     url: 'https://sophrologue-lortal.fr',
   },
   {
-    id: 'ingrid',
-    period: '2024 · mission freelance',
-    title: 'Conception et développement du site',
-    org: 'Ingrid Médium',
-    text: 'Site 100 % Next.js, Tailwind CSS et PostgreSQL, avec un vrai back-office pour gérer ses prestations et ses événements promotionnels.',
+    id: 'ingrid' as const,
     skills: ['React', 'Next.js', 'Tailwind CSS', 'PostgreSQL'],
     url: 'https://ingrid-medium.fr',
   },
-];
-
-const education = [
-  { years: '2021 – 2023', title: 'DUT Informatique', school: 'IUT de Blagnac' },
-  { years: '2023 – 2024', title: 'Bachelor Développement', school: 'Toulouse Ynov Campus' },
-  { years: '2024 – 2026', title: 'Master Expert en développement logiciel (RNCP niveau 7)', school: 'Toulouse Ynov Campus' },
-];
+].map((e) => ({ url: undefined as string | undefined, ...e, ...p.experienceItems[e.id] }));
 
 const socials = [
   { label: 'Malt', href: site.links.malt },
@@ -79,58 +62,54 @@ const socials = [
   { label: 'GitHub', href: site.links.github },
 ].filter((l): l is { label: string; href: string } => Boolean(l.href));
 
-const cases = await getCollection('realisations');
-const caseIds = new Set(cases.map((c) => c.id));
+const cases = await getCases(lang);
+const caseIds = new Set(cases.map((c) => c.slug));
 ---
 
-<BaseLayout
-  title="Profil technique"
-  description="Développeur full-stack TypeScript freelance : React, Next.js, Node.js, NestJS. Conception d'applications métier et de SaaS, du besoin à la production. Missions en remote."
->
+<BaseLayout title={p.title} description={p.description}>
   {/* 1 · Global */}
   <section class="border-b border-line">
     <div class="container-page grid gap-8 py-12 sm:py-16 lg:grid-cols-[minmax(0,1fr)_auto] lg:gap-14 lg:py-20">
       <div class="flex w-fit flex-col items-center gap-5 lg:col-start-2 lg:row-start-1">
         <div class="relative aspect-[4/5] w-28 overflow-hidden rounded-2xl border border-line bg-surface-2 sm:w-[9.5rem] lg:w-72 lg:rounded-card">
           {photo ? (
-            <Image src={photo} alt="Elvis Pichou, développeur full-stack freelance" widths={[288, 576]} sizes="(min-width: 1024px) 288px, 152px" loading="eager" fetchpriority="high" class="size-full object-cover object-[50%_20%]" />
+            <Image src={photo} alt={p.photoAlt} widths={[288, 576]} sizes="(min-width: 1024px) 288px, 152px" loading="eager" fetchpriority="high" class="size-full object-cover object-[50%_20%]" />
           ) : (
             <div class="grid size-full place-items-center"><span class="font-display text-4xl font-semibold text-accent-fg" aria-hidden="true">EP</span></div>
           )}
         </div>
                   <p class="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-sm font-semibold">
-            {site.links.cv && <a href={site.links.cv} class="underline decoration-line-strong underline-offset-4 hover:decoration-ink" download data-umami-event="cv-download">CV (PDF)</a>}
+            {site.links.cv && <a href={site.links.cv} class="underline decoration-line-strong underline-offset-4 hover:decoration-ink" download data-umami-event="cv-download">{p.cv}</a>}
             {socials.map((l) => (
               <a href={l.href} class="inline-flex items-center gap-2 underline decoration-line-strong underline-offset-4 hover:decoration-ink" target="_blank" rel="noopener me">
-                <svg class="size-4 shrink-0" viewBox={viewBoxes[l.label] ?? '0 0 24 24'} aria-hidden="true" set:html={icons[l.label]} />{l.label}<span class="sr-only"> (nouvelle fenêtre)</span>
+                <svg class="size-4 shrink-0" viewBox={viewBoxes[l.label] ?? '0 0 24 24'} aria-hidden="true" set:html={icons[l.label]} />{l.label}<span class="sr-only">{t.common.newWindow}</span>
               </a>
             ))}
           </p>
       </div>
 
       <div class="lg:col-start-1 lg:row-start-1">
-        <p class="eyebrow">Profil technique</p>
+        <p class="eyebrow">{p.title}</p>
         <h1 class="mt-3 max-w-3xl text-3xl font-medium leading-tight sm:text-4xl">
-          Développeur full-stack TypeScript, du besoin métier à la production.
+          {p.h1}
         </h1>
         <p class="mt-6 max-w-2xl text-lg leading-relaxed text-muted">
-          Depuis 2021, je conçois des applications web complètes : compréhension du métier, conception fonctionnelle,
-          architecture, développement, tests, déploiement et maintenance.
+          {p.intro}
         </p>
 
         <dl class="mt-8 grid max-w-xl grid-cols-3 gap-4">
-          <div><dt class="text-sm text-muted">Développeur</dt><dd class="mt-1 font-heading text-xl font-semibold sm:text-2xl">Depuis 2021</dd></div>
-          <div><dt class="text-sm text-muted">Gendarmerie nationale</dt><dd class="mt-1 font-heading text-xl font-semibold sm:text-2xl">4 ans</dd></div>
-          <div><dt class="text-sm text-muted">Utilisateurs en production</dt><dd class="mt-1 font-heading text-xl font-semibold sm:text-2xl">2 000+</dd></div>
+          {p.stats.map((st) => (
+            <div><dt class="text-sm text-muted">{st.label}</dt><dd class="mt-1 font-heading text-xl font-semibold sm:text-2xl">{st.value}</dd></div>
+          ))}
         </dl>
 
         <ul class="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-sm">
-          <li class="flex items-center gap-1.5 text-muted"><MapPin class="size-4" aria-hidden="true" />Remote · basé à Toulouse</li>
-          <li class="text-muted">Français natif · anglais professionnel</li>
+          <li class="flex items-center gap-1.5 text-muted"><MapPin class="size-4" aria-hidden="true" />{p.remote}</li>
+          <li class="text-muted">{p.languages}</li>
         </ul>
 
         <div class="mt-9">
-          <a href="/#contact" class="btn btn-primary" data-umami-event="profil-contact">Me proposer une mission</a>
+          <a href={localePath(lang, '/#contact')} class="btn btn-primary" data-umami-event="profil-contact">{p.cta}</a>
 
         </div>
       </div>
@@ -141,8 +120,8 @@ const caseIds = new Set(cases.map((c) => c.id));
   <section class="container-page py-20">
     <div class="grid gap-16 lg:grid-cols-[minmax(0,1.9fr)_minmax(0,1fr)] lg:items-start lg:gap-16">
       <div id="experiences">
-        <h2 class="text-2xl font-semibold">Expériences</h2>
-        <p class="mt-3 max-w-xl text-muted">Cliquez sur une expérience : les compétences utilisées s’allument dans la stack.</p>
+        <h2 class="text-2xl font-semibold">{p.experiences}</h2>
+        <p class="mt-3 max-w-xl text-muted">{p.experiencesHint}</p>
 
         <ol class="xp-line relative mt-12 space-y-10 pl-6 lg:grid lg:grid-cols-2 lg:space-y-0 lg:pl-0">
           {experiences.map((e, i) => {
@@ -168,8 +147,8 @@ const caseIds = new Set(cases.map((c) => c.id));
                   </button>
                   {(caseIds.has(e.id) || e.url) && (
                     <p class="flex flex-wrap gap-x-5 gap-y-1 px-6 pb-6 text-sm font-medium">
-                      {caseIds.has(e.id) && <a href={`/realisations/${e.id}`} class="text-accent-fg">Étude de cas détaillée →</a>}
-                      {e.url && <a href={e.url} class="font-mono text-[13px] text-accent-fg" target="_blank" rel="noopener">{host}<span class="sr-only"> (nouvelle fenêtre)</span></a>}
+                      {caseIds.has(e.id) && <a href={localePath(lang, `/realisations/${e.id}`)} class="text-accent-fg">{p.caseLink}</a>}
+                      {e.url && <a href={e.url} class="font-mono text-[13px] text-accent-fg" target="_blank" rel="noopener">{host}<span class="sr-only">{t.common.newWindow}</span></a>}
                     </p>
                   )}
                 </div>
@@ -180,13 +159,13 @@ const caseIds = new Set(cases.map((c) => c.id));
       </div>
 
       <div id="stack">
-        <h2 class="text-2xl font-semibold">Stack</h2>
+        <h2 class="text-2xl font-semibold">{p.stack}</h2>
         <div class="mt-8 space-y-7">
           {stack.map((s) => (
             <div>
-              <p class="text-xs font-bold uppercase tracking-[0.1em] text-muted">{s.group}</p>
+              <p class="text-xs font-bold uppercase tracking-[0.1em] text-muted">{p.stackGroups[s.group]}</p>
               <ul class="mt-3 flex flex-wrap gap-2.5">
-                {s.items.map((i) => <li data-skill={i} class="skill rounded-md border border-line-strong bg-surface px-2.5 py-1 font-mono text-[13px] transition-colors">{i}</li>)}
+                {s.items.map((i) => <li data-skill={i} class="skill rounded-md border border-line-strong bg-surface px-2.5 py-1 font-mono text-[13px] transition-colors">{skillLabel(i)}</li>)}
               </ul>
             </div>
           ))}
@@ -198,9 +177,9 @@ const caseIds = new Set(cases.map((c) => c.id));
   {/* 3 · Formation, à l'horizontale sous les deux colonnes */}
   <section id="formation" class="border-t border-line">
     <div class="container-page py-16">
-      <h2 class="text-2xl font-semibold">Formation</h2>
+      <h2 class="text-2xl font-semibold">{p.education}</h2>
       <ul class="mt-8 grid gap-y-6 md:grid-cols-3">
-        {education.map((e) => (
+        {p.educationItems.map((e) => (
           <li class="border-l-2 border-line-strong pl-5 md:pl-8 md:first:border-l-0 md:first:pl-0">
             <p class="text-[13px] font-semibold text-muted">{e.years}</p>
             <p class="mt-1.5 font-heading text-lg leading-snug font-semibold">{e.title}</p>
@@ -213,24 +192,12 @@ const caseIds = new Set(cases.map((c) => c.id));
 
   <section id="ce-site" class="border-t border-line bg-surface-2/50">
     <div class="container-page py-16">
-      <p class="eyebrow">Ce site</p>
-      <h2 class="section-title max-w-3xl">Le bon outil pour le besoin, y compris ici.</h2>
+      <p class="eyebrow">{p.thisSite.eyebrow}</p>
+      <h2 class="section-title max-w-3xl">{p.thisSite.title}</h2>
       <div class="mt-8 grid gap-8 text-sm leading-relaxed text-muted md:grid-cols-3">
-        <p>
-          <strong class="text-ink">Astro plutôt que Next.js.</strong> Un site de présentation n'a pas besoin d'embarquer
-          le runtime React : les pages sont du HTML statique, et le JavaScript n'est chargé que là où il sert
-          (formulaire de contact). Résultat : un site très léger et instantané.
-        </p>
-        <p>
-          <strong class="text-ink">Contenu typé.</strong> Les études de cas sont des fichiers Markdown validés par un
-          schéma Zod au build. Le formulaire passe par un endpoint serverless validé côté serveur, avec anti-spam
-          (honeypot + délai) et fonctionne même sans JavaScript.
-        </p>
-        <p>
-          <strong class="text-ink">Sobre et respectueux.</strong> Aucun cookie, mesure d'audience anonyme (Umami),
-          accessibilité soignée (navigation clavier, contrastes, mouvement réduit), mode sombre automatique,
-          données structurées schema.org.
-        </p>
+        {p.thisSite.points.map((pt) => (
+          <p><strong class="text-ink">{pt.lead}</strong> {pt.text}</p>
+        ))}
       </div>
     </div>
   </section>

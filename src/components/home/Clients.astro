@@ -3,6 +3,9 @@ import { Image } from 'astro:assets';
 import { ArrowUpRight, Leaf, MoonStar, Shield } from '@lucide/astro';
 import { clients } from '../../config/site';
 import { getLogo } from '../../lib/assets';
+import { useI18n, localePath } from '../../i18n';
+
+const { lang, t } = useI18n(Astro.url);
 
 // Sans logo, une icône propre à la discipline sur un fond coloré fait office de logo (D-62).
 const marks: Record<string, { icon: typeof Leaf; bg: string }> = {
@@ -17,11 +20,12 @@ const marks: Record<string, { icon: typeof Leaf; bg: string }> = {
   <div class="container-page xl:max-w-[96rem] xl:px-6">
     <ul aria-labelledby="clients-titre" class="grid gap-3 sm:grid-cols-2 xl:grid-cols-[9.5rem_repeat(4,minmax(0,1fr))]">
       <li class="sm:col-span-2 xl:col-span-1 xl:flex xl:items-center">
-        <h2 id="clients-titre" class="font-heading text-lg leading-tight font-semibold xl:text-xl">Ils m'ont fait confiance</h2>
+        <h2 id="clients-titre" class="font-heading text-lg leading-tight font-semibold xl:text-xl">{t.clients.title}</h2>
       </li>
       {clients.map((c) => {
         const logo = getLogo(c.id);
         const mark = marks[c.id];
+        const text = t.clients.items[c.id];
         const Mark = mark?.icon;
         return (
           <li class="group lift flex items-center gap-4 rounded-card border border-line bg-surface px-4 py-3">
@@ -36,16 +40,16 @@ const marks: Record<string, { icon: typeof Leaf; bg: string }> = {
               </span>
             )}
             <div class="flex min-w-0 flex-col self-stretch">
-              <p class="font-heading text-lg leading-snug font-semibold">{c.name}</p>
-              <p class="text-[13px] text-muted">{c.work}</p>
+              <p class="font-heading text-lg leading-snug font-semibold">{text.name}</p>
+              <p class="text-[13px] text-muted">{text.work}</p>
               <p class="mt-auto pt-1 text-[13px]">
                 {c.url ? (
                   <a href={c.url} target="_blank" rel="noopener" class="font-bold whitespace-nowrap text-accent-fg underline-offset-2 hover:underline" data-umami-event="client-link" data-umami-event-client={c.id}>
-                    {new URL(c.url).host}<span class="sr-only"> (nouvelle fenêtre)</span>
+                    {new URL(c.url).host}<span class="sr-only">{t.common.newWindow}</span>
                   </a>
                 ) : c.case ? (
-                  <a href={`/realisations/${c.case}`} class="inline-flex items-center gap-0.5 group font-bold text-accent-fg hover:underline">
-                    Étude de cas<ArrowUpRight class="size-3.5 transition group-hover:-translate-y-0.5 group-hover:translate-x-0.5" aria-hidden="true" />
+                  <a href={localePath(lang, `/realisations/${c.case}`)} class="inline-flex items-center gap-0.5 group font-bold text-accent-fg hover:underline">
+                    {t.clients.caseStudy}<ArrowUpRight class="size-3.5 transition group-hover:-translate-y-0.5 group-hover:translate-x-0.5" aria-hidden="true" />
                   </a>
                 ) : null}
               </p>

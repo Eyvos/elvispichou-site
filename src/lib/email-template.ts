@@ -1,4 +1,5 @@
 import { site } from '../config/site';
+import { getDict, fmt, localePath, type Locale } from '../i18n';
 
 /**
  * Accusé de réception envoyé au prospect.
@@ -26,36 +27,38 @@ export interface ReceiptData {
   message: string;
   projectLabel: string;
   budget: string;
+  lang: Locale;
 }
 
 const escape = (s: string) =>
   s.replace(/[&<>"']/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[ch]!);
 
-const steps = [
-  ['1', 'Je lis votre demande', 'Je prends le temps de bien comprendre votre besoin.'],
-  ['2', 'Je vous réponds sous 24 h ouvrées', 'Avec des premières pistes concrètes.'],
-  ['3', 'On en parle', 'Un échange pour valider la meilleure approche, sans engagement.'],
-] as const;
+const host = site.url.replace('https://', '');
 
-export function receiptSubject(): string {
-  return `Confirmation : votre demande est bien reçue — ${site.name}`;
+export function receiptSubject(lang: Locale): string {
+  return fmt(getDict(lang).email.subject, { name: site.name });
 }
 
-export function receiptText({ name, message }: ReceiptData): string {
-  return `Bonjour ${name},
+export function receiptText({ name, message, lang }: ReceiptData): string {
+  const t = getDict(lang);
+  const e = t.email;
+  return `${fmt(e.textHello, { name })}
 
-Merci pour votre message, je l'ai bien reçu. Je reviens vers vous sous 24 h ouvrées avec des premières pistes.
+${e.textBody}
 
-Pour rappel, votre demande :
+${e.textRecap}
 ${message}
 
-À très vite,
+${e.textBye}
 ${site.name}
-${site.role}
+${t.site.role}
 ${site.url}`;
 }
 
-export function receiptHtml({ name, message, projectLabel, budget }: ReceiptData): string {
+export function receiptHtml({ name, message, projectLabel, budget, lang }: ReceiptData): string {
+  const t = getDict(lang);
+  const e = t.email;
+  const steps = e.steps.map(([title, text], i) => [String(i + 1), title, text] as const);
   const stepRows = steps
     .map(
       ([n, title, text]) => `<tr>
@@ -71,8 +74,8 @@ export function receiptHtml({ name, message, projectLabel, budget }: ReceiptData
     .join('');
 
   const recap = [
-    ['Projet', projectLabel],
-    ...(budget ? [['Budget indicatif', budget]] : []),
+    [e.recapProject, projectLabel],
+    ...(budget ? [[e.recapBudget, budget]] : []),
   ]
     .map(
       ([k, v]) =>
@@ -81,16 +84,16 @@ export function receiptHtml({ name, message, projectLabel, budget }: ReceiptData
     .join('');
 
   return `<!doctype html>
-<html lang="fr">
+<html lang="${lang}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="dark light">
 <meta name="supported-color-schemes" content="dark light">
-<title>${escape(receiptSubject())}</title>
+<title>${escape(receiptSubject(lang))}</title>
 </head>
 <body style="margin:0;padding:0;background-color:${c.bg}">
-<div style="display:none;max-height:0;overflow:hidden;opacity:0">Merci ${escape(name)}, j'ai bien reçu votre message et je reviens vers vous sous 24 h ouvrées.</div>
+<div style="display:none;max-height:0;overflow:hidden;opacity:0">${escape(fmt(e.preheader, { name }))}</div>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="${c.bg}" style="background-color:${c.bg}">
 <tr><td align="center" style="padding:32px 16px">
 <table role="presentation" width="560" cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:560px">
@@ -101,19 +104,19 @@ export function receiptHtml({ name, message, projectLabel, budget }: ReceiptData
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
 <tr><td height="4" style="height:4px;line-height:4px;font-size:0;background-color:${c.accent};border-radius:16px 16px 0 0">&nbsp;</td></tr>
 <tr><td style="padding:32px 32px 8px 32px;font-family:${font}">
-<div style="font-size:24px;line-height:30px;font-weight:700;letter-spacing:-0.4px;color:${c.ink}">Merci ${escape(name)}, j'ai bien reçu votre demande.</div>
-<p style="margin:14px 0 0 0;font-size:15px;line-height:24px;color:${c.muted}">Je lis votre message avec attention et je reviens vers vous <strong style="color:${c.ink}">sous 24 h ouvrées</strong> avec des premières pistes.</p>
+<div style="font-size:24px;line-height:30px;font-weight:700;letter-spacing:-0.4px;color:${c.ink}">${escape(fmt(e.title, { name }))}</div>
+<p style="margin:14px 0 0 0;font-size:15px;line-height:24px;color:${c.muted}">${e.leadBefore}<strong style="color:${c.ink}">${e.leadStrong}</strong>${e.leadAfter}</p>
 </td></tr>
 
 <tr><td style="padding:24px 32px 6px 32px">
-<div style="font:600 13px/20px ${font};color:${c.accentFg};padding-bottom:14px">La suite</div>
+<div style="font:600 13px/20px ${font};color:${c.accentFg};padding-bottom:14px">${e.next}</div>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">${stepRows}</table>
 </td></tr>
 
 <tr><td style="padding:8px 32px 32px 32px">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="${c.surface2}" style="background-color:${c.surface2};border:1px solid ${c.line};border-radius:12px">
 <tr><td style="padding:18px 20px">
-<div style="font:600 13px/20px ${font};color:${c.accentFg};padding-bottom:10px">Pour rappel, votre demande</div>
+<div style="font:600 13px/20px ${font};color:${c.accentFg};padding-bottom:10px">${e.recapTitle}</div>
 <table role="presentation" cellpadding="0" cellspacing="0" border="0">${recap}</table>
 <div style="margin-top:10px;padding-top:12px;border-top:1px solid ${c.line};font:14px/22px ${font};color:${c.ink};white-space:pre-wrap">${escape(message)}</div>
 </td></tr>
@@ -121,16 +124,16 @@ export function receiptHtml({ name, message, projectLabel, budget }: ReceiptData
 </td></tr>
 
 <tr><td style="padding:0 32px 32px 32px;font-family:${font}">
-<p style="margin:0 0 16px 0;font-size:15px;line-height:24px;color:${c.muted}">Une précision à ajouter ? Répondez simplement à ce mail, il me parvient directement.</p>
-<table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td bgcolor="${c.accent}" style="background-color:${c.accent};border-radius:10px"><a href="${site.url}" style="display:inline-block;padding:12px 22px;font:600 14px/20px ${font};color:${c.accentInk};text-decoration:none">Retour au site</a></td></tr></table>
+<p style="margin:0 0 16px 0;font-size:15px;line-height:24px;color:${c.muted}">${e.reply}</p>
+<table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td bgcolor="${c.accent}" style="background-color:${c.accent};border-radius:10px"><a href="${new URL(localePath(lang, '/'), site.url).href}" style="display:inline-block;padding:12px 22px;font:600 14px/20px ${font};color:${c.accentInk};text-decoration:none">${e.backToSite}</a></td></tr></table>
 </td></tr>
 </table>
 </td></tr>
 
 <tr><td style="padding:24px 4px 0 4px;font-family:${font};font-size:13px;line-height:20px;color:${c.muted}">
-<strong style="color:${c.ink}">${site.name}</strong> · ${site.role}<br>
-<a href="${site.url}" style="color:${c.accentFg};text-decoration:underline">${site.url.replace('https://', '')}</a> · ${site.location}
-<br><br>Vous recevez ce message car vous avez rempli le formulaire de contact de ${site.url.replace('https://', '')}. Aucune autre communication ne vous sera envoyée.
+<strong style="color:${c.ink}">${site.name}</strong> · ${t.site.role}<br>
+<a href="${site.url}" style="color:${c.accentFg};text-decoration:underline">${host}</a> · ${t.site.location}
+<br><br>${fmt(e.footer, { host })}
 </td></tr>
 
 </table>

@@ -1,0 +1,21 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Hero from '../../components/home/Hero.astro';
+import OfferDetail from '../../components/home/OfferDetail.astro';
+import Clients from '../../components/home/Clients.astro';
+import Work from '../../components/home/Work.astro';
+import Contact from '../../components/home/Contact.astro';
+import { langStaticPaths } from '../../i18n';
+
+export function getStaticPaths() {
+  return langStaticPaths();
+}
+---
+
+<BaseLayout>
+  <Hero />
+  <OfferDetail />
+  <Clients />
+  <Work />
+  <Contact />
+</BaseLayout>

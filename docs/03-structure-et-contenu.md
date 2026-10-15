@@ -8,8 +8,12 @@
 /profil                 Page technique pour recruteurs, ESN, agences
 /mentions-legales       Mentions légales (noindex)
 /404                    Page introuvable (noindex)
-/api/contact            Seule route serveur : formulaire de contact
+/en/…                   Les mêmes pages en anglais (/en/, /en/profil, /en/realisations/[slug], /en/mentions-legales) (D-109)
+/api/contact            Seule route serveur : formulaire de contact (commune aux deux langues)
 ```
+
+Toutes les pages existent en français (défaut, sans préfixe) et en anglais (`/en`). Sélecteur de langue : bouton rond (globe) dans l'en-tête, liste « Français / English » au clic ; deux boutons côte à côte dans le menu mobile ;
+il garde la section et les paramètres de la page courante. Règles de traduction : `05-technique.md` § Traduction (D-110).
 
 ## Accueil : ordre des sections
 
@@ -80,6 +84,6 @@ renvoient vers l'étude de cas quand elle existe ; les deux sites clients (Lorta
 
 ## Conventions de contenu
 
-- Français, vouvoiement, casse de phrase (D-04 : jamais « outil métier »).
+- Français (vouvoiement) et anglais (« you », ton professionnel et chaleureux), casse de phrase dans les deux langues (D-04 : jamais « outil métier » ; en anglais, « custom tool »). **Tout contenu est écrit dans les deux langues** (D-110).
 - Les liens à `null` dans `src/config/site.ts` ne s'affichent pas (CV, calendrier).
 - Toute ancre `#x` doit pointer vers un `id` existant (contrôlé par l'audit).

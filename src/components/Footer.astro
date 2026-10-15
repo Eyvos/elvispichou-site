@@ -1,6 +1,10 @@
 ---
 import { icons, viewBoxes } from '../lib/social-icons';
 import { site } from '../config/site';
+import { useI18n, localePath } from '../i18n';
+
+const { lang, t } = useI18n(Astro.url);
+const f = t.footer;
 
 const socials = [
   { label: 'Malt', href: site.links.malt },
@@ -13,28 +17,28 @@ const socials = [
   <div class="container-page grid gap-6 py-8 sm:grid-cols-[1.5fr_1fr_1fr]">
     <div>
       <p class="font-display text-lg font-semibold">Elvis Pichou<span class="text-accent-fg">.</span></p>
-      <p class="mt-1 max-w-sm text-sm text-muted">{site.tagline}</p>
-      <p class="mt-2 text-sm text-muted">{site.location}</p>
+      <p class="mt-1 max-w-sm text-sm text-muted">{t.site.tagline}</p>
+      <p class="mt-2 text-sm text-muted">{t.site.location}</p>
     </div>
     <div>
-      <p id="footer-site" class="text-sm font-semibold">Le site</p>
+      <p id="footer-site" class="text-sm font-semibold">{f.siteTitle}</p>
       <nav aria-labelledby="footer-site">
       <ul class="mt-2 space-y-1.5 text-sm text-muted">
-        <li><a class="hover:text-ink" href="/#offre">Offres</a></li>
-        <li><a class="hover:text-ink" href="/#realisations">Réalisations</a></li>
-        <li><a class="hover:text-ink" href="/profil" data-umami-event="profil-footer">Profil technique</a></li>
-        <li><a class="hover:text-ink" href="/mentions-legales">Mentions légales</a></li>
+        <li><a class="hover:text-ink" href={localePath(lang, '/#offre')}>{f.offers}</a></li>
+        <li><a class="hover:text-ink" href={localePath(lang, '/#realisations')}>{f.projects}</a></li>
+        <li><a class="hover:text-ink" href={localePath(lang, '/profil')} data-umami-event="profil-footer">{t.common.technicalProfile}</a></li>
+        <li><a class="hover:text-ink" href={localePath(lang, '/mentions-legales')}>{f.legal}</a></li>
       </ul>
       </nav>
     </div>
     <div>
-      <p class="text-sm font-semibold">Ailleurs</p>
+      <p class="text-sm font-semibold">{f.elsewhere}</p>
       <ul class="mt-2 space-y-1.5 text-sm text-muted">
         {socials.map((s) => (
           <li>
             <a class="inline-flex items-center gap-2 hover:text-ink" href={s.href} rel="me noopener" target="_blank">
               {icons[s.label] && <svg class="size-4 shrink-0" viewBox={viewBoxes[s.label] ?? '0 0 24 24'} aria-hidden="true" set:html={icons[s.label]} />}
-              {s.label}<span class="sr-only"> (nouvelle fenêtre)</span>
+              {s.label}<span class="sr-only">{t.common.newWindow}</span>
             </a>
           </li>
         ))}
@@ -49,6 +53,6 @@ const socials = [
   </div>
   <div class="container-page flex flex-col gap-1 border-t border-line py-4 text-[13px] text-muted sm:flex-row sm:justify-between">
     <p>© {new Date().getFullYear()} {site.name}</p>
-    <p>Site statique conçu avec Astro · sans cookie · <a class="underline hover:text-ink" href="/profil#ce-site">comment il est fait</a></p>
+    <p>{f.built} <a class="underline hover:text-ink" href={localePath(lang, '/profil#ce-site')}>{f.howBuilt}</a></p>
   </div>
 </footer>

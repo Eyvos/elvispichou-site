@@ -1,35 +1,29 @@
 ---
 import { PenLine, MailCheck, Phone, Mail } from '@lucide/astro';
 import { site } from '../../config/site';
+import { useI18n, localePath } from '../../i18n';
 
-const projectTypes = [
-  { v: 'outil', l: 'Un outil sur mesure' },
-  { v: 'site', l: 'Un site vitrine' },
-  { v: 'autre', l: 'Autre' },
-];
+const { lang, t } = useI18n(Astro.url);
+const c = t.contact;
 
-const budgets = [
-  { v: '', l: 'Je ne sais pas encore' },
-  { v: 'Moins de 2 000 €', l: 'Moins de 2 000 €' },
-  { v: '2 000 – 5 000 €', l: '2 000 – 5 000 €' },
-  { v: '5 000 – 15 000 €', l: '5 000 – 15 000 €' },
-  { v: 'Plus de 15 000 €', l: 'Plus de 15 000 €' },
-];
+const projectTypes = (['outil', 'site', 'autre'] as const).map((v) => ({ v, l: c.projectTypes[v] }));
 
-const steps = [
-  { Icon: PenLine, title: 'Vous écrivez', text: 'Quelques lignes suffisent, même si le besoin est encore flou.' },
-  { Icon: MailCheck, title: 'Je vous réponds sous 24 h ouvrées', text: 'Avec de premières pistes, sans engagement.' },
-  { Icon: Phone, title: 'On en parle', text: 'De vive voix si vous le souhaitez, sinon par email.' },
-];
+// Valeurs envoyées : des codes indépendants de la langue (le serveur les traduit), jamais le libellé affiché.
+const budgets = (['none', 'lt2k', '2to5k', '5to15k', 'gt15k'] as const).map((v) => ({ v: v === 'none' ? '' : v, l: c.budgets[v] }));
+
+const steps = [PenLine, MailCheck, Phone].map((Icon, i) => ({ Icon, ...c.steps[i] }));
+
+// Messages du script du formulaire.
+const scriptTexts = { ...c.msg, sending: c.sending, submit: c.submit };
 ---
 
 <section id="contact" class="pt-10 pb-20 sm:pt-14 sm:pb-24">
   <div class="container-page grid gap-12 lg:grid-cols-[1fr_1.45fr] lg:gap-10">
     <div>
-      <p class="eyebrow">Contact</p>
-      <h2 class="section-title">Parlons de votre projet.</h2>
+      <p class="eyebrow">{c.eyebrow}</p>
+      <h2 class="section-title">{c.title}</h2>
       <p class="mt-5 max-w-md leading-relaxed text-muted">
-        Décrivez votre besoin en quelques lignes, même s'il est encore flou. Pas de jargon : on parle de votre activité, pas de technique.
+        {c.intro}
       </p>
 
       <!-- Ce qui se passe après l'envoi : rassure les prospects qui n'ont jamais travaillé avec un freelance -->
@@ -50,20 +44,20 @@ const steps = [
 
       <dl class="mt-10 space-y-5 border-t border-line pt-8 text-sm">
         <div>
-          <dt class="text-muted">Vous préférez écrire directement ?</dt>
+          <dt class="text-muted">{c.preferWriting}</dt>
           <dd class="mt-2">
             <a class="btn btn-ghost" href={`mailto:${site.email}`} data-umami-event="cta-mailto">
               <Mail class="size-4" aria-hidden="true" />
-              M'écrire par email
+              {c.writeByEmail}
             </a>
           </dd>
         </div>
         {site.links.calendar && (
           <div>
-            <dt class="text-muted">Vous préférez parler ?</dt>
+            <dt class="text-muted">{c.preferTalking}</dt>
             <dd class="mt-1">
               <a class="font-medium text-accent-fg" href={site.links.calendar} target="_blank" rel="noopener" data-umami-event="cta-calendar">
-                Réserver un appel de 20 min <span aria-hidden="true">→</span><span class="sr-only"> (nouvelle fenêtre)</span>
+                {c.bookCall} <span aria-hidden="true">→</span><span class="sr-only">{t.common.newWindow}</span>
               </a>
             </dd>
           </div>
@@ -76,12 +70,14 @@ const steps = [
       method="post"
       action="/api/contact"
       class="rounded-card border border-line bg-surface p-6 sm:p-9"
+      data-i18n={JSON.stringify(scriptTexts)}
       novalidate
     >
-      <p class="mb-6 text-sm text-muted">Les champs marqués d’un <span class="text-accent-fg">*</span> sont obligatoires.</p>
+      <input type="hidden" name="lang" value={lang} />
+      <p class="mb-6 text-sm text-muted">{c.requiredNote[0]}<span class="text-accent-fg">*</span>{c.requiredNote[1]}</p>
 
       <fieldset>
-        <legend class="text-sm font-medium">Votre projet concerne</legend>
+        <legend class="text-sm font-medium">{c.projectLegend}</legend>
         <div class="mt-2 flex flex-wrap gap-2">
           {projectTypes.map((o, i) => (
             <label class="choice rounded-full border border-line px-4 py-2 text-sm">
@@ -95,17 +91,17 @@ const steps = [
       <div class="mt-6">
         <div class="grid gap-5 sm:grid-cols-2">
           <label class="block text-sm">
-            <span class="font-medium">Nom <span class="text-accent-fg" aria-hidden="true">*</span></span>
+            <span class="font-medium">{c.name} <span class="text-accent-fg" aria-hidden="true">*</span></span>
             <input name="name" required aria-describedby="err-name" autocomplete="name" maxlength="100" class="field" />
             <span id="err-name" data-err class="mt-1 block text-sm font-medium text-accent-fg"></span>
           </label>
           <label class="block text-sm">
-            <span class="font-medium">Email <span class="text-accent-fg" aria-hidden="true">*</span></span>
+            <span class="font-medium">{c.email} <span class="text-accent-fg" aria-hidden="true">*</span></span>
             <input name="email" type="email" required aria-describedby="err-email" autocomplete="email" maxlength="200" class="field" />
             <span id="err-email" data-err class="mt-1 block text-sm font-medium text-accent-fg"></span>
           </label>
           <label class="block text-sm sm:col-span-2">
-            <span class="font-medium">Entreprise</span>
+            <span class="font-medium">{c.company}</span>
             <input name="company" autocomplete="organization" maxlength="120" class="field" />
           </label>
         </div>
@@ -113,14 +109,14 @@ const steps = [
 
       <div class="mt-5">
         <label class="block text-sm">
-          <span class="font-medium">Votre besoin <span class="text-accent-fg" aria-hidden="true">*</span></span>
+          <span class="font-medium">{c.message} <span class="text-accent-fg" aria-hidden="true">*</span></span>
           <textarea name="message" required minlength="20" maxlength="5000" rows="6" aria-describedby="err-message" class="field min-h-40 resize-y"
-            placeholder="Ex. : je gère mes devis sur Excel et je perds du temps à relancer mes clients…"></textarea>
+            placeholder={c.placeholder}></textarea>
           <span id="err-message" data-err class="mt-1 block text-sm font-medium text-accent-fg"></span>
         </label>
 
         <fieldset class="mt-5">
-          <legend class="text-sm font-medium">Budget indicatif <span class="text-muted font-normal">(facultatif)</span></legend>
+          <legend class="text-sm font-medium">{c.budgetLegend} <span class="text-muted font-normal">{c.optional}</span></legend>
           <div class="mt-2 flex flex-wrap gap-2">
             {budgets.map((b, i) => (
               <label class="choice rounded-full border border-line px-4 py-2 text-sm">
@@ -134,18 +130,17 @@ const steps = [
 
       <!-- Anti-spam : champ piège invisible + horodatage -->
       <div class="hidden" aria-hidden="true">
-        <label>Ne pas remplir <input name="website" tabindex="-1" autocomplete="off" /></label>
+        <label>{c.honeypot} <input name="website" tabindex="-1" autocomplete="off" /></label>
       </div>
       <input type="hidden" name="startedAt" value="" />
 
       <p class="mt-7 text-[13px] leading-relaxed text-muted">
-        Vos informations servent uniquement à répondre à votre demande. Elles ne sont ni vendues ni utilisées pour de la prospection ;
-        détails et droits dans les <a class="underline hover:text-ink" href="/mentions-legales#donnees">mentions légales</a>.
+        {c.privacy[0]}<a class="underline hover:text-ink" href={localePath(lang, '/mentions-legales#donnees')}>{c.privacy[1]}</a>{c.privacy[2]}
       </p>
 
       <div class="mt-6 flex flex-wrap items-center gap-4">
         <button type="submit" class="btn btn-primary" data-umami-event="contact-submit">
-          Envoyer ma demande
+          {c.submit}
         </button>
         <p data-status role="status" aria-live="polite" class="text-sm"></p>
       </div>
@@ -176,8 +171,10 @@ const steps = [
       statusEl.textContent = text;
       statusEl.className = `text-sm ${ok ? 'text-ok-fg' : 'text-accent-fg'}`;
     };
-    const SUCCESS = 'Merci, votre message est bien parti. Je vous réponds sous 24 h ouvrées.';
-    const FALLBACK = 'Le message n’a pas pu être envoyé. Réessayez dans un instant, ou écrivez-moi directement par email.';
+    // Textes de la langue courante, posés par le serveur (voir `src/i18n/`).
+    const T = JSON.parse(form.dataset.i18n ?? '{}') as Record<string, string>;
+    const SUCCESS = T.success;
+    const FALLBACK = T.fallback;
     (form.elements.namedItem('startedAt') as HTMLInputElement).value = String(Date.now());
 
     // Préselection depuis les cartes d'offre : /?projet=site#contact
@@ -201,19 +198,19 @@ const steps = [
         f.setAttribute('aria-invalid', String(!ok));
         const err = form.querySelector<HTMLElement>(`#err-${f.name}`);
         if (err) {
-          err.textContent = ok ? '' : f.validity.valueMissing ? 'Ce champ est obligatoire.'
-            : f.validity.typeMismatch ? 'Saisissez une adresse email valide, par exemple nom@exemple.fr.'
-            : f.validity.tooShort ? 'Écrivez au moins 20 caractères.' : 'Valeur invalide.';
+          err.textContent = ok ? '' : f.validity.valueMissing ? T.required
+            : f.validity.typeMismatch ? T.emailInvalid
+            : f.validity.tooShort ? T.tooShort : T.invalid;
         }
         if (!ok && valid) { f.focus(); valid = false; }
       });
       if (!valid) {
-        setStatus('Le formulaire contient des erreurs : corrigez les champs signalés.', false);
+        setStatus(T.errors, false);
         return;
       }
 
       submit.disabled = true;
-      submit.textContent = 'Envoi…';
+      submit.textContent = T.sending;
       try {
         // URL absolue sur l'origine courante : évite toute dépendance à <base> ou à un chemin relatif.
         const res = await fetch('/api/contact', {
@@ -232,7 +229,7 @@ const steps = [
         setStatus(err instanceof TypeError ? FALLBACK : (err as Error).message, false);
       } finally {
         submit.disabled = false;
-        submit.textContent = 'Envoyer ma demande';
+        submit.textContent = T.submit;
       }
     });
   }

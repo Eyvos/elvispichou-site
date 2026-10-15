@@ -201,6 +201,64 @@ for (const d of ['README.md', '01-produit-et-positionnement.md', '02-design-syst
 }
 if (!results.some((r) => r.rule === 'docs')) add('PASS', 'docs', 'documentation présente');
 
+// ───────────────────────── 5. Traduction (D-109) ─────────────────────────
+// Règle : tout texte visible passe par `src/i18n/` (fr.ts = source, en.ts typé dessus). Aucun texte en dur dans un composant.
+const blank = (m) => m.replace(/[^\n]/g, ' '); // garde les sauts de ligne pour conserver les numéros de ligne
+// Fichiers dont le texte est propre à une langue (prose longue) : exemptés du contrôle de texte en dur.
+const I18N_PROSE = new Set(['src/components/legal/LegalFr.astro', 'src/components/legal/LegalEn.astro']);
+// Noms propres et symboles qui s'affichent identiques dans toutes les langues.
+const I18N_NEUTRAL = new Set(['Elvis Pichou', 'EP', 'Malt', 'LinkedIn', 'GitHub', 'Astro', 'Umami']);
+let hardText = 0;
+for (const f of astroFiles.filter((x) => !I18N_PROSE.has(x))) {
+  let src = read(f);
+  const fm = src.match(/^---\n[\s\S]*?\n---\n/);
+  if (fm) src = blank(fm[0]) + src.slice(fm[0].length);
+  src = src
+    .replace(/<script\b[\s\S]*?<\/script>/g, blank)
+    .replace(/<style\b[\s\S]*?<\/style>/g, blank)
+    .replace(/<!--[\s\S]*?-->/g, blank)
+    .replace(/\{\/\*[\s\S]*?\*\/\}/g, blank);
+  // Expressions { … } : on retire les plus internes d'abord (JSX imbriqué compris).
+  for (let i = 0; i < 8; i++) src = src.replace(/\{[^{}]*\}/g, blank);
+  const at = (idx) => src.slice(0, idx).split('\n').length;
+  for (const m of src.matchAll(/>([^<>]+)</g)) {
+    const text = m[1].replace(/&[a-z]+;/g, ' ').trim();
+    if (!/[A-Za-zÀ-ÿ]{2,}/.test(text) || I18N_NEUTRAL.has(text) || ignore(lines(f)[at(m.index + 1) - 1] ?? '')) continue;
+    hardText++;
+    add('FAIL', 'i18n-texte', `texte en dur (le mettre dans src/i18n/) → ${text.slice(0, 80)}`, `${f}:${at(m.index + 1)}`);
+  }
+  // Attributs lisibles ou lus par un lecteur d'écran : texte littéral interdit.
+  for (const m of src.matchAll(/\b(aria-label|alt|title|placeholder|aria-description)="([^"]*[A-Za-zÀ-ÿ]{2,}[^"]*)"/g)) {
+    if (ignore(lines(f)[at(m.index) - 1] ?? '') || (m[1] === 'alt' && !m[2].trim())) continue;
+    hardText++;
+    add('FAIL', 'i18n-texte', `${m[1]}="${m[2].slice(0, 60)}" en dur (le mettre dans src/i18n/)`, `${f}:${at(m.index)}`);
+  }
+}
+if (!hardText) add('PASS', 'i18n-texte', 'aucun texte visible en dur dans les composants (tout vient de src/i18n/)');
+
+// Contenu Markdown : chaque étude de cas existe dans toutes les langues, avec les mêmes champs.
+const langDirs = readdirSync(join(ROOT, 'src/content/realisations')).filter((d) => statSync(join(ROOT, 'src/content/realisations', d)).isDirectory());
+const keysOf = (p) => [...read(p).split('---')[1].matchAll(/^([A-Za-z]+):/gm)].map((m) => m[1]).sort().join(',');
+const ref = langDirs.includes('fr') ? 'fr' : langDirs[0];
+let parityFail = 0;
+for (const d of langDirs.filter((x) => x !== ref)) {
+  const refFiles = readdirSync(join(ROOT, 'src/content/realisations', ref)).filter((n) => n.endsWith('.md'));
+  const files = readdirSync(join(ROOT, 'src/content/realisations', d)).filter((n) => n.endsWith('.md'));
+  for (const n of refFiles) {
+    if (!files.includes(n)) { parityFail++; add('FAIL', 'i18n-contenu', `étude de cas sans version « ${d} » : ${n}`, `src/content/realisations/${d}/`); continue; }
+    if (keysOf(`src/content/realisations/${ref}/${n}`) !== keysOf(`src/content/realisations/${d}/${n}`)) { parityFail++; add('FAIL', 'i18n-contenu', `champs différents entre « ${ref} » et « ${d} » : ${n}`, `src/content/realisations/${d}/${n}`); }
+  }
+  for (const n of files) if (!refFiles.includes(n)) { parityFail++; add('FAIL', 'i18n-contenu', `étude de cas « ${d} » sans version « ${ref} » : ${n}`, `src/content/realisations/${d}/`); }
+}
+if (!parityFail) add('PASS', 'i18n-contenu', `études de cas présentes et alignées dans toutes les langues (${langDirs.join(', ')})`);
+
+// Pages : toute page du dossier [...lang] déclare ses chemins par langue ; la mise en page pose lang, hreflang et og:locale.
+const unlocalized = walk('src/pages', ['.astro']).filter((f) => !f.includes('[...lang]') && !/pages\/404\.astro$/.test(f));
+if (unlocalized.length) add('FAIL', 'i18n-pages', `pages hors de src/pages/[...lang]/ (non traduites) : ${unlocalized.join(', ')}`);
+else add('PASS', 'i18n-pages', 'toutes les pages sont servies dans chaque langue');
+if (/<html lang=\{lang\}/.test(layout) && /hreflang/.test(layout) && /og:locale/.test(layout)) add('PASS', 'i18n-seo', 'html lang, hreflang et og:locale dépendent de la langue');
+else add('FAIL', 'i18n-seo', 'BaseLayout doit poser <html lang={lang}>, les liens hreflang et og:locale', 'src/layouts/BaseLayout.astro');
+
 // ───────────────────────── Sortie ─────────────────────────
 const order = { FAIL: 0, WARN: 1, PASS: 2 };
 results.sort((a, b) => order[a.level] - order[b.level]);

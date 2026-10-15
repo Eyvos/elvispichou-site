@@ -1,15 +1,21 @@
 ---
-import { offers } from '../../data/offers';
+import { offerIds, offerMeta } from '../../data/offers';
 import { ArrowRight } from '@lucide/astro';
+import { useI18n, localePath } from '../../i18n';
+
+const { lang, t } = useI18n(Astro.url);
+const o18 = t.offers;
+// Texte (langue courante) + icônes et lien (indépendants de la langue), même ordre : 3 raisons, 3 étapes.
+const offers = offerIds.map((id) => ({ id, ...o18.items[id], meta: offerMeta[id] }));
 ---
 
 <section id="offre" class="border-y border-line bg-surface pt-10 pb-16 sm:pt-12 sm:pb-20" data-offers>
   <div class="container-page">
     <div class="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
-      <h2 class="text-3xl font-medium sm:text-4xl">Ce que je fais pour vous</h2>
-      <div role="tablist" aria-label="Choisir une offre" class="flex max-w-full flex-col gap-1.5 rounded-[1.6rem] border border-line bg-bg p-1.5 sm:inline-flex sm:flex-row sm:self-start sm:rounded-full">
+      <h2 class="text-3xl font-medium sm:text-4xl">{o18.title}</h2>
+      <div role="tablist" aria-label={o18.tablistLabel} class="flex max-w-full flex-col gap-1.5 rounded-[1.6rem] border border-line bg-bg p-1.5 sm:inline-flex sm:flex-row sm:self-start sm:rounded-full">
         {offers.map((o, i) => {
-          const TabIcon = o.tabIcon;
+          const TabIcon = o.meta.tabIcon;
           return (
             <button
               type="button"
@@ -47,15 +53,15 @@ import { ArrowRight } from '@lucide/astro';
             <p class="inline-flex rounded-full bg-ink px-4 py-1.5 text-sm font-bold tracking-[0.06em] text-bg uppercase">{o.audience}</p>
             <h3 class="mt-4 font-sans text-2xl leading-[1.2] font-semibold sm:text-3xl">{o.headline}</h3>
             <p class="mt-3 text-lg leading-relaxed text-muted">{o.intro}</p>
-            <p class="mt-4 text-base leading-snug"><span class="font-semibold">Par exemple :</span> <span class="text-muted">{o.examples}</span></p>
+            <p class="mt-4 text-base leading-snug"><span class="font-semibold">{o18.forExample}</span> <span class="text-muted">{o.examples}</span></p>
           </div>
 
           <!-- Bénéfices -->
           <div class="lg:col-start-2 lg:row-span-2 lg:row-start-1">
-            <h4 class="font-sans text-xl font-semibold">Ce que ça change pour vous</h4>
+            <h4 class="font-sans text-xl font-semibold">{o18.whyTitle}</h4>
             <ul class="mt-3">
-              {o.why.map((w) => {
-                const WhyIcon = w.icon;
+              {o.why.map((w, wi) => {
+                const WhyIcon = o.meta.whyIcons[wi];
                 return (
                   <li class="flex gap-4 border-t border-line py-4 first:border-t-0 first:pt-2">
                     <span class="grid size-11 shrink-0 place-items-center rounded-2xl bg-accent-soft text-accent-fg">
@@ -73,10 +79,10 @@ import { ArrowRight } from '@lucide/astro';
 
           <!-- Méthode : frise pleine largeur, mêmes pastilles d'icône que les raisons -->
           <div class="border-t border-line pt-6 lg:col-span-2 lg:row-start-3">
-            <h4 class="font-sans text-xl font-semibold">Comment je travaille</h4>
+            <h4 class="font-sans text-xl font-semibold">{o18.howTitle}</h4>
             <ol class="mt-4 grid gap-8 md:grid-cols-3 md:gap-x-8">
               {o.steps.map((s, k) => {
-                const StepIcon = s.icon;
+                const StepIcon = o.meta.stepIcons[k];
                 return (
                   <li>
                     <div class="flex items-center gap-4">
@@ -85,7 +91,7 @@ import { ArrowRight } from '@lucide/astro';
                       </span>
                       {k < o.steps.length - 1 && <span class="hidden h-px flex-1 bg-line-strong md:block" aria-hidden="true"></span>}
                     </div>
-                    <p class="mt-4 text-xs font-bold tracking-[0.08em] text-accent-fg uppercase">Étape {k + 1}</p>
+                    <p class="mt-4 text-xs font-bold tracking-[0.08em] text-accent-fg uppercase">{o18.step} {k + 1}</p>
                     <h5 class="mt-1 font-heading text-lg leading-tight font-semibold tracking-tight">{s.title}</h5>
                     <p class="mt-2 text-base leading-snug text-muted">{s.text}</p>
                   </li>
@@ -96,8 +102,8 @@ import { ArrowRight } from '@lucide/astro';
 
           <!-- Appel à l'action : à côté de la promesse sur grand écran, après la méthode sur mobile -->
           <div class="lg:col-start-1 lg:row-start-2 lg:self-start">
-            <a href={o.cta.href} class="btn btn-primary !px-7 !py-4 !text-base" data-umami-event={`cta-offre-${o.id}`}>
-              {o.cta.label} <ArrowRight class="size-5" aria-hidden="true" />
+            <a href={localePath(lang, o.meta.cta)} class="btn btn-primary !px-7 !py-4 !text-base" data-umami-event={`cta-offre-${o.id}`}>
+              {o.cta} <ArrowRight class="size-5" aria-hidden="true" />
             </a>
           </div>
         </div>

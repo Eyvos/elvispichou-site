@@ -1,18 +1,13 @@
 /**
- * Configuration centrale du site : identité, liens, SEO.
+ * Configuration centrale du site : identité, liens, SEO. Données indépendantes de la langue.
+ * Tous les textes affichés (métier, accroche, description, lieu, libellés) vivent dans `src/i18n/`.
  * Les liens à `null` ne sont pas affichés.
  */
 export const site = {
   name: 'Elvis Pichou',
   url: 'https://elvispichou.com',
-  role: 'Développeur web freelance',
-  tagline: 'Je conçois des outils web qui simplifient le travail des entreprises.',
-  description:
-    "Développeur web freelance à Toulouse : outils sur mesure pour TPE et PME, sites vitrines pour indépendants et commerçants. Un interlocuteur unique, du besoin jusqu'à la mise en ligne.",
   // TODO : remplacer par l'adresse définitive une fois le domaine acheté.
   email: 'pichou.elvis@gmail.com',
-  location: 'Toulouse — missions 100 % à distance',
-  availability: 'Disponible pour de nouveaux projets',
   /** Mentions légales : à renseigner avant la mise en ligne (null = « à compléter » affiché sur la page). */
   legal: {
     status: 'entrepreneur individuel' as string | null,
@@ -32,25 +27,25 @@ export const site = {
 } as const;
 
 /**
- * Projets et clients affichés dans la bande « Ils m'ont fait confiance ».
+ * Projets et clients affichés dans la bande « Ils m'ont fait confiance » (secteur et prestation : `clients.items` dans `src/i18n/`).
  * Logo : déposer `src/assets/logos/<id>.svg` (ou .png) ; sans fichier, le nom s'affiche en texte.
  * url : adresse du site, affichée et cliquable. null = rien d'affiché.
  */
 export const clients = [
-  { id: 'gendarmerie', sector: 'Service public', name: 'Gendarmerie nationale', work: 'Applications sur mesure', url: null as string | null, case: 'gendarmerie' as string | null },
-  { id: 'trik3r', sector: 'BTP & collecte', name: 'Trik3r Collecte', work: 'Plateforme web complète', url: 'https://trik3r-collecte.fr' as string | null, case: 'trik3r' as string | null },
-  { id: 'ingrid-medium', sector: 'Voyance', name: 'Ingrid Médium', work: 'Création du site', url: 'https://ingrid-medium.fr' as string | null, case: null as string | null }, // TODO : confirmer le nom exact
-  { id: 'stephanie-lortal', sector: 'Sophrologie', name: 'Stéphanie Lortal', work: 'Maintenance du site', url: 'https://sophrologue-lortal.fr' as string | null, case: null as string | null },
+  { id: 'gendarmerie', url: null as string | null, case: 'gendarmerie' as string | null },
+  { id: 'trik3r', url: 'https://trik3r-collecte.fr' as string | null, case: 'trik3r' as string | null },
+  { id: 'ingrid-medium', url: 'https://ingrid-medium.fr' as string | null, case: null as string | null }, // TODO : confirmer le nom exact
+  { id: 'stephanie-lortal', url: 'https://sophrologue-lortal.fr' as string | null, case: null as string | null },
 ] as const;
 
 /**
  * Menu principal : une entrée par section de la homepage (sauf accueil = logo, contact = bouton d'action).
- * Le contrôle `npm run audit` échoue si une section manque ici.
+ * Le libellé est `header.nav[key]` dans `src/i18n/`. Le contrôle `npm run audit` échoue si une section manque ici.
  */
 export const nav = [
-  { href: '/#offre', label: 'Offres' },
-  { href: '/#realisations', label: 'Réalisations' },
+  { href: '/#offre', key: 'offre' },
+  { href: '/#realisations', key: 'realisations' },
 ] as const;
 
-/** Accès discret pour les recruteurs, ESN et agences (décision D-05). */
-export const navProfile = { href: '/profil', label: 'Profil technique' } as const;
+/** Accès discret pour les recruteurs, ESN et agences (décision D-05). Libellé : `common.technicalProfile`. */
+export const navProfile = { href: '/profil' } as const;

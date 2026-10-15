@@ -1,0 +1,14 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { useI18n, localePath } from '../../i18n';
+
+const { lang, t } = useI18n(Astro.url);
+---
+
+<BaseLayout title={t.notFound.title} noindex alternates={false}>
+  <div class="container-page py-28 text-center">
+    <p class="eyebrow">{t.notFound.eyebrow}</p>
+    <h1 class="section-title">{t.notFound.heading}</h1>
+    <a href={localePath(lang, '/')} class="btn btn-primary mt-8">{t.notFound.back}</a>
+  </div>
+</BaseLayout>

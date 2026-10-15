@@ -2,7 +2,7 @@
   "ci": {
     "collect": {
       "staticDistDir": "dist/client",
-      "url": ["/", "/profil/", "/realisations/trik3r/"],
+      "url": ["/", "/profil/", "/realisations/trik3r/", "/en/", "/en/profil/", "/en/realisations/trik3r/"],
       "numberOfRuns": 1
     },
     "assert": {

@@ -1,27 +1,38 @@
 ---
-import { getCollection, render, type CollectionEntry } from 'astro:content';
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import { site } from '../../config/site';
-import BrowserFrame from '../../components/ui/BrowserFrame.astro';
-import { getScreenshot } from '../../lib/assets';
+import { render } from 'astro:content';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { site } from '../../../config/site';
+import BrowserFrame from '../../../components/ui/BrowserFrame.astro';
+import { getScreenshot } from '../../../lib/assets';
 import { ArrowUpRight } from '@lucide/astro';
+import { getCases, type CaseEntry } from '../../../lib/cases';
+import { useI18n, locales, defaultLocale, localePath, fmt } from '../../../i18n';
 
 export async function getStaticPaths() {
-  const cases = await getCollection('realisations');
-  return cases.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+  // Une page par étude et par langue : /realisations/<slug> (français) et /en/realisations/<slug> (anglais).
+  const perLocale = await Promise.all(
+    locales.map(async (lang) => (await getCases(lang)).map((entry) => ({
+      params: { lang: lang === defaultLocale ? undefined : lang, slug: entry.slug },
+      props: { entry },
+    }))),
+  );
+  return perLocale.flat();
 }
 
-interface Props { entry: CollectionEntry<'realisations'> }
+interface Props { entry: CaseEntry }
 
 const { entry } = Astro.props;
+const { lang, t } = useI18n(Astro.url);
+const c = t.casePage;
 const d = entry.data;
 const { Content } = await render(entry);
-const shot = getScreenshot(entry.id);
-const kindLabel = { site: 'Site vitrine', outil: 'Outil sur mesure', produit: 'Produit SaaS' }[d.kind];
+const shot = getScreenshot(entry.slug);
+const kindLabel = t.common.caseKind[d.kind];
 
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'CreativeWork',
+  inLanguage: lang,
   name: d.title,
   description: d.summary,
   creator: { '@id': `${site.url}/#person` },
@@ -35,7 +46,7 @@ const jsonLd = {
     <header class="border-b border-line">
       <div class="container-page grid gap-12 py-14 sm:py-20 lg:grid-cols-[1.15fr_1fr] lg:items-center">
         <div>
-        <a href="/#realisations" class="inline-block text-sm text-muted transition duration-200 hover:-translate-x-1 hover:text-ink"><span aria-hidden="true">←</span> Toutes les réalisations</a>
+        <a href={localePath(lang, '/#realisations')} class="inline-block text-sm text-muted transition duration-200 hover:-translate-x-1 hover:text-ink"><span aria-hidden="true">←</span> {c.back}</a>
         <div class="mt-8 flex flex-wrap items-center gap-2 text-[13px]">
           <span class="rounded-full bg-accent-soft px-2.5 py-1 font-medium text-accent-fg">{kindLabel}</span>
           <span class="text-muted">{d.client} · {d.sector}</span>
@@ -44,9 +55,9 @@ const jsonLd = {
         <p class="mt-6 max-w-2xl text-lg leading-relaxed text-muted">{d.summary}</p>
 
         <dl class="mt-10 grid gap-6 text-sm sm:grid-cols-3">
-          <div><dt class="text-muted">Client</dt><dd class="mt-1 font-medium">{d.client}</dd></div>
-          <div><dt class="text-muted">Période</dt><dd class="mt-1 font-medium">{d.period}</dd></div>
-          <div><dt class="text-muted">Mon rôle</dt><dd class="mt-1 font-medium">{d.role}</dd></div>
+          <div><dt class="text-muted">{c.client}</dt><dd class="mt-1 font-medium">{d.client}</dd></div>
+          <div><dt class="text-muted">{c.period}</dt><dd class="mt-1 font-medium">{d.period}</dd></div>
+          <div><dt class="text-muted">{c.role}</dt><dd class="mt-1 font-medium">{d.role}</dd></div>
         </dl>
         {d.keyFacts && (
           <ul class="mt-8 grid gap-3 sm:grid-cols-3">
@@ -60,10 +71,10 @@ const jsonLd = {
         )}
         </div>
         <div>
-          {shot && <BrowserFrame url={d.url} label={d.confidential ? 'application interne · confidentiel' : undefined} image={shot} alt={`Capture de ${d.client}`} />}
+          {shot && <BrowserFrame url={d.url} label={d.confidential ? t.common.internalAppConfidential : undefined} image={shot} alt={fmt(t.caseCard.screenshotAlt, { client: d.client })} />}
           {d.url && (
             <a href={d.url} target="_blank" rel="noopener" class="group mt-4 inline-flex items-center gap-1.5 text-sm font-bold text-accent-fg hover:underline" data-umami-event="case-visit">
-              Voir le site : {new URL(d.url).host}<span class="sr-only"> (nouvelle fenêtre)</span><ArrowUpRight class="size-4 transition group-hover:-translate-y-0.5 group-hover:translate-x-0.5" aria-hidden="true" />
+              {c.visit} {new URL(d.url).host}<span class="sr-only">{t.common.newWindow}</span><ArrowUpRight class="size-4 transition group-hover:-translate-y-0.5 group-hover:translate-x-0.5" aria-hidden="true" />
             </a>
           )}
         </div>
@@ -73,7 +84,7 @@ const jsonLd = {
     <div class="container-page grid gap-14 py-14 lg:grid-cols-[1fr_20rem]">
       <div class="min-w-0">
         <div class="rounded-2xl bg-surface-2 p-6">
-          <p class="text-xs font-bold uppercase tracking-[0.1em] text-muted">Le problème</p>
+          <p class="text-xs font-bold uppercase tracking-[0.1em] text-muted">{c.problem}</p>
           <p class="mt-2 leading-relaxed">{d.problem}</p>
         </div>
 
@@ -83,14 +94,14 @@ const jsonLd = {
 
         {d.testimonial && (
           <figure class="mt-12 border-l-4 border-accent pl-6">
-            <blockquote class="font-display text-xl leading-snug">« {d.testimonial.quote} »</blockquote>
+            <blockquote class="font-display text-xl leading-snug">{c.quoteOpen}{d.testimonial.quote}{c.quoteClose}</blockquote>
             <figcaption class="mt-3 text-sm text-muted">{d.testimonial.author}</figcaption>
           </figure>
         )}
 
         <details class="group mt-14 rounded-2xl border border-line bg-surface" data-umami-event="case-under-the-hood">
           <summary class="flex cursor-pointer list-none items-center justify-between gap-4 p-6 font-semibold [&::-webkit-details-marker]:hidden">
-            <span><span class="font-mono text-accent-fg" aria-hidden="true">&lt;/&gt;</span>&nbsp; Sous le capot <span class="font-normal text-muted">· pour les profils techniques</span></span>
+            <span><span class="font-mono text-accent-fg" aria-hidden="true">&lt;/&gt;</span>&nbsp; {c.underTheHood} <span class="font-normal text-muted">· {c.forTechnical}</span></span>
             <span class="text-muted transition group-open:rotate-45" aria-hidden="true">+</span>
           </summary>
           <div class="border-t border-line p-6">
@@ -110,17 +121,17 @@ const jsonLd = {
 
       <div class="lg:sticky lg:top-24 lg:self-start">
         <div class="rounded-card border border-line bg-surface p-6">
-          <p class="text-xs font-bold uppercase tracking-[0.1em] text-muted">Résultats</p>
+          <p class="text-xs font-bold uppercase tracking-[0.1em] text-muted">{c.results}</p>
           <ul class="mt-4 space-y-3 text-sm">
             {d.outcomes.map((o) => <li class="flex gap-2.5"><span class="text-ok-fg" aria-hidden="true">●</span>{o}</li>)}
           </ul>
         </div>
         <div class="mt-4 rounded-card bg-ink p-6 text-bg">
-          <p class="font-display text-lg font-semibold">Un besoin similaire ?</p>
-          <p class="mt-2 text-sm text-bg">Parlons-en : premier échange gratuit et sans engagement.</p>
-          <p class="mt-2 text-sm text-bg">Code et documentation transmis, points réguliers à chaque livraison.</p>
-          <a href={`/?projet=${d.kind === 'site' ? 'site' : 'outil'}#contact`} class="btn btn-primary mt-5 w-full" data-umami-event="cta-case">
-            Parler de mon projet
+          <p class="font-display text-lg font-semibold">{c.similarTitle}</p>
+          <p class="mt-2 text-sm text-bg">{c.similarText1}</p>
+          <p class="mt-2 text-sm text-bg">{c.similarText2}</p>
+          <a href={localePath(lang, `/?projet=${d.kind === 'site' ? 'site' : 'outil'}#contact`)} class="btn btn-primary mt-5 w-full" data-umami-event="cta-case">
+            {c.cta}
           </a>
         </div>
       </div>

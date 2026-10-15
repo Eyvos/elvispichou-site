@@ -3,6 +3,7 @@ import '../styles/global.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import { site } from '../config/site';
+import { useI18n, switchLocalePath, locales, localeMeta } from '../i18n';
 import loaderCss from '../styles/loader.css?raw';
 
 interface Props {
@@ -11,11 +12,17 @@ interface Props {
   /** JSON-LD supplémentaire propre à la page */
   jsonLd?: Record<string, unknown>;
   noindex?: boolean;
+  /** Publie les liens hreflang vers l'autre langue (désactivé pour la page 404). */
+  alternates?: boolean;
 }
 
-const { title, description = site.description, jsonLd, noindex = false } = Astro.props;
-const fullTitle = title ? `${title} · ${site.name}` : `${site.name} · ${site.role}`;
+const { lang, t } = useI18n(Astro.url);
+const { title, description = t.site.description, jsonLd, noindex = false, alternates = true } = Astro.props;
+const fullTitle = title ? `${title} · ${site.name}` : `${site.name} · ${t.site.role}`;
 const canonical = new URL(Astro.url.pathname, site.url).href;
+// Même page dans chaque langue : hreflang pour les moteurs de recherche (x-default = français).
+const alternateLinks = locales.map((l) => ({ hreflang: localeMeta[l].hreflang, href: new URL(switchLocalePath(Astro.url.pathname, l), site.url).href }));
+const otherLocales = locales.filter((l) => l !== lang);
 
 // Qui je suis et ce que je vends, pour les moteurs de recherche.
 const baseJsonLd = {
@@ -25,26 +32,23 @@ const baseJsonLd = {
       '@type': 'Person',
       '@id': `${site.url}/#person`,
       name: site.name,
-      jobTitle: site.role,
+      jobTitle: t.site.role,
       url: site.url,
       sameAs: Object.values(site.links).filter((l) => l?.startsWith('http')),
     },
     {
       '@type': 'ProfessionalService',
       '@id': `${site.url}/#service`,
-      name: `${site.name} · ${site.role}`,
+      name: `${site.name} · ${t.site.role}`,
       url: site.url,
-      description: site.description,
+      description: t.site.description,
       founder: { '@id': `${site.url}/#person` },
-      areaServed: { '@type': 'Country', name: 'France' },
+      areaServed: { '@type': 'Country', name: t.site.areaServed },
       knowsLanguage: ['fr', 'en'],
       hasOfferCatalog: {
         '@type': 'OfferCatalog',
-        name: 'Services',
-        itemListElement: [
-          { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Création de sites vitrines' } },
-          { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Outils web et applications métier sur mesure' } },
-        ],
+        name: t.site.offerCatalog,
+        itemListElement: t.site.services.map((name) => ({ '@type': 'Offer', itemOffered: { '@type': 'Service', name } })),
       },
     },
   ],
@@ -55,13 +59,15 @@ const umamiSrc = import.meta.env.PUBLIC_UMAMI_SRC ?? 'https://cloud.umami.is/scr
 ---
 
 <!doctype html>
-<html lang="fr" data-theme="dark">
+<html lang={lang} data-theme="dark">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
+    {alternates && alternateLinks.map((a) => <link rel="alternate" hreflang={a.hreflang} href={a.href} />)}
+    {alternates && <link rel="alternate" hreflang="x-default" href={alternateLinks[0].href} />}
     {noindex && <meta name="robots" content="noindex" />}
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="sitemap" href="/sitemap-index.xml" />
@@ -106,7 +112,8 @@ const umamiSrc = import.meta.env.PUBLIC_UMAMI_SRC ?? 'https://cloud.umami.is/scr
     </script>
 
     <meta property="og:type" content="website" />
-    <meta property="og:locale" content="fr_FR" />
+    <meta property="og:locale" content={localeMeta[lang].og} />
+    {otherLocales.map((l) => <meta property="og:locale:alternate" content={localeMeta[l].og} />)}
     <meta property="og:site_name" content={site.name} />
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
@@ -122,7 +129,7 @@ const umamiSrc = import.meta.env.PUBLIC_UMAMI_SRC ?? 'https://cloud.umami.is/scr
     <div class="loader" aria-hidden="true" data-loader>
       <div class="loader-panel">
         <p class="loader-brand">Elvis Pichou<span>.</span></p>
-        <p class="loader-tagline">Un créatif au service de votre entreprise</p>
+        <p class="loader-tagline">{t.loader.tagline}</p>
         <div class="loader-stage" aria-hidden="true">
           <div class="loader-bounce">
             <svg class="loader-die" viewBox="0 0 120 120" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round">
@@ -134,12 +141,12 @@ const umamiSrc = import.meta.env.PUBLIC_UMAMI_SRC ?? 'https://cloud.umami.is/scr
           </div>
           <div class="loader-shadow"></div>
         </div>
-        <p class="loader-rule"><span>Seul un succès au dé permettra l'affichage du site.</span></p>
+        <p class="loader-rule"><span>{t.loader.rule}</span></p>
         <span class="loader-bar" aria-hidden="true"></span>
       </div>
     </div>
     <a href="#contenu" class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 btn btn-primary">
-      Aller au contenu
+      {t.common.skipToContent}
     </a>
     <Header />
     <main id="contenu" tabindex="-1" class="flex-1 focus:outline-none">

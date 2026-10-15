@@ -1,47 +1,57 @@
 ---
-import { Menu, X, ArrowRight } from '@lucide/astro';
+import { Menu, X, ArrowRight, Languages, Check } from '@lucide/astro';
 import { site, nav, navProfile } from '../config/site';
+import { useI18n, localePath, stripLocale, switchLocalePath, fmt, locales, localeMeta } from '../i18n';
 
-const onProfile = Astro.url.pathname.replace(/\/$/, '') === navProfile.href;
+const { lang, t } = useI18n(Astro.url);
+const h = t.header;
+const onProfile = stripLocale(Astro.url.pathname).replace(/\/$/, '') === navProfile.href;
+// Une entrée par langue (la langue courante est marquée) : même page, autre langue.
+const langOptions = locales.map((l) => ({ code: l, ...localeMeta[l], href: switchLocalePath(Astro.url.pathname, l), current: l === lang }));
+const home = localePath(lang, '/');
 ---
 
 <header class="sticky top-0 z-40 border-b border-line bg-bg/95 backdrop-blur transition-shadow data-[scrolled]:shadow-[0_8px_24px_-16px_rgb(0_0_0/0.6)]" data-header>
   <div class="container-page flex h-16 items-center justify-between gap-3">
     <!-- Marque -->
-    <a href="/" class="flex shrink-0 items-center gap-2 font-display text-base font-semibold tracking-tight" aria-label={`${site.name}, accueil`}>
+    <a href={home} class="flex shrink-0 items-center gap-2 font-display text-base font-semibold tracking-tight" aria-label={fmt(h.brandLabel, { name: site.name })}>
       <span>Elvis Pichou<span class="text-accent-fg">.</span></span>
     </a>
 
     <!-- Menu principal (≥ 1024 px) : entrées à plat, section visible soulignée (D-28) -->
-    <nav aria-label="Navigation principale" class="hidden lg:block">
+    <nav aria-label={h.navMain} class="hidden lg:block">
       <ul class="flex items-center gap-1">
         {nav.map((item) => (
           <li>
-            <a href={item.href} data-nav-link class="nav-link">
-              {item.label}
+            <a href={localePath(lang, item.href)} data-nav-link class="nav-link">
+              {h.nav[item.key]}
             </a>
           </li>
         ))}
         <li aria-hidden="true" class="mx-2 h-4 w-px bg-line-strong"></li>
         <li>
           <a
-            href={navProfile.href}
+            href={localePath(lang, navProfile.href)}
             aria-current={onProfile ? 'page' : undefined}
             class="nav-link"
             data-umami-event="profil-nav"
           >
-            {navProfile.label}
+            {t.common.technicalProfile}
           </a>
         </li>
       </ul>
     </nav>
 
     <div class="flex items-center gap-2 sm:gap-3">
+      <!-- Thème et langue : deux boutons-icônes collés l'un à l'autre -->
+      <div class="flex items-center">
       <button
         type="button"
         data-theme-toggle
-        class="grid size-10 place-items-center rounded-full border border-line-strong text-ink transition duration-300 hover:-rotate-12 hover:scale-105 hover:border-ink active:scale-95"
-        aria-label="Passer en thème clair"
+        class="grid size-10 place-items-center rounded-full text-ink transition duration-300 hover:-rotate-12 hover:scale-105 hover:bg-surface active:scale-95"
+        aria-label={h.themeToLight}
+        data-label-to-light={h.themeToLight}
+        data-label-to-dark={h.themeToDark}
       >
         <svg data-icon-sun class="hidden size-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
           <circle cx="12" cy="12" r="4" /><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" />
@@ -51,15 +61,54 @@ const onProfile = Astro.url.pathname.replace(/\/$/, '') === navProfile.href;
         </svg>
       </button>
 
-      <a href="/#contact" class="btn btn-primary !px-4 !py-2.5" data-umami-event="cta-header">
-        <span class="xl:hidden">Contact</span><span class="hidden xl:inline">Parler de mon projet</span>
+      <!-- Sélecteur de langue : bouton rond (icône de traduction 文A) qui ouvre la liste des langues -->
+      <div class="relative hidden sm:block" data-lang-menu>
+        <button
+          type="button"
+          data-lang-toggle
+          aria-haspopup="true"
+          aria-expanded="false"
+          aria-controls="lang-list"
+          aria-label={h.languageMenu}
+          title={h.languageMenu}
+          class="lang-btn grid size-10 place-items-center rounded-full text-ink transition duration-300 hover:bg-surface aria-expanded:bg-surface"
+          data-umami-event="lang-menu"
+        >
+          <Languages class="lang-icon size-5" aria-hidden="true" />
+        </button>
+        <ul id="lang-list" hidden class="absolute right-0 top-full z-50 mt-2 w-44 rounded-2xl border border-line-strong bg-bg p-1.5 shadow-[0_16px_32px_-16px_rgb(0_0_0/0.6)]">
+          {langOptions.map((o) => (
+            <li>
+              <a
+                href={o.href}
+                lang={o.code}
+                hreflang={o.code}
+                data-lang-switch
+                aria-current={o.current ? 'true' : undefined}
+                class="flex items-center justify-between gap-3 rounded-xl px-3.5 py-2.5 text-sm font-semibold transition hover:bg-surface aria-[current=true]:text-accent-fg"
+                data-umami-event="lang-switch"
+                data-umami-event-lang={o.code}
+              >
+                <span>{o.label}</span>
+                {o.current && <Check class="size-4" aria-hidden="true" />}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+      </div>
+
+      <a href={localePath(lang, '/#contact')} class="btn btn-primary !px-4 !py-2.5" data-umami-event="cta-header">
+        <span class="xl:hidden">{h.ctaShort}</span><span class="hidden xl:inline">{h.ctaLong}</span>
       </a>
 
       <button
         type="button"
         data-menu-toggle
         class="grid size-10 place-items-center rounded-full border border-line-strong text-ink transition duration-300 hover:scale-105 hover:border-ink active:scale-95 lg:hidden"
-        aria-label="Ouvrir le menu"
+        aria-label={h.menuOpen}
+        data-label-open={h.menuOpen}
+        data-label-close={h.menuClose}
         aria-expanded="false"
         aria-controls="mobile-menu"
       >
@@ -71,33 +120,49 @@ const onProfile = Astro.url.pathname.replace(/\/$/, '') === navProfile.href;
 
   <!-- Menu mobile (< 1024 px) : panneau plein écran sous l'en-tête, mêmes entrées que le menu principal -->
   <div id="mobile-menu" hidden class="absolute inset-x-0 top-full h-[calc(100dvh-4rem)] overflow-y-auto overscroll-contain border-t border-line bg-bg lg:hidden">
-    <nav aria-label="Navigation mobile" class="container-page flex min-h-full flex-col py-6">
+    <nav aria-label={h.navMobile} class="container-page flex min-h-full flex-col py-6">
       <ul class="divide-y divide-line">
         {nav.map((item, i) => (
           <li>
-            <a href={item.href} data-nav-link data-mobile-link class="group flex items-center gap-4 py-4 font-heading text-xl font-semibold aria-[current=true]:text-accent-fg">
+            <a href={localePath(lang, item.href)} data-nav-link data-mobile-link class="group flex items-center gap-4 py-4 font-heading text-xl font-semibold aria-[current=true]:text-accent-fg">
               <span aria-hidden="true" class="w-6 text-sm font-bold text-muted group-aria-[current=true]:text-accent-fg">{String(i + 1).padStart(2, '0')}</span>
-              <span class="flex-1">{item.label}</span>
+              <span class="flex-1">{h.nav[item.key]}</span>
               <ArrowRight class="size-5 text-muted" aria-hidden="true" />
             </a>
           </li>
         ))}
         <li>
           <a
-            href={navProfile.href}
+            href={localePath(lang, navProfile.href)}
             data-mobile-link
             aria-current={onProfile ? 'page' : undefined}
             class="flex items-center gap-4 py-4 text-base font-semibold text-muted aria-[current=page]:text-ink"
           >
             <span class="w-6" aria-hidden="true"></span>
-            <span class="flex-1">{navProfile.label}</span>
+            <span class="flex-1">{t.common.technicalProfile}</span>
             <ArrowRight class="size-5" aria-hidden="true" />
           </a>
         </li>
       </ul>
 
       <div class="mt-auto flex flex-col gap-4 pt-8">
-        <a href="/#contact" data-mobile-link class="btn btn-primary w-full" data-umami-event="cta-header-mobile">Parler de mon projet</a>
+        <div role="group" aria-label={h.languageMenu} class="flex items-center gap-2 rounded-full border border-line-strong p-1.5">
+          <Languages class="ml-3 size-5 shrink-0 text-muted" aria-hidden="true" />
+          {langOptions.map((o) => (
+            <a
+              href={o.href}
+              lang={o.code}
+              hreflang={o.code}
+              data-lang-switch
+              data-mobile-link
+              aria-current={o.current ? 'true' : undefined}
+              class="flex-1 rounded-full px-4 py-2.5 text-center text-base font-semibold aria-[current=true]:bg-accent aria-[current=true]:text-accent-ink"
+              data-umami-event="lang-switch"
+              data-umami-event-lang={o.code}
+            >{o.label}</a>
+          ))}
+        </div>
+        <a href={localePath(lang, '/#contact')} data-mobile-link class="btn btn-primary w-full" data-umami-event="cta-header-mobile">{h.ctaLong}</a>
       </div>
     </nav>
   </div>
@@ -139,9 +204,33 @@ const onProfile = Astro.url.pathname.replace(/\/$/, '') === navProfile.href;
   .nav-link[aria-current='page']::after {
     transform: scaleX(1);
   }
+  /* Icône de langue : petit balancement au survol. */
+  .lang-btn:hover .lang-icon {
+    animation: lang-wiggle 0.6s ease-in-out;
+  }
+  @keyframes lang-wiggle {
+    0% { transform: rotate(0) scale(1); }
+    25% { transform: rotate(-14deg) scale(1.15); }
+    55% { transform: rotate(10deg) scale(1.15); }
+    80% { transform: rotate(-4deg) scale(1.05); }
+    100% { transform: rotate(0) scale(1); }
+  }
+  /* Liste des langues : apparition douce depuis le bouton (pas de saut). */
+  #lang-list:not([hidden]) {
+    transform-origin: top right;
+    animation: lang-in 0.16s ease-out;
+  }
+  @keyframes lang-in {
+    from { opacity: 0; transform: translateY(-6px) scale(0.97); }
+    to { opacity: 1; transform: none; }
+  }
   @media (prefers-reduced-motion: reduce) {
     .nav-link::after {
       transition: none;
+    }
+    #lang-list:not([hidden]),
+    .lang-btn:hover .lang-icon {
+      animation: none;
     }
   }
 </style>
@@ -163,7 +252,7 @@ const onProfile = Astro.url.pathname.replace(/\/$/, '') === navProfile.href;
     const light = root.dataset.theme === 'light';
     sun.classList.toggle('hidden', light);
     moon.classList.toggle('hidden', !light);
-    toggle.setAttribute('aria-label', light ? 'Passer en thème sombre' : 'Passer en thème clair');
+    toggle.setAttribute('aria-label', (light ? toggle.dataset.labelToDark : toggle.dataset.labelToLight) ?? '');
     document.querySelector('meta[name="theme-color"]')?.setAttribute('content', light ? '#f3f0e8' : '#0f1016');
   }
   toggle.addEventListener('click', () => {
@@ -184,7 +273,7 @@ const onProfile = Astro.url.pathname.replace(/\/$/, '') === navProfile.href;
   function setMenu(open: boolean, returnFocus = false) {
     menu.hidden = !open;
     burger.setAttribute('aria-expanded', String(open));
-    burger.setAttribute('aria-label', open ? 'Fermer le menu' : 'Ouvrir le menu');
+    burger.setAttribute('aria-label', (open ? burger.dataset.labelClose : burger.dataset.labelOpen) ?? '');
     iconOpen.classList.toggle('hidden', open);
     iconClose.classList.toggle('hidden', !open);
     root.style.overflow = open ? 'hidden' : '';
@@ -215,7 +304,34 @@ const onProfile = Astro.url.pathname.replace(/\/$/, '') === navProfile.href;
     .map((a) => document.getElementById(hashOf(a)))
     .filter((el): el is HTMLElement => !!el);
 
-  if (targets.length && location.pathname === '/') {
+  // ── Sélecteur de langue : liste ouverte au clic, fermée par Échap, clic ailleurs ou choix ──
+  const langMenu = document.querySelector<HTMLElement>('[data-lang-menu]');
+  if (langMenu) {
+    const langBtn = langMenu.querySelector<HTMLButtonElement>('[data-lang-toggle]')!;
+    const langList = langMenu.querySelector<HTMLElement>('#lang-list')!;
+    const setLang = (open: boolean, returnFocus = false) => {
+      langList.hidden = !open;
+      langBtn.setAttribute('aria-expanded', String(open));
+      if (!open && returnFocus) langBtn.focus();
+    };
+    // Au clavier (détail 0), le focus va sur la langue courante ; à la souris, rien ne bouge.
+    langBtn.addEventListener('click', (e) => {
+      const open = langList.hidden !== false;
+      setLang(open);
+      if (open && e.detail === 0) langList.querySelector<HTMLElement>('a[aria-current]')?.focus();
+    });
+    document.addEventListener('click', (e) => { if (!langList.hidden && !langMenu.contains(e.target as Node)) setLang(false); });
+    langMenu.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !langList.hidden) setLang(false, true); });
+    langList.addEventListener('focusout', (e) => { if (!langMenu.contains(e.relatedTarget as Node | null)) setLang(false); });
+  }
+
+  // ── Changement de langue : on garde la section et les paramètres de la page courante ──
+  document.querySelectorAll<HTMLAnchorElement>('[data-lang-switch]').forEach((a) => {
+    const base = a.getAttribute('href')!;
+    a.addEventListener('click', () => { a.href = base + location.search + location.hash; });
+  });
+
+  if (targets.length && /^\/(en\/?)?$/.test(location.pathname)) {
     const visible = new Map<string, number>();
     const mark = (current?: string) =>
       links.forEach((a) => (current && hashOf(a) === current ? a.setAttribute('aria-current', 'true') : a.removeAttribute('aria-current')));
