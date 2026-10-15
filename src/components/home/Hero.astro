@@ -40,7 +40,7 @@ const offers = [
             {photo ? (
               <Image src={photo} alt="Elvis Pichou, développeur web freelance" widths={[270, 540]} sizes="(min-width: 1024px) 270px, 80px" loading="eager" fetchpriority="high" class="size-full object-cover object-[50%_20%]" />
             ) : (
-              // Sans photo : monogramme (comme « Qui je suis »). En développement, rappel du fichier attendu.
+              // Sans photo : monogramme (comme sur /profil). En développement, rappel du fichier attendu.
               <div class="grid size-full place-items-center">
                 <span class="font-display text-2xl font-semibold text-accent-fg lg:text-5xl" aria-hidden="true">EP</span>
                 {import.meta.env.DEV && (

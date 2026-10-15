@@ -1,44 +1,83 @@
 ---
 import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+import { MapPin } from '@lucide/astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { site } from '../config/site';
+import { getPhoto } from '../lib/assets';
+import { icons, viewBoxes } from '../lib/social-icons';
+
+const photo = getPhoto();
 
 const stack = [
-  { group: 'Frontend', items: ['TypeScript', 'React', 'Next.js', 'Astro', 'Tailwind CSS', 'Redux'] },
-  { group: 'Backend', items: ['Node.js', 'NestJS', 'API REST', 'Socket.IO', 'Symfony (reprise)'] },
+  { group: 'Frontend', items: ['TypeScript', 'React', 'Next.js', 'Astro', 'Tailwind CSS'] },
+  { group: 'Backend', items: ['Node.js', 'NestJS', 'Symfony', 'API REST', 'Socket.IO'] },
   { group: 'Données', items: ['PostgreSQL', 'MongoDB', 'Redis'] },
-  { group: 'Infra & qualité', items: ['Docker', 'GitHub Actions', 'GitLab CI', 'Traefik', 'Grafana', 'Tests unitaires'] },
-  { group: 'Intégrations', items: ['Stripe', 'Keycloak', 'JWT', 'Géolocalisation', 'Webhooks'] },
+  { group: 'Infra & qualité', items: ['Docker', 'GitHub Actions', 'GitLab CI', 'Traefik', 'Grafana', 'Linux', 'Tests unitaires'] },
+  { group: 'Intégrations', items: ['Stripe', 'Keycloak', 'Webhooks', 'Géolocalisation', 'FullCalendar'] },
 ];
 
+/**
+ * `skills` doit reprendre les libellés de `stack` : un clic sur une expérience met ces puces en évidence.
+ * Chariot, Trik3r, Gendarmerie : piles des études de cas (bloc « Sous le capot »).
+ * Lortal : WordPress existant, hors de la stack, donc aucune compétence mise en évidence.
+ */
 const experiences = [
   {
+    id: 'chariot',
     period: '2025 → aujourd’hui',
     title: 'Cofondateur & développeur full-stack',
     org: 'Chariot (SaaS)',
-    slug: 'chariot',
     text: 'Architecture microservices NestJS, temps réel Socket.IO, multi-bases MongoDB/PostgreSQL, Keycloak, Stripe, CI/CD complète jusqu’au déploiement automatisé.',
+    skills: ['TypeScript', 'React', 'Next.js', 'NestJS', 'Node.js', 'API REST', 'MongoDB', 'PostgreSQL', 'Redis', 'Socket.IO', 'Keycloak', 'Stripe', 'Webhooks', 'Docker', 'Traefik', 'Grafana', 'GitHub Actions', 'Tests unitaires'],
   },
   {
+    id: 'gendarmerie',
     period: '2022 → 2026',
     title: 'Développeur full-stack',
     org: 'Gendarmerie nationale',
-    slug: 'gendarmerie',
     text: 'Application nationale et applications régionales (200 à 2 000 utilisateurs). Recueil du besoin, Next.js/NestJS/PostgreSQL, migration de monolithes Symfony, boilerplate commun, formation des alternants.',
+    skills: ['React', 'Next.js', 'NestJS', 'Node.js', 'Symfony', 'PostgreSQL', 'Tailwind CSS', 'Docker', 'GitLab CI', 'Linux', 'API REST', 'Géolocalisation', 'FullCalendar', 'Tests unitaires'],
   },
   {
+    id: 'trik3r',
     period: '2024 · 6 mois',
-    title: 'Développeur unique, mission freelance',
+    title: 'Développeur, mission freelance',
     org: 'Trik3r Collecte',
-    slug: 'trik3r',
     text: 'Plateforme complète from scratch : commande, réservation, moteur de tarification, Stripe, back-office avec rôles et permissions. En production.',
+    skills: ['TypeScript', 'React', 'Next.js', 'NestJS', 'Node.js', 'Tailwind CSS', 'API REST', 'MongoDB', 'Stripe', 'Webhooks', 'Géolocalisation', 'Docker', 'Tests unitaires'],
+  },
+  {
+    id: 'lortal',
+    period: '2026 · mission freelance',
+    title: 'Contenu et référencement d’un site WordPress',
+    org: 'Stéphanie Lortal, sophrologue',
+    text: 'Ajout de contenu et amélioration du référencement (SEO) sur un site WordPress existant, hors de ma stack habituelle.',
+    skills: [] as string[],
+    url: 'https://sophrologue-lortal.fr',
+  },
+  {
+    id: 'ingrid',
+    period: '2024 · mission freelance',
+    title: 'Conception et développement du site',
+    org: 'Ingrid Médium',
+    text: 'Site 100 % Next.js, Tailwind CSS et PostgreSQL, avec un vrai back-office pour gérer ses prestations et ses événements promotionnels.',
+    skills: ['React', 'Next.js', 'Tailwind CSS', 'PostgreSQL'],
+    url: 'https://ingrid-medium.fr',
   },
 ];
 
 const education = [
-  { year: '2026', title: 'Master Expert en développement logiciel (RNCP 7)', school: 'Ynov Toulouse' },
-  { year: '2024', title: 'Bachelor Développement', school: 'Ynov Toulouse' },
+  { years: '2021 – 2023', title: 'DUT Informatique', school: 'IUT de Blagnac' },
+  { years: '2023 – 2024', title: 'Bachelor Développement', school: 'Toulouse Ynov Campus' },
+  { years: '2024 – 2026', title: 'Master Expert en développement logiciel (RNCP niveau 7)', school: 'Toulouse Ynov Campus' },
 ];
+
+const socials = [
+  { label: 'Malt', href: site.links.malt },
+  { label: 'LinkedIn', href: site.links.linkedin },
+  { label: 'GitHub', href: site.links.github },
+].filter((l): l is { label: string; href: string } => Boolean(l.href));
 
 const cases = await getCollection('realisations');
 const caseIds = new Set(cases.map((c) => c.id));
@@ -48,67 +87,125 @@ const caseIds = new Set(cases.map((c) => c.id));
   title="Profil technique"
   description="Développeur full-stack TypeScript freelance : React, Next.js, Node.js, NestJS. Conception d'applications métier et de SaaS, du besoin à la production. Missions en remote."
 >
+  {/* 1 · Global */}
   <section class="border-b border-line">
-    <div class="container-page py-16 sm:py-20">
-      <p class="eyebrow">Profil technique</p>
-      <h1 class="mt-3 max-w-3xl text-3xl font-medium leading-tight sm:text-4xl">
-        Développeur full-stack TypeScript, du besoin métier à la production.
-      </h1>
-      <p class="mt-6 max-w-2xl text-lg leading-relaxed text-muted">
-        Depuis 2021, je conçois des applications web complètes : compréhension du métier, conception fonctionnelle,
-        architecture, développement, tests, déploiement et maintenance. React / Next.js côté front,
-        Node.js / NestJS côté back.
-      </p>
-      <ul class="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-sm">
-        <li class="flex items-center gap-2"><span class="size-2 rounded-full bg-ok"></span>{site.availability}</li>
-        <li class="text-muted">Remote · basé à Toulouse</li>
-        <li class="text-muted">Français natif · anglais professionnel</li>
-      </ul>
-      <div class="mt-9 flex flex-wrap gap-3">
-        <a href="/#contact" class="btn btn-primary" data-umami-event="profil-contact">Me proposer une mission</a>
-        {site.links.cv && <a href={site.links.cv} class="btn btn-ghost" download data-umami-event="cv-download">Télécharger le CV (PDF)</a>}
-        <a href={site.links.malt} class="btn btn-ghost" target="_blank" rel="noopener me">Profil Malt<span class="sr-only"> (nouvelle fenêtre)</span></a>
-        {site.links.linkedin && <a href={site.links.linkedin} class="btn btn-ghost" target="_blank" rel="noopener me">LinkedIn<span class="sr-only"> (nouvelle fenêtre)</span></a>}
-        {site.links.github && <a href={site.links.github} class="btn btn-ghost" target="_blank" rel="noopener me">GitHub<span class="sr-only"> (nouvelle fenêtre)</span></a>}
+    <div class="container-page grid gap-8 py-12 sm:py-16 lg:grid-cols-[minmax(0,1fr)_auto] lg:gap-14 lg:py-20">
+      <div class="flex w-fit flex-col items-center gap-5 lg:col-start-2 lg:row-start-1">
+        <div class="relative aspect-[4/5] w-28 overflow-hidden rounded-2xl border border-line bg-surface-2 sm:w-[9.5rem] lg:w-72 lg:rounded-card">
+          {photo ? (
+            <Image src={photo} alt="Elvis Pichou, développeur full-stack freelance" widths={[288, 576]} sizes="(min-width: 1024px) 288px, 152px" loading="eager" fetchpriority="high" class="size-full object-cover object-[50%_20%]" />
+          ) : (
+            <div class="grid size-full place-items-center"><span class="font-display text-4xl font-semibold text-accent-fg" aria-hidden="true">EP</span></div>
+          )}
+        </div>
+                  <p class="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-sm font-semibold">
+            {site.links.cv && <a href={site.links.cv} class="underline decoration-line-strong underline-offset-4 hover:decoration-ink" download data-umami-event="cv-download">CV (PDF)</a>}
+            {socials.map((l) => (
+              <a href={l.href} class="inline-flex items-center gap-2 underline decoration-line-strong underline-offset-4 hover:decoration-ink" target="_blank" rel="noopener me">
+                <svg class="size-4 shrink-0" viewBox={viewBoxes[l.label] ?? '0 0 24 24'} aria-hidden="true" set:html={icons[l.label]} />{l.label}<span class="sr-only"> (nouvelle fenêtre)</span>
+              </a>
+            ))}
+          </p>
+      </div>
+
+      <div class="lg:col-start-1 lg:row-start-1">
+        <p class="eyebrow">Profil technique</p>
+        <h1 class="mt-3 max-w-3xl text-3xl font-medium leading-tight sm:text-4xl">
+          Développeur full-stack TypeScript, du besoin métier à la production.
+        </h1>
+        <p class="mt-6 max-w-2xl text-lg leading-relaxed text-muted">
+          Depuis 2021, je conçois des applications web complètes : compréhension du métier, conception fonctionnelle,
+          architecture, développement, tests, déploiement et maintenance.
+        </p>
+
+        <dl class="mt-8 grid max-w-xl grid-cols-3 gap-4">
+          <div><dt class="text-sm text-muted">Développeur</dt><dd class="mt-1 font-heading text-xl font-semibold sm:text-2xl">Depuis 2021</dd></div>
+          <div><dt class="text-sm text-muted">Gendarmerie nationale</dt><dd class="mt-1 font-heading text-xl font-semibold sm:text-2xl">4 ans</dd></div>
+          <div><dt class="text-sm text-muted">Utilisateurs en production</dt><dd class="mt-1 font-heading text-xl font-semibold sm:text-2xl">2 000+</dd></div>
+        </dl>
+
+        <ul class="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-sm">
+          <li class="flex items-center gap-1.5 text-muted"><MapPin class="size-4" aria-hidden="true" />Remote · basé à Toulouse</li>
+          <li class="text-muted">Français natif · anglais professionnel</li>
+        </ul>
+
+        <div class="mt-9">
+          <a href="/#contact" class="btn btn-primary" data-umami-event="profil-contact">Me proposer une mission</a>
+
+        </div>
       </div>
     </div>
   </section>
 
-  <section class="container-page grid gap-14 py-16 lg:grid-cols-[1fr_1.4fr]">
-    <div>
-      <h2 class="text-2xl font-semibold">Stack</h2>
-      <div class="mt-6 space-y-6">
-        {stack.map((s) => (
-          <div>
-            <p class="text-xs font-bold uppercase tracking-[0.1em] text-muted">{s.group}</p>
-            <ul class="mt-2 flex flex-wrap gap-2">
-              {s.items.map((i) => <li class="rounded-md border border-line bg-surface px-2.5 py-1 font-mono text-[13px]">{i}</li>)}
-            </ul>
-          </div>
-        ))}
+  {/* 2 · Corps : expériences à gauche (un clic allume leurs compétences dans la stack), stack à droite */}
+  <section class="container-page py-20">
+    <div class="grid gap-16 lg:grid-cols-[minmax(0,1.9fr)_minmax(0,1fr)] lg:items-start lg:gap-16">
+      <div id="experiences">
+        <h2 class="text-2xl font-semibold">Expériences</h2>
+        <p class="mt-3 max-w-xl text-muted">Cliquez sur une expérience : les compétences utilisées s’allument dans la stack.</p>
+
+        <ol class="xp-line relative mt-12 space-y-10 pl-6 lg:grid lg:grid-cols-2 lg:space-y-0 lg:pl-0">
+          {experiences.map((e, i) => {
+            const host = e.url?.replace('https://', '');
+            return (
+              <li
+                data-xp={e.id}
+                data-skills={JSON.stringify(e.skills)}
+                class:list={[
+                  'relative lg:row-span-2 lg:[grid-row-start:var(--r)] lg:pb-8',
+                  i % 2 === 0 ? 'lg:col-start-1 lg:pr-7' : 'lg:col-start-2 lg:pl-7',
+                ]}
+                style={`--r:${i + 1}`}
+              >
+                <span class:list={['xp-conn', i % 2 === 0 ? 'xp-side-l' : 'xp-side-r']} aria-hidden="true"></span>
+                <span class:list={['xp-dot', i % 2 === 0 ? 'xp-side-l' : 'xp-side-r']} aria-hidden="true"></span>
+                <div class="xp-card rounded-card border border-line bg-surface [[data-open]>&]:border-accent [[data-open]>&]:bg-accent-soft">
+                  <button type="button" data-xp-toggle aria-pressed="false" class="block w-full rounded-card p-6 text-left">
+                    <span class="block text-[13px] font-semibold text-muted">{e.period}</span>
+                    <span class="mt-1.5 block font-heading text-lg leading-snug font-semibold">{e.title}</span>
+                    <span class="mt-0.5 block font-semibold text-accent-fg">{e.org}</span>
+                    <span class="mt-3 block text-sm leading-relaxed text-muted">{e.text}</span>
+                  </button>
+                  {(caseIds.has(e.id) || e.url) && (
+                    <p class="flex flex-wrap gap-x-5 gap-y-1 px-6 pb-6 text-sm font-medium">
+                      {caseIds.has(e.id) && <a href={`/realisations/${e.id}`} class="text-accent-fg">Étude de cas détaillée →</a>}
+                      {e.url && <a href={e.url} class="font-mono text-[13px] text-accent-fg" target="_blank" rel="noopener">{host}<span class="sr-only"> (nouvelle fenêtre)</span></a>}
+                    </p>
+                  )}
+                </div>
+              </li>
+            );
+          })}
+        </ol>
+      </div>
+
+      <div id="stack">
+        <h2 class="text-2xl font-semibold">Stack</h2>
+        <div class="mt-8 space-y-7">
+          {stack.map((s) => (
+            <div>
+              <p class="text-xs font-bold uppercase tracking-[0.1em] text-muted">{s.group}</p>
+              <ul class="mt-3 flex flex-wrap gap-2.5">
+                {s.items.map((i) => <li data-skill={i} class="skill rounded-md border border-line-strong bg-surface px-2.5 py-1 font-mono text-[13px] transition-colors">{i}</li>)}
+              </ul>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
+  </section>
 
-    <div>
-      <h2 class="text-2xl font-semibold">Expériences</h2>
-      <ol class="mt-6 space-y-8 border-l border-line pl-6">
-        {experiences.map((e) => (
-          <li class="relative">
-            <span class="absolute top-1.5 -left-[1.9rem] size-3 rounded-full border-2 border-accent bg-bg"></span>
-            <p class="text-[13px] font-semibold text-muted">{e.period}</p>
-            <h3 class="mt-1 text-lg font-semibold">{e.title} · <span class="text-muted">{e.org}</span></h3>
-            <p class="mt-2 text-sm leading-relaxed text-muted">{e.text}</p>
-            {caseIds.has(e.slug) && (
-              <a href={`/realisations/${e.slug}`} class="mt-2 inline-block text-sm font-medium text-accent-fg">Étude de cas détaillée →</a>
-            )}
-          </li>
-        ))}
-      </ol>
-
-      <h2 class="mt-14 text-2xl font-semibold">Formation</h2>
-      <ul class="mt-6 space-y-3 text-sm">
+  {/* 3 · Formation, à l'horizontale sous les deux colonnes */}
+  <section id="formation" class="border-t border-line">
+    <div class="container-page py-16">
+      <h2 class="text-2xl font-semibold">Formation</h2>
+      <ul class="mt-8 grid gap-y-6 md:grid-cols-3">
         {education.map((e) => (
-          <li class="flex gap-4"><span class="font-semibold text-muted">{e.year}</span><span><strong>{e.title}</strong> · {e.school}</span></li>
+          <li class="border-l-2 border-line-strong pl-5 md:pl-8 md:first:border-l-0 md:first:pl-0">
+            <p class="text-[13px] font-semibold text-muted">{e.years}</p>
+            <p class="mt-1.5 font-heading text-lg leading-snug font-semibold">{e.title}</p>
+            <p class="mt-0.5 font-semibold text-accent-fg">{e.school}</p>
+          </li>
         ))}
       </ul>
     </div>
@@ -137,4 +234,71 @@ const caseIds = new Set(cases.map((c) => c.id));
       </div>
     </div>
   </section>
+
 </BaseLayout>
+
+<style is:global>
+  .skill[data-on] {
+    background: var(--c-accent);
+    border-color: var(--c-accent);
+    color: var(--c-accent-ink);
+    font-weight: 700;
+  }
+  /* Cartes d'expérience : elles se soulèvent et s'éclairent au survol pour montrer qu'elles sont cliquables. */
+  .xp-card { transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s, border-color 0.25s, background-color 0.25s; }
+  @media (hover: hover) {
+    .xp-card:hover { transform: translateY(-5px); border-color: var(--c-accent); box-shadow: 0 20px 36px -22px var(--c-accent); }
+  }
+
+  /* Frise : une ligne de 2 px centrée sur l'axe, des anneaux de 14 px centrés dessus, un trait de liaison vers chaque carte.
+     Mobile : axe à gauche. Bureau : axe au milieu, cartes en quinconce. Tous les centres tombent sur l'axe (à 0 px près). */
+  .xp-line::before { content: ''; position: absolute; top: 0; bottom: 0; left: 0; width: 2px; translate: -50% 0; background: var(--c-line); }
+  .xp-dot, .xp-conn { position: absolute; top: 2.125rem; }
+  .xp-dot {
+    left: -1.5rem; z-index: 1; box-sizing: border-box; width: 14px; height: 14px; border-radius: 50%;
+    border: 2px solid var(--c-accent-fg); background: var(--c-bg); translate: -50% -50%;
+    transition: scale 0.3s, background-color 0.3s, border-color 0.3s;
+  }
+  .xp-conn { left: -1.5rem; width: 1.5rem; height: 2px; translate: 0 -50%; background: var(--c-line); }
+  .xp-conn::after { content: ''; position: absolute; inset: 0; background: var(--c-accent-fg); transform: scaleX(0); transform-origin: left; transition: transform 0.4s ease-out; }
+  [data-xp]:hover .xp-dot { scale: 1.2; }
+  [data-xp]:hover .xp-conn::after { transform: scaleX(1); }
+  [data-xp][data-open] .xp-dot { scale: 1.2; background: var(--c-accent-fg); animation: xp-pulse 1.8s ease-out infinite; }
+  [data-xp][data-open] .xp-conn::after { transform: scaleX(1); }
+  @keyframes xp-pulse {
+    0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--c-accent-fg) 55%, transparent); }
+    100% { box-shadow: 0 0 0 10px transparent; }
+  }
+  @media (min-width: 1024px) {
+    .xp-line::before { left: 50%; }
+    .xp-conn { width: 1.75rem; }
+    .xp-side-l.xp-dot { left: 100%; }
+    .xp-side-r.xp-dot { left: 0; }
+    .xp-side-l.xp-conn { left: auto; right: 0; }
+    .xp-side-r.xp-conn { left: 0; }
+    .xp-side-l.xp-conn::after { transform-origin: right; }
+  }
+</style>
+
+<script>
+  const items = [...document.querySelectorAll<HTMLElement>('[data-xp]')];
+  const skills = [...document.querySelectorAll<HTMLElement>('.skill')];
+  const data: Record<string, string[]> = {};
+  items.forEach((li) => {
+    data[li.dataset.xp!] = JSON.parse(li.dataset.skills ?? '[]') as string[];
+  });
+
+  function select(id: string | null) {
+    items.forEach((li) => {
+      const on = li.dataset.xp === id;
+      li.toggleAttribute('data-open', on);
+      li.querySelector('[data-xp-toggle]')!.setAttribute('aria-pressed', String(on));
+    });
+    const set = new Set(id ? data[id] : []);
+    skills.forEach((s) => s.toggleAttribute('data-on', set.has(s.dataset.skill!)));
+  }
+
+  items.forEach((li) =>
+    li.querySelector('[data-xp-toggle]')!.addEventListener('click', () => select(li.hasAttribute('data-open') ? null : li.dataset.xp!)),
+  );
+</script>

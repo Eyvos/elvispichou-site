@@ -78,7 +78,8 @@ Source : profil Malt (consulté le 29/09/2026). **Aucun chiffre ni fait en dehor
 | Gendarmerie nationale | août 2022 → septembre 2026 (4 ans) ; application nationale + applications régionales de 200 à 2 000 utilisateurs ; migration de monolithes Symfony ; boilerplate réutilisable ; formation des alternants |
 | Trik3r Collecte | mai → novembre 2024 (6 mois : audit + conception + développement) ; contacté via Malt ; tarif calculé par zone de livraison (adresse) avec majorations ; ne pas évoquer le cadrage initial ; seul développeur ; plateforme de commande, réservation, paiement Stripe, moteur de tarification, back-office avec rôles ; en production |
 | Chariot | cofondateur depuis février 2025 ; SaaS de jeu de rôle en présentiel ; microservices NestJS, temps réel Socket.IO, CI/CD ; commercialisé depuis 2026 (**ne pas en parler sur le site**, phase compliquée, D-67) ; cofondateur : Hugo ; ~1 an et demi de développement ; ≈ 50 utilisateurs (**ne pas publier**) |
-| Formation | Bachelor Développement (Ynov Toulouse, 2024) ; Master Expert en développement logiciel (Ynov Toulouse, 2026) |
+| Formation | Master Expert en développement logiciel (Ynov Campus Toulouse, 2024–2026) ; Bachelor Développement (Ynov, 1 an, 2023–2024) ; DUT Informatique (IUT de Blagnac, 2021–2023) ; source : CV 2026 (D-102) |
+| Sites clients (profil seulement) | Stéphanie Lortal (2026) : ajout de contenu et SEO sur un WordPress existant, hors stack ; Ingrid Médium (2024) : site Next.js, Tailwind CSS, PostgreSQL avec back-office (prestations, événements promotionnels) (D-104) |
 | Langues | français natif, anglais professionnel, espagnol notions |
 | Stack principale | TypeScript, React, Next.js, Node.js, NestJS, PostgreSQL, MongoDB, Docker, GitHub Actions, GitLab CI |
 

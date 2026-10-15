@@ -50,7 +50,6 @@ export const clients = [
 export const nav = [
   { href: '/#offre', label: 'Offres' },
   { href: '/#realisations', label: 'Réalisations' },
-  { href: '/#a-propos', label: 'Qui je suis' },
 ] as const;
 
 /** Accès discret pour les recruteurs, ESN et agences (décision D-05). */
