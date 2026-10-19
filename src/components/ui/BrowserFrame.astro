@@ -1,6 +1,7 @@
 ---
 import { Image } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
+import { Lock } from '@lucide/astro';
 import { useI18n } from '../../i18n';
 
 interface Props {
@@ -10,22 +11,32 @@ interface Props {
   image?: ImageMetadata;
   alt?: string;
   ratio?: string;
+  /** Largeur d'affichage de l'image (attribut `sizes`) : grande sur la fiche détaillée, plus petite sur les cartes. */
+  sizes?: string;
   class?: string;
 }
 
 const { t } = useI18n(Astro.url);
-const { url, label = t.common.internalApp, image, alt = '', ratio = 'aspect-[16/10]', class: className } = Astro.props;
+const { url, label = t.common.internalApp, image, alt = '', ratio = 'aspect-[16/10]', sizes = '(min-width: 1024px) 560px, 90vw', class: className } = Astro.props;
 const host = url ? new URL(url).host : label;
+const hasContent = Astro.slots.has('default');
 ---
 
-<div class:list={['overflow-hidden rounded-2xl border border-line bg-surface', className]}>
-  <div class="flex items-center gap-2 border-b border-line px-3.5 py-2.5">
-    <span class="size-2.5 rounded-full bg-line"></span><span class="size-2.5 rounded-full bg-line"></span><span class="size-2.5 rounded-full bg-line"></span>
-    <span class="ml-2 flex-1 truncate rounded-md bg-surface-2 px-3 py-1 font-mono text-[13px] text-muted">{host}</span>
+{/* Fenêtre de navigateur épurée : barre fine, adresse centrée avec cadenas, capture sans marge. */}
+<div class:list={['overflow-hidden rounded-2xl border border-line-strong bg-surface shadow-[0_24px_48px_-28px_rgb(0_0_0/0.55)]', className]}>
+  <div class="grid grid-cols-[3.25rem_1fr_3.25rem] items-center gap-2 border-b border-line bg-surface-2 px-3 py-2">
+    <span class="flex gap-1.5" aria-hidden="true"><span class="size-2.5 rounded-full bg-line-strong"></span><span class="size-2.5 rounded-full bg-line-strong"></span><span class="size-2.5 rounded-full bg-line-strong"></span></span>
+    <span class="mx-auto flex max-w-full min-w-0 items-center gap-1.5 rounded-full bg-surface px-3 py-0.5 text-muted">
+      <Lock class="size-3 shrink-0" aria-hidden="true" />
+      <span class="truncate font-mono text-[13px]">{host}</span>
+    </span>
   </div>
   <div class:list={[ratio, 'bg-surface-2']}>
     {image ? (
-      <Image src={image} alt={alt} widths={[480, 800, 1200]} sizes="(min-width: 1024px) 560px, 90vw" class="size-full object-cover object-top transition duration-700 ease-out group-hover:scale-105" />
+      <Image src={image} alt={alt} widths={[480, 800, 1200, 1600]} sizes={sizes} class="size-full object-cover object-top transition duration-700 ease-out group-hover:scale-105" />
+    ) : hasContent ? (
+      // Contenu libre dans la fenêtre (étude sans capture, confidentialité).
+      <slot />
     ) : (
       // Repère visuel tant qu'il n'y a pas de capture : maquette abstraite, masquée aux lecteurs d'écran.
       <div class="flex size-full flex-col gap-3 p-6" aria-hidden="true">

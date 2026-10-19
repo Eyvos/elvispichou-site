@@ -17,6 +17,7 @@ outcomes:
   - "Synchronisation en temps réel entre le maître du jeu et les joueurs"
   - "Paiement et crédits virtuels intégrés"
   - "Pensé pour s'étendre à d'autres systèmes de jeu"
+closing: "Une idée de produit qui ne demande qu'à devenir une application ?"
 featured: false
 order: 3
 underTheHood:
@@ -32,9 +33,9 @@ underTheHood:
 
 ## Pourquoi ce projet
 
-Chariot est né autour d'une table de Donjons & Dragons, entre amis. Les outils existants étaient soit **entièrement virtuels** (Foundry, Roll20 et consorts), soit **entièrement en papier**. Les premiers cassent l'immersion, les seconds ralentissent la partie : les combats, en particulier, prennent un temps fou à gérer.
+Chariot est né autour d'une table de Donjons & Dragons, entre amis. Les outils existants étaient soit **entièrement virtuels** (Foundry, Roll20 et consorts), soit **entièrement en papier**. Les premiers cassent l'immersion, les seconds ralentissent la partie : les combats, en particulier, prennent un temps fou à gérer.
 
-Nous ne nous retrouvions dans aucun des deux. Notre idée : **un outil qui fait l'entre-deux**, pour garder la table et les échanges, et confier à l'application ce qui ralentit la partie.
+Nous ne nous retrouvions dans aucun des deux. Notre idée : **un outil qui fait l'entre-deux**, pour garder la table et les échanges, et confier à l'application ce qui ralentit la partie.
 
 ## Mon rôle
 
@@ -42,8 +43,8 @@ Cofondateur avec Hugo, j'interviens à la fois sur le **produit** (quelles fonct
 
 ## Une démarche de produit
 
-Partir d'un vrai besoin d'utilisateurs, cadrer, prototyper, développer, puis faire évoluer avec les retours : un an et demi de travail, et une application toujours en ligne et maintenue. Le plus difficile n'a pas été le code, mais de **trouver précisément la valeur ajoutée** du produit.
+Partir d'un vrai besoin d'utilisateurs, cadrer, prototyper, développer, puis faire évoluer avec les retours : un an et demi de travail, et une application toujours en ligne et maintenue. Le plus difficile n'a pas été le code, mais de **trouver précisément la valeur ajoutée** du produit.
 
-## Ce que cela démontre pour votre projet
+## Ce que j'apporte à votre projet
 
-Je ne me contente pas d'exécuter : je sais **choisir quoi construire, pour qui, et le faire évoluer**. C'est cette même exigence que j'applique aux projets de mes clients.
+Vous avez en face de vous un développeur qui pense produit autant que technique : je vous aide à **choisir quoi construire, et pour qui**, puis à le faire évoluer. C'est la même exigence que j'applique aux projets de mes clients.

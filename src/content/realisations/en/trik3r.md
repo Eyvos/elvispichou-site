@@ -17,6 +17,7 @@ outcomes:
   - "Online booking, purchase and payment, with no intervention from the founder"
   - "Price calculated automatically, in real time, by zone and delivery conditions"
   - "A complete back office, with roles and permissions adjustable down to the detail"
+closing: "Does your business depend on a tool that doesn't exist yet?"
 featured: true
 order: 1
 underTheHood:
@@ -30,18 +31,16 @@ underTheHood:
     - "Unit tests, Docker containerization, deployment on a VPS."
 ---
 
-## The starting point
+## My approach
 
 The founder contacted me with a clear project: **to design and build together, from A to Z, the platform around which his company would run**. Scheduling collections, selling his services, managing his business: everything had to go through it. No platform, no company.
-
-## My approach
 
 - **Understand the trade in depth**: a detailed analysis of the need, recorded in scoping documents the founder could reread and approve.
 - **Prototype** the key flows before developing, to agree on what really mattered.
 - **Choose the right technologies** for a reliable platform that can host new services.
 - **Develop and deliver in stages**, with an interface designed so the founder could pick up the tool without training.
 
-## A price that calculates itself
+## A 100% automatic price calculator
 
 The price depends on the delivery zone. The customer enters their address: the platform matches it to a zone, or tells them their address is not served. In a covered zone, the price is calculated **automatically and in real time**, and adjusts to the conditions: floors to climb, number of people for the delivery.
 
@@ -53,6 +52,6 @@ Customers choose their slot, buy their service and pay online, without going thr
 
 The back office lets you **create roles and fine-tune their permissions**: a writer who only publishes articles for SEO, a manager who follows all orders, a super administrator who controls everything.
 
-## What this shows for your project
+## What I bring to your project
 
-I know how to take a project **from zero**, understand a trade, and deliver a platform a company truly depends on, in production. The site is still online today.
+Our collaboration can start from nothing, with no existing system: I take the time to understand your business, then deliver a platform your activity can **truly depend on**, in production. Trik3r's is still online today.

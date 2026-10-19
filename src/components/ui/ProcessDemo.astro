@@ -1,0 +1,150 @@
+---
+import { Users, Calendar, Check, Mail, MailCheck, Plus, Lock } from '@lucide/astro';
+import BrowserFrame from './BrowserFrame.astro';
+import { useI18n } from '../../i18n';
+
+interface Props {
+  /** Les 4 légendes, une par scène. */
+  steps: string[];
+  /** Sur-titre : de quel exemple il s'agit (c'est la première chose lue, avant les légendes). */
+  title: string;
+  /** Légende de l'illustration (ce n'est pas une capture). */
+  note: string;
+  /** Les mots affichés dans l'interface illustrée. */
+  ui: { candidate: string; department: string; session: string; full: string; send: string; sent: string };
+  label?: string;
+}
+
+const { t } = useI18n(Astro.url);
+const { steps, title, note, ui, label } = Astro.props;
+const people = ['A', 'B', 'C', 'D'];
+---
+
+{/*
+  Démo animée d'un processus, dessinée avec de vrais libellés mais sans donnée réelle (« Candidat A », « Séance 1 »…).
+  `display: contents` : la fenêtre et les commandes sont deux enfants de la grille de la page, placés séparément dès 768 px.
+  Les scènes ne changent que d'opacité et de position ; l'animation ne tourne que visible à l'écran (JS plus bas).
+*/}
+<div data-demo data-step="0" data-total={steps.length} class="demo contents">
+  <div class="min-w-0 md:col-start-2 md:row-start-1" data-demo-stage>
+    <BrowserFrame label={label} ratio="aspect-[4/3]">
+      <div class="relative size-full overflow-hidden text-[13px] leading-tight" aria-hidden="true">
+        {/* 1 · Un département saisit ses candidatures */}
+        <div class="scene s0 flex flex-col gap-2 p-3.5 sm:p-5">
+          <div class="flex items-center justify-between pb-1">
+            <span class="flex items-center gap-2 font-semibold"><Users class="size-4 text-accent-fg" />{ui.department} 1</span>
+            <span class="grid size-7 place-items-center rounded-full bg-accent text-accent-ink"><Plus class="size-4" /></span>
+          </div>
+          {people.map((p, i) => (
+            <div class="rise flex items-center gap-2.5 rounded-xl bg-surface p-2 max-sm:last:hidden sm:p-2.5" style={`--i:${i}`}>
+              <span class="grid size-7 shrink-0 place-items-center rounded-full bg-surface-2 font-bold">{p}</span>
+              <span class="font-medium">{ui.candidate} {p}</span>
+              <span class="ml-auto rounded-full bg-accent-soft px-2.5 py-1 font-semibold text-accent-fg">{ui.department} 1</span>
+            </div>
+          ))}
+        </div>
+
+        {/* 2 · Les candidats rejoignent des séances */}
+        <div class="scene s1 flex flex-col justify-center gap-3 p-3.5 sm:p-5">
+          {[1, 2].map((n) => (
+            <div class="rise rounded-2xl bg-surface p-3 sm:p-4" style={`--i:${n - 1}`}>
+              <div class="flex items-center justify-between">
+                <span class="flex items-center gap-2 font-semibold"><Calendar class="size-4 text-accent-fg" />{ui.session} {n}</span>
+                {n === 1 && <span class="pop flex items-center gap-1 rounded-full bg-ok-soft px-2.5 py-1 font-semibold text-ok-fg" style="--i:6"><Check class="size-3.5" stroke-width={3} />{ui.full}</span>}
+              </div>
+              <div class="mt-3 flex gap-2">
+                {people.map((p, i) => (
+                  <span class={`slot grid size-8 place-items-center rounded-full font-bold ${n === 2 && i > 1 ? 'slot-empty' : ''}`} style={`--i:${n === 1 ? i : i + 4}`}>{p}</span>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* 3 · Séance pleine : un seul bouton */}
+        <div class="scene s2 flex flex-col items-center justify-center gap-5 p-4">
+          <div class="rise w-full max-w-64 rounded-2xl bg-surface p-3 sm:p-4" style="--i:0">
+            <div class="flex items-center justify-between">
+              <span class="flex items-center gap-2 font-semibold"><Calendar class="size-4 text-accent-fg" />{ui.session} 1</span>
+              <span class="flex items-center gap-1 rounded-full bg-ok-soft px-2.5 py-1 font-semibold text-ok-fg"><Check class="size-3.5" stroke-width={3} />{ui.full}</span>
+            </div>
+            <div class="mt-3 flex gap-2">
+              {people.map((p) => <span class="grid size-8 place-items-center rounded-full bg-accent font-bold text-accent-ink">{p}</span>)}
+            </div>
+          </div>
+          <span class="rise press inline-flex items-center gap-2.5 rounded-full bg-accent px-5 py-3 text-sm font-bold text-accent-ink" style="--i:3"><Mail class="size-4" />{ui.send}</span>
+        </div>
+
+        {/* 4 · Un courriel à chaque candidat */}
+        <div class="scene s3 flex flex-col justify-center gap-2 p-3.5 sm:p-5">
+          {people.map((p, i) => (
+            <div class="rise flex items-center gap-2.5 rounded-xl bg-surface p-2 max-sm:last:hidden sm:p-2.5" style={`--i:${i}`}>
+              <span class="grid size-7 shrink-0 place-items-center rounded-full bg-surface-2 font-bold">{p}</span>
+              <span class="font-medium">{ui.candidate} {p}</span>
+              <span class="pop ml-auto flex items-center gap-1.5 rounded-full bg-ok-soft px-2.5 py-1 font-semibold text-ok-fg" style={`--i:${i + 1}`}><MailCheck class="size-3.5" />{ui.sent}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </BrowserFrame>
+  </div>
+
+  <div class="max-md:-mt-3 md:col-start-2 md:row-start-2">
+    <p class="eyebrow">{title}</p>
+    <div class="mt-1 grid grid-cols-4 gap-2" role="group" aria-label={t.casePage.demoSteps}>
+      {steps.map((_, i) => (
+        <button type="button" data-go={i} aria-label={`${i + 1} / ${steps.length}`} aria-current={i === 0 ? 'true' : 'false'} class="step flex min-h-10 items-center">
+          <span class="block h-1 w-full rounded-full bg-line-strong transition-colors duration-300"></span>
+        </button>
+      ))}
+    </div>
+    <ol class="grid">
+      {steps.map((s, i) => (
+        <li data-caption={i} class="caption col-start-1 row-start-1 flex gap-3 text-base leading-snug">
+          <span class="text-xs leading-6 font-bold tracking-[0.1em] text-accent-fg">0{i + 1}</span>{s}
+        </li>
+      ))}
+    </ol>
+    <p class="mt-3 flex items-start gap-2 text-sm leading-snug text-muted"><Lock class="mt-0.5 size-4 shrink-0" aria-hidden="true" />{note}</p>
+  </div>
+</div>
+
+<style>
+  .scene { position: absolute; inset: 0; opacity: 0; visibility: hidden; transition: opacity 0.35s ease, visibility 0s linear 0.35s; }
+  .rise { opacity: 0; transform: translateY(10px); transition: opacity 0.4s ease, transform 0.4s ease; }
+  .pop { opacity: 0; transform: scale(0.5); transition: opacity 0.3s ease, transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
+  .slot { color: transparent; border: 2px dashed var(--c-line-strong); transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease; }
+  .caption { opacity: 0; visibility: hidden; transition: opacity 0.3s ease; }
+  [data-step='0'] .s0, [data-step='1'] .s1, [data-step='2'] .s2, [data-step='3'] .s3 { opacity: 1; visibility: visible; transition: opacity 0.35s ease; }
+  [data-step='0'] .s0 .rise, [data-step='1'] .s1 .rise, [data-step='2'] .s2 .rise, [data-step='3'] .s3 .rise {
+    opacity: 1; transform: none; transition-delay: calc(var(--i) * 130ms + 200ms);
+  }
+  [data-step='1'] .s1 .slot:not(.slot-empty) { background: var(--c-accent); border-color: var(--c-accent); color: var(--c-accent-ink); transition-delay: calc(var(--i) * 180ms + 500ms); }
+  [data-step='1'] .s1 .pop, [data-step='3'] .s3 .pop { opacity: 1; transform: none; transition-delay: calc(var(--i) * 160ms + 500ms); }
+  [data-step='2'] .s2 .press { animation: press 1.6s ease-in-out 0.9s infinite; }
+  @keyframes press { 0%, 100% { transform: scale(1); } 50% { transform: scale(0.94); } }
+  [data-step='0'] [data-caption='0'], [data-step='1'] [data-caption='1'], [data-step='2'] [data-caption='2'], [data-step='3'] [data-caption='3'] { opacity: 1; visibility: visible; }
+  [data-step='0'] .step:nth-child(1) span, [data-step='1'] .step:nth-child(2) span, [data-step='2'] .step:nth-child(3) span, [data-step='3'] .step:nth-child(4) span { background: var(--c-accent-fg); }
+</style>
+
+<script>
+  // Lecture automatique tant que la démo est visible ; un appui sur une étape la fige sur ce choix. Pas de lecture avec mouvement réduit.
+  document.querySelectorAll<HTMLElement>('[data-demo]').forEach((root) => {
+    const total = Number(root.dataset.total);
+    let step = 0;
+    let manual = false;
+    let timer = 0;
+    const stop = () => { clearInterval(timer); timer = 0; };
+    const set = (n: number) => {
+      step = n;
+      root.dataset.step = String(n);
+      root.querySelectorAll<HTMLElement>('[data-go]').forEach((b) => b.setAttribute('aria-current', String(Number(b.dataset.go) === n)));
+    };
+    const start = () => {
+      if (timer || manual || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      timer = window.setInterval(() => set((step + 1) % total), 4200);
+    };
+    root.querySelectorAll<HTMLElement>('[data-go]').forEach((b) => b.addEventListener('click', () => { manual = true; stop(); set(Number(b.dataset.go)); }));
+    new IntersectionObserver((entries) => entries.forEach((e) => (e.isIntersecting ? start() : stop())), { threshold: 0.4 }).observe(root.querySelector('[data-demo-stage]')!);
+  });
+</script>

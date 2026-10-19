@@ -17,6 +17,7 @@ outcomes:
   - "Real-time synchronization between the game master and the players"
   - "Integrated payment and virtual credits"
   - "Designed to extend to other game systems"
+closing: "A product idea waiting to become an application?"
 featured: false
 order: 3
 underTheHood:
@@ -44,6 +45,6 @@ As co-founder with Hugo, I work on both the **product** (which features, for who
 
 Start from a real user need, frame it, prototype, build, then evolve with feedback: a year and a half of work, and an application that is still online and maintained. The hardest part was not the code, but **finding the product's exact added value**.
 
-## What this shows for your project
+## What I bring to your project
 
-I don't just execute: I know how to **choose what to build, for whom, and keep it evolving**. It's the same standard I apply to my clients' projects.
+You get a developer who thinks about the product as much as the technology: I help you **choose what to build, and for whom**, then keep it evolving. It's the same standard I apply to my clients' projects.

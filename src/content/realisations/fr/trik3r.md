@@ -17,6 +17,7 @@ outcomes:
   - "Réservation, achat et paiement en ligne, sans intervention du fondateur"
   - "Tarif calculé automatiquement, en temps réel, selon la zone et les conditions de livraison"
   - "Un back-office complet, avec des rôles et des droits réglables au détail près"
+closing: "Votre activité repose sur un outil qui n'existe pas encore ?"
 featured: true
 order: 1
 underTheHood:
@@ -30,29 +31,27 @@ underTheHood:
     - "Tests unitaires, conteneurisation Docker, déploiement sur VPS."
 ---
 
-## Le point de départ
-
-Le fondateur m'a contacté avec un projet clair : **concevoir et développer ensemble, de A à Z, la plateforme autour de laquelle son entreprise allait fonctionner**. Planifier les collectes, vendre ses prestations, gérer son activité : tout devait passer par elle. Sans plateforme, pas d'entreprise.
-
 ## Ma démarche
 
-- **Comprendre le métier en profondeur** : une analyse détaillée du besoin, consignée dans des documents de cadrage que le fondateur pouvait relire et valider.
+Le fondateur m'a contacté avec un projet clair : **concevoir et développer ensemble, de A à Z, la plateforme autour de laquelle son entreprise allait fonctionner**. Planifier les collectes, vendre ses prestations, gérer son activité : tout devait passer par elle. Sans plateforme, pas d'entreprise.
+
+- **Comprendre le métier en profondeur** : une analyse détaillée du besoin, consignée dans des documents de cadrage que le fondateur pouvait relire et valider.
 - **Prototyper** les parcours clés avant de développer, pour s'accorder sur ce qui comptait vraiment.
 - **Choisir les bonnes technologies** pour une plateforme fiable, qui peut accueillir de nouveaux services.
 - **Développer et livrer par étapes**, avec une interface pensée pour que le fondateur prenne l'outil en main sans formation.
 
-## Un tarif calculé tout seul
+## Un calculateur de tarif 100 % automatique
 
-Le prix dépend de la zone de livraison. Le client saisit son adresse : la plateforme l'associe à une zone, ou l'informe que son adresse n'est pas desservie. Dans une zone couverte, le tarif se calcule **automatiquement et en temps réel**, et s'ajuste selon les conditions : étages à monter, nombre de personnes pour la livraison.
+Le prix dépend de la zone de livraison. Le client saisit son adresse : la plateforme l'associe à une zone, ou l'informe que son adresse n'est pas desservie. Dans une zone couverte, le tarif se calcule **automatiquement et en temps réel**, et s'ajuste selon les conditions : étages à monter, nombre de personnes pour la livraison.
 
 ## Une activité qui tourne sans intervention
 
-Les clients choisissent leur créneau, achètent leur prestation et paient en ligne, sans passer par le fondateur. Il n'intervient que là où un humain est nécessaire : la livraison et les devis personnalisés.
+Les clients choisissent leur créneau, achètent leur prestation et paient en ligne, sans passer par le fondateur. Il n'intervient que là où un humain est nécessaire : la livraison et les devis personnalisés.
 
 ## Des droits adaptés à chaque personne
 
-Le back-office permet de **créer des rôles et d'en régler finement les permissions** : un rédacteur qui publie uniquement des articles pour le référencement, un gestionnaire qui suit toutes les commandes, un super administrateur qui a la main sur tout.
+Le back-office permet de **créer des rôles et d'en régler finement les permissions** : un rédacteur qui publie uniquement des articles pour le référencement, un gestionnaire qui suit toutes les commandes, un super administrateur qui a la main sur tout.
 
-## Ce que cela démontre pour votre projet
+## Ce que j'apporte à votre projet
 
-Je sais prendre un projet **à zéro**, comprendre un métier, et livrer une plateforme dont l'entreprise dépend vraiment, en production. Le site est toujours en ligne aujourd'hui.
+Notre collaboration pourra partir de zéro, sans aucun existant : je prends le temps de comprendre votre métier, puis je livre une plateforme dont votre activité peut **réellement dépendre**, en production. Celle de Trik3r est toujours en ligne aujourd'hui.

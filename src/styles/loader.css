@@ -102,3 +102,7 @@ html.loader-done .loader-shadow { animation: none; }
 
 
 html.loader-show .loader-panel { opacity: 1; }
+
+/* Hors chargement, les animations infinies du dé restent à l'arrêt : elles ne coûtent plus rien en continu une fois l'écran masqué. */
+.loader *, .loader-bar::after { animation-play-state: paused; }
+html.loading .loader *, html.loading .loader-bar::after { animation-play-state: running; }

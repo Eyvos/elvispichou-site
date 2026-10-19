@@ -97,7 +97,9 @@ Elles s'appliquent à **toute nouvelle fonctionnalité, section ou page**, en pl
 | Carrousel à glisser | `Clients.astro`, utilitaire `swipe` (`global.css`) | Déborde jusqu'aux bords, aimantation par carte, carte suivante visible à 18 % |
 | Formulaire d'abord | `Contact.astro` | Ordre du DOM : intro → formulaire → frise et email ; bureau inchangé par placement de grille |
 | Effet sous le doigt | `profil.astro` | Compétences ouvertes dans la carte d'expérience (`.xp-skills`, < 1024 px) |
-| Preuve d'abord | `realisations/[slug].astro` | Résultats en tête du récit (< 1024 px), appel à l'action en fin |
+| Preuve d'abord (aéré, D-129) | `realisations/[slug].astro` | Téléphone : titre court, visuel, **chiffres en lignes à filets** (valeur à gauche, libellé à droite, sans cartes), **bouton « Parler de mon projet » tout de suite**, puis résultats avant le problème, puis le récit ; bureau inchangé |
+| Barre de chapitres collante | `realisations/[slug].astro` | Téléphone et tablette : liens vers les chapitres du récit en une ligne à glisser, collée sous l'en-tête (`stick:sticky stick:top-16`), chapitre à l'écran souligné par `IntersectionObserver` (pas d'écouteur de défilement) ; `scroll-margin-top` sur les titres |
+| Démo animée d'un processus | `ProcessDemo.astro` | Scènes dessinées en formes, 4 étapes qui défilent seulement visibles à l'écran ; segments d'étapes touchables (40 px) pour choisir sans attendre ; fixe avec mouvement réduit |
 | Variantes d'appareil | `global.css` | `stick:` (téléphone et tablette, hors paysage), `--gutter` (marge latérale avec zones sûres) |
 
 ## Contrôle avant de conclure

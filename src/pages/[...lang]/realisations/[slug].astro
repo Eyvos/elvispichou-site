@@ -3,8 +3,9 @@ import { render } from 'astro:content';
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import { site } from '../../../config/site';
 import BrowserFrame from '../../../components/ui/BrowserFrame.astro';
+import ProcessDemo from '../../../components/ui/ProcessDemo.astro';
 import { getScreenshot } from '../../../lib/assets';
-import { ArrowUpRight } from '@lucide/astro';
+import { ArrowUpRight, ArrowRight, Check, Calendar, UserRound } from '@lucide/astro';
 import { getCases, type CaseEntry } from '../../../lib/cases';
 import { useI18n, locales, defaultLocale, localePath, fmt } from '../../../i18n';
 
@@ -25,7 +26,8 @@ const { entry } = Astro.props;
 const { lang, t } = useI18n(Astro.url);
 const c = t.casePage;
 const d = entry.data;
-const { Content } = await render(entry);
+const { Content, headings } = await render(entry);
+const chapters = headings.filter((h) => h.depth === 2);
 const shot = getScreenshot(entry.slug);
 const kindLabel = t.common.caseKind[d.kind];
 const ctaHref = localePath(lang, `/?projet=${d.kind === 'site' ? 'site' : 'outil'}#contact`);
@@ -44,59 +46,118 @@ const jsonLd = {
 
 <BaseLayout title={d.title} description={d.summary} jsonLd={jsonLd}>
   <article>
-    <header class="border-b border-line">
-      <div class="container-page grid gap-8 py-8 sm:gap-12 sm:py-20 lg:grid-cols-[1.15fr_1fr] lg:items-center">
-        <div>
-        <a href={localePath(lang, '/#realisations')} class="inline-flex items-center gap-1 text-sm text-muted max-lg:min-h-10 pointer-coarse:min-h-10 transition duration-200 hover:-translate-x-1 hover:text-ink"><span aria-hidden="true">←</span> {c.back}</a>
-        <div class="mt-8 flex flex-wrap items-center gap-2 text-[13px]">
-          <span class="rounded-full bg-accent-soft px-2.5 py-1 font-medium text-accent-fg">{kindLabel}</span>
-          <span class="text-muted">{d.client} · {d.sector}</span>
-        </div>
-        <h1 class="mt-5 max-w-4xl text-3xl font-medium leading-tight sm:text-4xl">{d.title}</h1>
-        <p class="mt-6 max-w-2xl text-lg leading-relaxed text-muted">{d.summary}</p>
+    {/*
+      1 · En 30 secondes. Bureau et tablette : le texte à gauche, centré sur le visuel ; téléphone : titre, visuel, chiffres, puis le bouton
+      (la preuve et l'action avant le récit, D-118). Les commandes sous le visuel (lien, étapes de la démo) sont une 2ᵉ ligne de la grille,
+      pour que le texte se centre sur le visuel seul.
+    */}
+    <header class="container-page pt-5 pb-12 sm:pt-10 sm:pb-12 lg:pb-14">
+      <a href={localePath(lang, '/#realisations')} class="inline-flex min-h-10 items-center gap-1 text-sm text-muted transition duration-200 hover:-translate-x-1 hover:text-ink"><span aria-hidden="true">←</span> {c.back}</a>
 
-        <dl class="mt-10 grid gap-6 text-sm sm:grid-cols-3">
-          <div><dt class="text-muted">{c.client}</dt><dd class="mt-1 font-medium">{d.client}</dd></div>
-          <div><dt class="text-muted">{c.period}</dt><dd class="mt-1 font-medium">{d.period}</dd></div>
-          <div><dt class="text-muted">{c.role}</dt><dd class="mt-1 font-medium">{d.role}</dd></div>
+      <div class="mt-4 grid gap-x-10 gap-y-8 sm:mt-6 md:grid-cols-[4fr_5fr] md:items-center lg:grid-cols-[5fr_6fr] lg:gap-x-12">
+        <div class="md:col-start-1 md:row-span-2 md:row-start-1 md:self-center">
+          <div class="flex flex-wrap items-center gap-x-2 gap-y-1 text-[13px]">
+            <span class="rounded-full bg-accent-soft px-2.5 py-1 font-medium text-accent-fg">{kindLabel}</span>
+            <span class="text-muted">{d.client} · {d.sector}</span>
+          </div>
+          <h1 class="mt-4 text-[1.7rem] leading-tight font-medium sm:text-4xl">{d.title}</h1>
+          <p class="mt-5 text-[17px] leading-relaxed text-muted sm:text-lg">{d.summary}</p>
+          {/* Période et rôle : discrets, une icône et une ligne chacun (le client est déjà dans la ligne du dessus). */}
+          <ul class="mt-6 space-y-3 text-[15px] text-muted">
+            <li class="flex items-start gap-2.5"><Calendar class="mt-0.5 size-4 shrink-0 text-accent-fg" aria-hidden="true" /><span><span class="sr-only">{c.period} : </span>{d.period}</span></li>
+            <li class="flex items-start gap-2.5"><UserRound class="mt-0.5 size-4 shrink-0 text-accent-fg" aria-hidden="true" /><span><span class="sr-only">{c.role} : </span>{d.role}</span></li>
+          </ul>
+        </div>
+
+        {shot ? (
+          <>
+            <div class="min-w-0 md:col-start-2 md:row-start-1">
+              <BrowserFrame url={d.url} image={shot} alt={fmt(t.caseCard.screenshotAlt, { client: d.client })} sizes="(min-width: 1024px) 660px, (min-width: 768px) 46vw, 94vw" />
+            </div>
+            {d.url && (
+              <div class="max-md:-mt-4 md:col-start-2 md:row-start-2">
+                <a href={d.url} target="_blank" rel="noopener" class="group inline-flex min-h-10 items-center gap-1.5 text-sm font-bold text-accent-fg hover:underline" data-umami-event="case-visit">
+                  {c.visit} {new URL(d.url).host}<span class="sr-only">{t.common.newWindow}</span><ArrowUpRight class="size-4 transition group-hover:-translate-y-0.5 group-hover:translate-x-0.5" aria-hidden="true" />
+                </a>
+              </div>
+            )}
+          </>
+        ) : d.demo && (
+          <ProcessDemo steps={d.demo.steps} title={d.demo.title} note={d.demo.note} ui={d.demo.ui} label={t.common.internalAppConfidential} />
+        )}
+      </div>
+
+      {d.keyFacts && (
+        <dl class="mt-10 divide-y divide-line border-y border-line sm:mt-12 sm:grid sm:grid-cols-3 sm:gap-x-8 sm:divide-y-0 sm:border-y-0">
+          {d.keyFacts.map((f) => (
+            <div class="flex min-w-0 items-baseline justify-between gap-4 py-4 sm:flex-col sm:items-start sm:justify-start sm:gap-0 sm:border-t-2 sm:border-ink sm:pt-4 sm:pb-0">
+              <dd class="order-first font-heading text-xl leading-tight font-semibold whitespace-nowrap sm:text-3xl sm:whitespace-normal sm:text-balance">{f.value}</dd>
+              <dt class="text-right text-sm leading-snug text-muted sm:mt-1 sm:text-left sm:text-base">{f.label}</dt>
+            </div>
+          ))}
         </dl>
-        {d.keyFacts && (
-          <ul class="mt-8 grid gap-3 sm:grid-cols-3">
-            {d.keyFacts.map((f) => (
-              <li class="rounded-2xl border border-line bg-surface px-4 py-3">
-                <p class="font-display text-xl font-semibold text-accent-fg">{f.value}</p>
-                <p class="mt-1 text-sm leading-snug">{f.label}</p>
+      )}
+
+      {/* Téléphone et tablette : l'action tout de suite, sous les chiffres (sur bureau, elle est en fin de page). */}
+      <a href={ctaHref} class="btn btn-primary mt-8 w-full py-3.5 sm:w-auto lg:hidden" data-umami-event="cta-case-top">
+        {c.cta} <ArrowRight class="size-4" aria-hidden="true" />
+      </a>
+    </header>
+
+    {/* 2 · Ce qui vous concerne. Téléphone : les résultats d'abord (la preuve), puis le problème. */}
+    <section class="bg-surface">
+      <div class="container-page grid gap-12 pt-14 pb-2 sm:pt-16 sm:pb-2 md:grid-cols-2 md:gap-12 lg:gap-20 lg:pt-20 lg:pb-2">
+        <div class="max-md:order-2">
+          <p class="eyebrow">{c.problem}</p>
+          <p class="mt-4 max-w-xl text-[17px] leading-relaxed sm:text-xl">{d.problem}</p>
+        </div>
+        <div class="max-md:order-1">
+          <p class="eyebrow">{c.results}</p>
+          <ul class="mt-4 divide-y divide-line">
+            {d.outcomes.map((o) => (
+              <li class="flex gap-3.5 py-4 leading-snug first:pt-0 last:pb-0">
+                <span class="mt-0.5 grid size-5 shrink-0 place-items-center rounded-full bg-ok text-bg"><Check class="size-3.5" stroke-width={3} aria-hidden="true" /></span>{o}
               </li>
             ))}
           </ul>
-        )}
         </div>
-        <div>
-          {shot && <BrowserFrame url={d.url} label={d.confidential ? t.common.internalAppConfidential : undefined} image={shot} alt={fmt(t.caseCard.screenshotAlt, { client: d.client })} />}
-          {d.url && (
-            <a href={d.url} target="_blank" rel="noopener" class="group mt-4 inline-flex items-center gap-1.5 text-sm font-bold text-accent-fg hover:underline" data-umami-event="case-visit">
-              {c.visit} {new URL(d.url).host}<span class="sr-only">{t.common.newWindow}</span><ArrowUpRight class="size-4 transition group-hover:-translate-y-0.5 group-hover:translate-x-0.5" aria-hidden="true" />
-            </a>
-          )}
-        </div>
-      </div>
-    </header>
-
-    <div class="container-page grid gap-10 py-10 sm:gap-14 sm:py-14 lg:grid-cols-[1fr_20rem]">
-      <div class="min-w-0">
-        {/* Téléphone et tablette : les résultats (la preuve) avant le récit, au lieu d'attendre la fin de page (D-118). */}
-        <div class="mb-8 rounded-card border border-line bg-surface p-6 lg:hidden">
-          <p class="text-xs font-bold uppercase tracking-[0.1em] text-muted">{c.results}</p>
-          <ul class="mt-4 space-y-3 text-sm">
-            {d.outcomes.map((o) => <li class="flex gap-2.5"><span class="text-ok-fg" aria-hidden="true">●</span>{o}</li>)}
+        <div class="max-md:order-3 md:col-span-2">
+      {/* Pour les profils techniques : tout de suite sous les résultats, repliée, à plat. */}
+      <details class="group border-t border-line" data-umami-event="case-under-the-hood">
+        <summary class="flex min-h-14 list-none items-center justify-between gap-4 py-4 font-semibold [&::-webkit-details-marker]:hidden">
+          <span><span class="font-mono text-accent-fg" aria-hidden="true">&lt;/&gt;</span>&nbsp; {c.underTheHood} <span class="font-normal text-muted max-sm:block">{c.forTechnical}</span></span>
+          <span class="text-xl text-muted transition group-open:rotate-45" aria-hidden="true">+</span>
+        </summary>
+        <div class="pb-6 md:grid md:grid-cols-[1fr_1.4fr] md:gap-10 lg:gap-12">
+          <ul class="flex flex-wrap content-start gap-2">
+            {d.underTheHood.stack.map((t) => (
+              <li class="rounded-md border border-line bg-bg px-2.5 py-1 font-mono text-[13px]">{t}</li>
+            ))}
+          </ul>
+          <ul class="mt-6 space-y-3 text-sm leading-relaxed text-muted md:mt-0">
+            {d.underTheHood.highlights.map((h) => (
+              <li class="flex gap-3"><span class="text-accent-fg" aria-hidden="true">→</span>{h}</li>
+            ))}
           </ul>
         </div>
-        <div class="rounded-2xl bg-surface-2 p-6">
-          <p class="text-xs font-bold uppercase tracking-[0.1em] text-muted">{c.problem}</p>
-          <p class="mt-2 leading-relaxed">{d.problem}</p>
+      </details>
         </div>
+      </div>
+    </section>
 
-        <div class="prose-case max-w-2xl">
+    {/* 3 · Le récit. Téléphone et tablette : une barre de chapitres collée sous l'en-tête (on saute au chapitre voulu sans remonter, D-118) ; bureau : titre à gauche, texte à droite. */}
+    <section>
+      {chapters.length > 1 && (
+        <nav data-chapters aria-label={c.chapters} class="z-30 border-b border-line bg-bg stick:sticky stick:top-16 lg:hidden">
+          <div class="relative flex overflow-x-auto px-[calc(var(--gutter)-0.75rem)] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            {chapters.map((h, i) => (
+              <a href={`#${h.slug}`} aria-current={i === 0 ? 'true' : 'false'} class="relative inline-flex min-h-12 shrink-0 items-center px-3 text-sm font-semibold whitespace-nowrap text-muted after:absolute after:inset-x-3 after:bottom-0 after:h-0.5 after:bg-transparent aria-[current=true]:text-ink aria-[current=true]:after:bg-accent-fg">{h.text}</a>
+            ))}
+          </div>
+        </nav>
+      )}
+      <div class="container-page pt-12 pb-14 sm:py-16 lg:py-20">
+        <div class="story">
           <Content />
         </div>
 
@@ -107,42 +168,39 @@ const jsonLd = {
           </figure>
         )}
 
-        <details class="group mt-14 rounded-2xl border border-line bg-surface" data-umami-event="case-under-the-hood">
-          <summary class="flex cursor-pointer list-none items-center justify-between gap-4 p-6 font-semibold [&::-webkit-details-marker]:hidden">
-            <span><span class="font-mono text-accent-fg" aria-hidden="true">&lt;/&gt;</span>&nbsp; {c.underTheHood} <span class="font-normal text-muted">· {c.forTechnical}</span></span>
-            <span class="text-muted transition group-open:rotate-45" aria-hidden="true">+</span>
-          </summary>
-          <div class="border-t border-line p-6">
-            <ul class="flex flex-wrap gap-2">
-              {d.underTheHood.stack.map((t) => (
-                <li class="rounded-md border border-line bg-bg px-2.5 py-1 font-mono text-[13px]">{t}</li>
-              ))}
-            </ul>
-            <ul class="mt-6 space-y-3 text-sm leading-relaxed text-muted">
-              {d.underTheHood.highlights.map((h) => (
-                <li class="flex gap-3"><span class="text-accent-fg" aria-hidden="true">→</span>{h}</li>
-              ))}
-            </ul>
-          </div>
-        </details>
       </div>
+    </section>
 
-      <div class="lg:sticky lg:top-24 lg:self-start">
-        <div class="rounded-card border border-line bg-surface p-6 max-lg:hidden">
-          <p class="text-xs font-bold uppercase tracking-[0.1em] text-muted">{c.results}</p>
-          <ul class="mt-4 space-y-3 text-sm">
-            {d.outcomes.map((o) => <li class="flex gap-2.5"><span class="text-ok-fg" aria-hidden="true">●</span>{o}</li>)}
-          </ul>
+    {/* 4 · Pour finir : la question du prospect, dans les mots du projet, sans fond ni effet. */}
+    <section id="cta-fin" class="border-t border-line">
+      <div class="container-page flex flex-col gap-8 py-14 sm:py-16 md:flex-row md:items-center md:justify-between md:gap-12">
+        <div class="max-w-2xl">
+          <p class="eyebrow">{c.similarTitle}</p>
+          <h2 class="mt-3 text-2xl leading-snug font-medium text-balance sm:text-3xl">{d.closing}</h2>
+          <p class="mt-4 text-muted">{c.similarText1} {c.similarText2}</p>
         </div>
-        <div class="rounded-card bg-ink p-6 text-bg lg:mt-4">
-          <p class="font-display text-lg font-semibold">{c.similarTitle}</p>
-          <p class="mt-2 text-sm text-bg">{c.similarText1}</p>
-          <p class="mt-2 text-sm text-bg">{c.similarText2}</p>
-          <a href={ctaHref} class="btn btn-primary mt-5 w-full" data-umami-event="cta-case">
-            {c.cta}
-          </a>
-        </div>
+        <a href={ctaHref} class="btn btn-primary shrink-0 py-3.5 max-md:w-full" data-umami-event="cta-case">
+          {c.cta} <ArrowRight class="size-4" aria-hidden="true" />
+        </a>
       </div>
-    </div>
+    </section>
   </article>
 </BaseLayout>
+
+<script>
+  // Barre de chapitres (téléphone, tablette) : le chapitre à l'écran est souligné et ramené dans la barre.
+  const nav = document.querySelector<HTMLElement>('[data-chapters]');
+  if (nav) {
+    const scroller = nav.firstElementChild as HTMLElement;
+    const links = [...nav.querySelectorAll<HTMLAnchorElement>('a')];
+    const targets = links.map((a) => document.getElementById(decodeURIComponent(a.hash.slice(1))));
+    const setActive = (i: number) => {
+      links.forEach((l, k) => l.setAttribute('aria-current', String(k === i)));
+      scroller.scrollTo({ left: links[i].offsetLeft - 16, behavior: 'smooth' });
+    };
+    const io = new IntersectionObserver((entries) => entries.forEach((e) => {
+      if (e.isIntersecting) setActive(targets.indexOf(e.target as HTMLElement));
+    }), { rootMargin: '-130px 0px -70% 0px' });
+    targets.forEach((t) => t && io.observe(t));
+  }
+</script>

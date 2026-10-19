@@ -21,6 +21,15 @@ const realisations = defineCollection({
     problem: z.string(),
     keyFacts: z.array(z.object({ value: z.string(), label: z.string() })).max(3).optional(),
     outcomes: z.array(z.string()).min(1),
+    /** Phrase d'appel finale : le problème du prospect, dans les mots du projet. */
+    closing: z.string(),
+    /** Démo animée d'un processus (étude sans capture) : 4 étapes illustrées, légende de l'illustration. */
+    demo: z.object({
+      title: z.string(),
+      note: z.string(),
+      steps: z.array(z.string()).length(4),
+      ui: z.object({ candidate: z.string(), department: z.string(), session: z.string(), full: z.string(), send: z.string(), sent: z.string() }),
+    }).optional(),
     featured: z.boolean().default(false),
     order: z.number().default(100),
     confidential: z.boolean().default(false),

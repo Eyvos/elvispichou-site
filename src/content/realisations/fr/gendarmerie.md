@@ -17,6 +17,22 @@ outcomes:
   - "Moins d'erreurs, grâce à des processus automatisés"
   - "Des applications de 100 à 3 000 utilisateurs selon les projets, plus une application nationale"
   - "Un socle commun réutilisé pour les nouveaux projets"
+demo:
+  title: "Exemple concret · Le recrutement des réservistes"
+  note: "Un exemple parmi mes projets, illustré sans donnée réelle : les applications sont confidentielles."
+  ui:
+    candidate: "Candidat"
+    department: "Département"
+    session: "Séance"
+    full: "Complète"
+    send: "Convoquer les candidats"
+    sent: "Courriel envoyé"
+  steps:
+    - "Chaque département saisit lui-même ses candidatures."
+    - "Les candidats sont inscrits à des séances de recrutement."
+    - "Séance pleine : un seul bouton, au niveau régional."
+    - "Chaque candidat reçoit automatiquement un courriel lui indiquant où se rendre."
+closing: "Vos équipes jonglent encore entre papier et tableurs ?"
 featured: false
 order: 2
 confidential: true
@@ -33,36 +49,28 @@ underTheHood:
 
 ## Le contexte
 
-J'étais salarié de la Gendarmerie nationale, dans un service dont la mission était précisément de **digitaliser les processus des équipes**. J'y ai travaillé sur six projets : gestion de matériel, de dossiers, planning et réservation. La plupart à l'échelle régionale, un à l'échelle nationale, partagé avec la Police nationale et le ministère de l'Intérieur.
+J'étais salarié de la Gendarmerie nationale, dans un service dont la mission était précisément de **digitaliser les processus des équipes**. J'y ai travaillé sur six projets : gestion de matériel, de dossiers, planning et réservation. La plupart à l'échelle régionale, un à l'échelle nationale, partagé avec la Police nationale et le ministère de l'Intérieur.
 
-*Pour des raisons de confidentialité, aucune capture d'écran n'est présentée.*
-
-## Le problème, projet par projet
-
-Selon le cas, il fallait **remplacer** un processus entièrement papier, un suivi sur tableur, ou un logiciel existant devenu trop ancien et plus conforme aux exigences techniques. Un tableur ne permet ni une gestion en temps réel ni une visualisation sur carte : une vraie application, si.
+Selon le cas, il fallait **remplacer** un processus entièrement papier, un suivi sur tableur, ou un logiciel existant devenu trop ancien et plus conforme aux exigences techniques. Un tableur n'offre ni gestion en temps réel ni visualisation sur carte, ce que permet une application dédiée.
 
 ## Ma démarche
 
-Le travail ne commençait pas par le code, mais par **les utilisateurs** :
+Le travail ne commençait pas par le code, mais par **les utilisateurs** :
 
 - **Recueillir le besoin** directement auprès des équipes concernées, en réunissant toutes les parties prenantes.
 - **Prototyper** rapidement pour valider la bonne compréhension avant de développer.
-- **Livrer, recueillir les retours, faire évoluer** : les applications vivent en production pendant des années.
+- **Livrer, recueillir les retours, faire évoluer** : les applications vivent en production pendant des années.
 
 Sur mes deux dernières années, j'ai assuré **la responsabilité complète de plusieurs applications régionales**, de l'échange avec les utilisateurs à la mise en production.
 
-## Un exemple concret : le recrutement des réservistes
-
-Avant, tout passait par un tableur : lent, et chaque courriel envoyé à la main. J'ai conçu une application où **chaque département saisit lui-même les candidatures**, puis les inscrit à des séances de recrutement. Quand une séance est pleine, **un seul bouton** suffit au niveau régional pour envoyer à tous les candidats un courriel leur indiquant où se rendre. Les modèles de courriel sont modifiables. Cette partie du processus est désormais **entièrement automatisée**.
-
 ## Moderniser sans tout casser
 
-Une partie importante du travail consistait à **faire évoluer des applications de 5 à 10 ans** sans interrompre le service : réduction de la dette technique, puis migration progressive vers une architecture moderne.
+Une partie importante du travail consistait à **faire évoluer des applications de 5 à 10 ans** sans interrompre le service : réduction de la dette technique, puis migration progressive vers une architecture moderne.
 
 ## Transmettre
 
 J'ai formé **deux alternants**, en trois mois chacun environ, jusqu'à ce qu'ils soient opérationnels dans l'équipe. Arrivé le premier dans l'équipe, j'ai continué à répondre aux questions sur les projets plus anciens, jusqu'à mon départ.
 
-## Le résultat
+## Ce que j'apporte à votre projet
 
-Des processus **digitalisés et uniformisés**, des erreurs évitées, et un gain de temps considérable : c'est ce que les services concernés nous ont remonté, avec leurs remerciements. Les applications sont toujours en ligne et maintenues par l'équipe.
+Notre collaboration peut s'appuyer sur quatre ans de terrain : **partir des utilisateurs**, faire évoluer une application **sans interrompre le service**, et **transmettre** pour que vos équipes restent autonomes.

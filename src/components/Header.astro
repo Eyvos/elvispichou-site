@@ -11,7 +11,7 @@ const langOptions = locales.map((l) => ({ code: l, ...localeMeta[l], href: switc
 const home = localePath(lang, '/');
 ---
 
-<header class="sticky top-0 z-40 border-b border-line bg-bg/95 backdrop-blur transition-shadow data-[scrolled]:shadow-[0_8px_24px_-16px_rgb(0_0_0/0.6)]" data-header>
+<header class="sticky top-0 z-40 border-b border-line bg-bg transition-shadow data-[scrolled]:shadow-[0_8px_24px_-16px_rgb(0_0_0/0.6)]" data-header>
   <div class="container-page flex h-16 items-center justify-between gap-3">
     <!-- Marque -->
     <a href={home} class="flex h-10 shrink-0 items-center gap-2 font-display text-[15px] font-semibold tracking-tight min-[380px]:text-base" aria-label={fmt(h.brandLabel, { name: site.name })}>

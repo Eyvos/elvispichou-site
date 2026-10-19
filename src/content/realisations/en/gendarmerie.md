@@ -17,6 +17,22 @@ outcomes:
   - "Fewer errors, thanks to automated processes"
   - "Applications from 100 to 3,000 users depending on the project, plus a national application"
   - "A shared foundation reused for new projects"
+demo:
+  title: "Concrete example · Reservist recruitment"
+  note: "One example among my projects, illustrated with no real data: the applications are confidential."
+  ui:
+    candidate: "Candidate"
+    department: "Department"
+    session: "Session"
+    full: "Full"
+    send: "Invite the candidates"
+    sent: "Email sent"
+  steps:
+    - "Each department enters its own applications."
+    - "Candidates are booked into recruitment sessions."
+    - "Session full: a single button, at regional level."
+    - "Every candidate automatically receives an email telling them where to go."
+closing: "Are your teams still juggling paper and spreadsheets?"
 featured: false
 order: 2
 confidential: true
@@ -35,11 +51,7 @@ underTheHood:
 
 I was an employee of the French National Gendarmerie, in a department whose mission was precisely to **digitize the teams' processes**. I worked there on six projects: equipment, case and file management, planning and booking. Most were at regional scale, one at national scale, shared with the National Police and the Ministry of the Interior.
 
-*For confidentiality reasons, no screenshot is shown.*
-
-## The problem, project by project
-
-Depending on the case, we had to **replace** an entirely paper-based process, a spreadsheet-based tracking, or existing software that had become too old and no longer met technical requirements. A spreadsheet allows neither real-time management nor map visualization: a real application does.
+Depending on the case, we had to **replace** an entirely paper-based process, a spreadsheet-based tracking, or existing software that had become too old and no longer met technical requirements. A spreadsheet offers neither real-time management nor map visualization, which a dedicated application provides.
 
 ## My approach
 
@@ -51,10 +63,6 @@ The work didn't start with code, but with **the users**:
 
 Over my last two years, I was **fully responsible for several regional applications**, from talking with users to going into production.
 
-## A concrete example: reservist recruitment
-
-Before, everything went through a spreadsheet: slow, with every email sent by hand. I designed an application where **each department enters applications itself**, then registers candidates for recruitment sessions. When a session is full, **a single button** at regional level is enough to send every candidate an email telling them where to go. The email templates are editable. This part of the process is now **fully automated**.
-
 ## Modernizing without breaking everything
 
 An important part of the work was **evolving applications 5 to 10 years old** without interrupting service: reducing technical debt, then migrating gradually to a modern architecture.
@@ -63,6 +71,6 @@ An important part of the work was **evolving applications 5 to 10 years old** wi
 
 I trained **two apprentices**, about three months each, until they were operational in the team. Having been the first to join the team, I kept answering questions about older projects until I left.
 
-## The result
+## What I bring to your project
 
-**Digitized and standardized** processes, errors avoided, and considerable time saved: that is what the departments concerned reported back to us, with their thanks. The applications are still online and maintained by the team.
+Our collaboration can draw on four years in the field: **starting from the users**, evolving an application **without interrupting the service**, and **handing over** so your teams stay autonomous.

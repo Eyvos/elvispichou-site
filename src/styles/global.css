@@ -159,12 +159,36 @@
   .section-title {
     @apply mt-3 text-2xl font-medium sm:text-3xl;
   }
-  /* Rendu des contenus Markdown (études de cas) */
+  /* Rendu des contenus Markdown longs (mentions légales) */
   .prose-case h2 { @apply mt-12 mb-4 font-heading text-2xl font-semibold; }
   .prose-case h3 { @apply mt-8 mb-3 text-lg font-medium; }
   .prose-case p { @apply my-4 leading-relaxed text-muted; }
   .prose-case ul { @apply my-4 space-y-2 pl-5 list-disc text-muted marker:text-accent-fg; }
   .prose-case strong { @apply text-ink font-bold; }
+  /* Récit d'une étude de cas (Markdown) : chapitres numérotés, titre à gauche et texte à droite dès 1024 px. */
+  .story { counter-reset: chapter; }
+  .story h2 { counter-increment: chapter; @apply mt-12 border-t border-line pt-10 font-heading text-xl font-semibold sm:mt-10 sm:pt-8; }
+  .story h2::before { content: counter(chapter, decimal-leading-zero); @apply mb-2 block text-xs font-bold tracking-[0.1em] text-accent-fg; }
+  .story > :first-child { @apply mt-0 border-t-0 pt-0; }
+  .story p, .story ul { @apply mt-4 text-[17px] leading-7 text-muted sm:text-base sm:leading-relaxed; }
+  .story ul { @apply space-y-3 pl-5 list-disc marker:text-accent-fg; }
+  .story strong { @apply font-bold text-ink; }
+  .story h2 { scroll-margin-top: 7rem; }
+  /* Tablette : titre à gauche dès 768 px (colonne étroite) ; bureau : colonne plus large. */
+  @media (min-width: 768px) {
+    .story { display: grid; grid-template-columns: 11rem minmax(0, 42rem); }
+  }
+  @media (min-width: 1024px) {
+    .story { grid-template-columns: 15rem minmax(0, 42rem); }
+  }
+  @media (min-width: 768px) {
+    .story > h2 { grid-column: 1; padding-right: 2rem; }
+    .story > :not(h2) { grid-column: 2; }
+    .story > h2 + * { @apply mt-10 border-t border-line pt-8; }
+    .story > :first-child, .story > :first-child + * { @apply mt-0 border-t-0 pt-0; }
+    .story > h2 + p, .story > h2 + ul { margin-top: 2.5rem; }
+    .story > :first-child + p, .story > :first-child + ul { margin-top: 0; }
+  }
 }
 
 /* Carrousel à glisser (téléphone, D-118) : déborde jusqu'aux bords de l'écran, s'arrête sur chaque carte, sans barre de défilement.

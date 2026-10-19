@@ -50,12 +50,15 @@ Règle (D-17) : **toute nouvelle section de l'accueil reçoit une entrée de men
 
 Fichier : `src/content/realisations/<slug>.md`. Champs obligatoires validés au build (`src/content.config.ts`).
 
-Plan de lecture : **le problème → la démarche → le résultat**, puis le bloc repliable **« Sous le capot »** (stack, points techniques) pour
-les profils techniques. En-tête : cadre de navigateur avec capture et URL, lien « Voir le site ».
+Page **visuelle et scannable**, pensée comme un parcours de lecture à 3 vitesses (D-122, D-123) : **30 secondes** (en-tête : titre, résumé, fiche,
+visuel en grand dans sa colonne, 3 chiffres clés en simples filets, sans carte) → **2 minutes** (bandeau gris
+« le problème / les résultats » côte à côte, puis le **récit en chapitres numérotés**, titre à gauche et texte à droite : le Markdown, **sans doublon**)
+→ **« Sous le capot »** (replié, à plat) **juste sous les résultats**, dans la même bande, pour qu'il ne soit pas perdu en bas de page. Fin de page : **appel sobre (filet, question, bouton)**, dont la phrase
+(`closing`, dans le frontmatter) reprend le problème du prospect avec les mots du projet. Sans capture (Gendarmerie), le visuel du haut est une **démo animée** du recrutement des réservistes (`demo` dans le frontmatter : sur-titre qui présente l'exemple, 4 légendes, note d'illustration, libellés de l'interface ; composant `ProcessDemo.astro`), dans la même fenêtre de navigateur. **5 chapitres de récit au maximum** (D-128). **Pas de frise d'étapes ni de listes dupliquant le récit** : une idée, une fois.
 
 Règles :
 - **Aucun chiffre inventé.** Seuls les faits de `01-produit-et-positionnement.md` sont utilisables.
-- Gendarmerie : pas de capture ni de logo officiel (confidentialité) ; cadre « application interne · confidentiel ».
+- Gendarmerie : pas de capture ni de logo officiel (confidentialité) ; à la place, visuel « ce que mes applications ont remplacé » (avant / après, domaines des projets, mention de confidentialité).
 - Témoignage : champ `testimonial`, affiché seulement s'il existe.
 - Trik3r = cas phare (`featured: true`).
 
