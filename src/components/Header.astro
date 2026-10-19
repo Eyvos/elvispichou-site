@@ -14,7 +14,7 @@ const home = localePath(lang, '/');
 <header class="sticky top-0 z-40 border-b border-line bg-bg/95 backdrop-blur transition-shadow data-[scrolled]:shadow-[0_8px_24px_-16px_rgb(0_0_0/0.6)]" data-header>
   <div class="container-page flex h-16 items-center justify-between gap-3">
     <!-- Marque -->
-    <a href={home} class="flex shrink-0 items-center gap-2 font-display text-base font-semibold tracking-tight" aria-label={fmt(h.brandLabel, { name: site.name })}>
+    <a href={home} class="flex shrink-0 items-center gap-2 font-display text-[15px] font-semibold tracking-tight min-[380px]:text-base" aria-label={fmt(h.brandLabel, { name: site.name })}>
       <span>Elvis Pichou<span class="text-accent-fg">.</span></span>
     </a>
 
@@ -42,7 +42,7 @@ const home = localePath(lang, '/');
       </ul>
     </nav>
 
-    <div class="flex items-center gap-2 sm:gap-3">
+    <div class="flex items-center gap-1 min-[380px]:gap-2 sm:gap-3">
       <!-- Thème et langue : deux boutons-icônes collés l'un à l'autre -->
       <div class="flex items-center">
       <button
@@ -98,7 +98,7 @@ const home = localePath(lang, '/');
       </div>
       </div>
 
-      <a href={localePath(lang, '/#contact')} class="btn btn-primary !px-4 !py-2.5" data-umami-event="cta-header">
+      <a href={localePath(lang, '/#contact')} class="btn btn-primary !px-3.5 !py-2.5 min-[380px]:!px-4" data-umami-event="cta-header">
         <span class="xl:hidden">{h.ctaShort}</span><span class="hidden xl:inline">{h.ctaLong}</span>
       </a>
 
@@ -257,9 +257,13 @@ const home = localePath(lang, '/');
   }
   toggle.addEventListener('click', () => {
     const next = root.dataset.theme === 'light' ? 'dark' : 'light';
+    // Le changement de palette est instantané partout : sans cela, les éléments qui animent leurs couleurs (boutons, cartes) clignotent.
+    root.classList.add('theme-switching');
     root.dataset.theme = next;
     try { localStorage.setItem('theme', next); } catch {}
     syncTheme();
+    void root.offsetWidth;
+    setTimeout(() => root.classList.remove('theme-switching'), 80);
   });
   syncTheme();
 
@@ -325,11 +329,38 @@ const home = localePath(lang, '/');
     langList.addEventListener('focusout', (e) => { if (!langMenu.contains(e.relatedTarget as Node | null)) setLang(false); });
   }
 
-  // ── Changement de langue : on garde la section et les paramètres de la page courante ──
+  // ── Changement de langue : on reste exactement au même endroit de la page ──
+  // On mémorise la section sous l'en-tête et le décalage dans cette section (ou, sans section, la proportion défilée) ; la page de l'autre langue les relit. Aucune ancre dans l'URL.
+  const SCROLL_KEY = 'lang-scroll';
+  const sections = () => [...document.querySelectorAll<HTMLElement>('main section[id]')];
   document.querySelectorAll<HTMLAnchorElement>('[data-lang-switch]').forEach((a) => {
     const base = a.getAttribute('href')!;
-    a.addEventListener('click', () => { a.href = base + location.search + location.hash; });
+    a.href = base + location.search;
+    a.addEventListener('click', () => {
+      const line = header.offsetHeight + 1;
+      const current = sections().filter((el) => el.getBoundingClientRect().top <= line).pop();
+      const max = document.documentElement.scrollHeight - innerHeight;
+      const state = scrollY < 4 ? null : current
+        ? { id: current.id, off: line - current.getBoundingClientRect().top, t: Date.now() }
+        : { ratio: max > 0 ? scrollY / max : 0, t: Date.now() };
+      try { state ? sessionStorage.setItem(SCROLL_KEY, JSON.stringify(state)) : sessionStorage.removeItem(SCROLL_KEY); } catch {}
+    });
   });
+  try {
+    const saved = JSON.parse(sessionStorage.getItem(SCROLL_KEY) ?? 'null');
+    sessionStorage.removeItem(SCROLL_KEY);
+    if (saved && Date.now() - saved.t < 10000 && !location.hash) {
+      const restore = () => {
+        const el = saved.id ? document.getElementById(saved.id) : null;
+        const top = el
+          ? el.getBoundingClientRect().top + scrollY + saved.off - (header.offsetHeight + 1)
+          : (document.documentElement.scrollHeight - innerHeight) * (saved.ratio ?? 0);
+        scrollTo({ top, behavior: 'instant' });
+      };
+      restore();
+      addEventListener('load', restore, { once: true });
+    }
+  } catch {}
 
   if (targets.length && /^\/(en\/?)?$/.test(location.pathname)) {
     const visible = new Map<string, number>();

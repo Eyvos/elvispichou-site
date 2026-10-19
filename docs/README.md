@@ -15,6 +15,7 @@ toutes les décisions prises au fil des échanges avec Claude. Si le code et la 
 ## Règles d'usage
 
 0. **Tout nouveau contenu est écrit en français ET en anglais** (D-110) : textes dans `src/i18n/`, jamais en dur.
+0. **Toute nouvelle fonctionnalité doit être responsive sur tous les appareils** (D-114), vérifiée de 320 px à grand écran sans casser le PC.
 1. **Avant de modifier** : lire `04-decisions.md` et le fichier du domaine concerné.
 2. **Pendant** : ne pas contredire une décision « Actif » sans l'avoir mise en discussion.
 3. **Après** : lancer `npm run audit` (contrôles automatiques), corriger, puis mettre à jour la doc.

@@ -81,6 +81,8 @@
     -webkit-text-size-adjust: 100%;
   }
   body {
+    /* Filet de sécurité mobile : les animations d'apparition (décalage latéral) ne créent jamais de défilement horizontal. `clip` (et non `hidden`) garde l'en-tête collant. */
+    overflow-x: clip;
     @apply bg-bg text-ink font-sans text-base leading-7 antialiased;
   }
   /* Unbounded (large, expressif) pour les grands titres ; Space Grotesk, plus lisible, dès que le titre est petit. */
@@ -112,6 +114,9 @@
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
+
+/* Pendant le changement de thème : aucune transition, pour que tout bascule d'un bloc (pas de clignotement). */
+.theme-switching, .theme-switching *, .theme-switching *::before, .theme-switching *::after { transition: none !important; }
 
 @layer components {
   .container-page {
@@ -162,8 +167,12 @@
   transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1), filter 0.8s ease;
   transition-delay: var(--rd, 0ms);
 }
-.js [data-reveal="left"] { transform: translate3d(-48px, 0, 0); }
-.js [data-reveal="right"] { transform: translate3d(48px, 0, 0); }
+.js [data-reveal="left"] { transform: translate3d(-24px, 0, 0); }
+.js [data-reveal="right"] { transform: translate3d(24px, 0, 0); }
+@media (min-width: 1024px) {
+  .js [data-reveal="left"] { transform: translate3d(-48px, 0, 0); }
+  .js [data-reveal="right"] { transform: translate3d(48px, 0, 0); }
+}
 .js [data-reveal="zoom"] { transform: scale(0.92) translate3d(0, 24px, 0); }
 .js [data-reveal="pop"] { transform: scale(0.4) rotate(-120deg); transition-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1); }
 .js [data-reveal="title"] { transform: translate3d(0, 40px, 0); filter: blur(10px); }

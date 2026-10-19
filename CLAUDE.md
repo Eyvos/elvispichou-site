@@ -22,6 +22,10 @@ La documentation dans `docs/` est la source de vérité (design, structure, déc
    `src/pages/[...lang]/`, étude de cas dans `src/content/realisations/fr/` **et** `en/`. Guide : `docs/05-technique.md` § Traduction. `npm run audit`
    (règles `i18n-*`) doit passer.
 
+7. **Responsive (D-114)** : toute nouvelle fonctionnalité, section ou page doit être irréprochable sur **tous les appareils** (320 px → grand écran,
+   portrait et paysage, tactile et souris) **sans casser le rendu PC**. Concevoir mobile d'abord, puis vérifier à 320, 375, 768, 1024 et 1280 px :
+   aucun défilement horizontal, rien de coupé ni de superposé, cibles tactiles ≥ 40 px, champs à 16 px en tactile.
+
 ## Rappels essentiels
 
 - Texte et labels en Inter ; Space Mono seulement pour les URL, puces de stack et glyphe de code ; jamais de texte semi-transparent.
