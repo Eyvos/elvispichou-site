@@ -272,21 +272,29 @@ const scriptTexts = {
       }
     });
 
-    const die = createDie(canvas, {
-      reducedMotion: reduced,
-      onResult(value) {
-        let next = value === 20 ? VERBS[0] : VERBS[value % VERBS.length];
-        if (next === current) next = VERBS[(VERBS.indexOf(next) + 1) % VERBS.length];
-        setVerb(next);
-        if (status) status.textContent = T.dieStatus.replace('{value}', String(value)).replace('{verb}', next);
-      },
-    });
+    // Le dé n'existe que là où il est affiché (cartes côte à côte, dès 768 px, D-119) : sur téléphone, aucun dessin ni lancer.
+    const wide = matchMedia('(min-width: 768px)');
+    let die: ReturnType<typeof createDie> | undefined;
+    const ensureDie = () => {
+      if (die || !wide.matches) return;
+      die = createDie(canvas, {
+        reducedMotion: reduced,
+        onResult(value) {
+          let next = value === 20 ? VERBS[0] : VERBS[value % VERBS.length];
+          if (next === current) next = VERBS[(VERBS.indexOf(next) + 1) % VERBS.length];
+          setVerb(next);
+          if (status) status.textContent = T.dieStatus.replace('{value}', String(value)).replace('{verb}', next);
+        },
+      });
+      if (!reduced) setTimeout(() => die?.roll(), 900);
+    };
+    ensureDie();
+    wide.addEventListener('change', ensureDie);
 
     button.addEventListener('click', () => {
       ticks = MAX_TICKS; // l'utilisateur prend la main : la rotation automatique s'arrête
-      die.roll();
+      die?.roll();
       (window as any).umami?.track('die-roll');
     });
-    if (!reduced) setTimeout(die.roll, 900);
   }
 </script>

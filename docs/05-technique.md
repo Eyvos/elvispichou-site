@@ -81,7 +81,7 @@ l'exception dans `02-design-system.md`.
 
 ## Qualité et CI (`.github/workflows/ci.yml`)
 
-Build (avec `astro check`), Lighthouse CI sur `/`, `/profil/`, une étude de cas et leurs versions `/en/` : performance ≥ 95, accessibilité = 100,
+Build (avec `astro check`), Lighthouse CI (médiane de 3 passages par page, D-121) sur `/`, `/profil/`, une étude de cas et leurs versions `/en/` : performance ≥ 95, accessibilité = 100,
 bonnes pratiques ≥ 95, SEO = 100. Le contrôle `npm run audit` est exécuté avant.
 
 ## Limites connues
