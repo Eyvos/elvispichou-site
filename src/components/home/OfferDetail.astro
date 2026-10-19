@@ -9,11 +9,14 @@ const o18 = t.offers;
 const offers = offerIds.map((id) => ({ id, ...o18.items[id], meta: offerMeta[id] }));
 ---
 
-<section id="offre" class="border-y border-line bg-surface pt-10 pb-16 sm:pt-12 sm:pb-20" data-offers>
+<section id="offre" class="border-y border-line bg-surface pt-8 pb-10 sm:pt-12 sm:pb-20" data-offers>
   <div class="container-page">
-    <div class="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+    {/* Sous 1024 px, l'enveloppe s'efface (`contents`) : les onglets deviennent enfants de la section et restent collés sous l'en-tête
+        pendant la lecture du panneau, pour changer d'offre sans remonter (D-118). */}
+    <div class="max-lg:contents lg:flex lg:flex-row lg:items-center lg:justify-between">
       <h2 class="text-3xl font-medium sm:text-4xl">{o18.title}</h2>
-      <div role="tablist" aria-label={o18.tablistLabel} class="flex max-w-full flex-col gap-1.5 rounded-[1.6rem] border border-line bg-bg p-1.5 sm:inline-flex sm:flex-row sm:self-start sm:rounded-full">
+      <div data-tabs-bar class="z-20 transition-shadow max-lg:mt-4 max-lg:-mx-[var(--gutter)] max-lg:bg-surface max-lg:px-[var(--gutter)] max-lg:py-1.5 stick:sticky stick:top-16 data-[stuck]:shadow-[0_10px_20px_-16px_rgb(0_0_0/0.6)]">
+      <div role="tablist" aria-label={o18.tablistLabel} class="grid max-w-full grid-cols-2 gap-1 rounded-full border border-line bg-bg p-1 sm:inline-flex sm:flex-row sm:gap-1.5 sm:p-1.5">
         {offers.map((o, i) => {
           const TabIcon = o.meta.tabIcon;
           return (
@@ -25,14 +28,15 @@ const offers = offerIds.map((id) => ({ id, ...o18.items[id], meta: offerMeta[id]
               aria-controls={`offre-${o.id}`}
               aria-selected={i === 0 ? 'true' : 'false'}
               tabindex={i === 0 ? 0 : -1}
-              class="inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-bold transition duration-200 active:scale-95 aria-selected:bg-accent aria-selected:text-accent-ink hover:not-aria-selected:-translate-y-0.5 hover:not-aria-selected:bg-surface hover:not-aria-selected:text-accent-fg"
+              class="inline-flex min-h-10 items-center justify-center gap-2 rounded-full px-2 py-1.5 text-center text-[13px] leading-tight font-bold transition duration-200 sm:min-h-11 sm:px-5 sm:py-3 sm:text-sm active:scale-95 aria-selected:bg-accent aria-selected:text-accent-ink hover:not-aria-selected:-translate-y-0.5 hover:not-aria-selected:bg-surface hover:not-aria-selected:text-accent-fg"
               data-umami-event="offre-tab"
               data-umami-event-offre={o.id}
             >
-              <TabIcon class="size-4" aria-hidden="true" />{o.tab}
+              <TabIcon class="hidden size-4 shrink-0 sm:block" aria-hidden="true" />{o.tab}
             </button>
           );
         })}
+      </div>
       </div>
     </div>
 
@@ -45,11 +49,11 @@ const offers = offerIds.map((id) => ({ id, ...o18.items[id], meta: offerMeta[id]
         data-offer={o.id}
         hidden={i !== 0}
         tabindex="0"
-        class="mt-10"
+        class="mt-6 sm:mt-10"
       >
-        <div class="grid gap-x-16 gap-y-10 lg:grid-cols-[5fr_6fr] lg:grid-rows-[auto_1fr_auto] lg:gap-y-6">
+        <div class="grid gap-x-10 gap-y-8 sm:gap-y-10 md:grid-cols-[5fr_6fr] md:grid-rows-[auto_1fr_auto] md:gap-y-6 lg:gap-x-16">
           <!-- Accroche -->
-          <div class="lg:col-start-1 lg:row-start-1">
+          <div class="md:col-start-1 md:row-start-1">
             <p class="inline-flex rounded-full bg-ink px-4 py-1.5 text-sm font-bold tracking-[0.06em] text-bg uppercase">{o.audience}</p>
             <h3 class="mt-4 font-sans text-2xl leading-[1.2] font-semibold sm:text-3xl">{o.headline}</h3>
             <p class="mt-3 text-lg leading-relaxed text-muted">{o.intro}</p>
@@ -57,7 +61,7 @@ const offers = offerIds.map((id) => ({ id, ...o18.items[id], meta: offerMeta[id]
           </div>
 
           <!-- Bénéfices -->
-          <div class="lg:col-start-2 lg:row-span-2 lg:row-start-1">
+          <div class="md:col-start-2 md:row-span-2 md:row-start-1">
             <h4 class="font-sans text-xl font-semibold">{o18.whyTitle}</h4>
             <ul class="mt-3">
               {o.why.map((w, wi) => {
@@ -78,22 +82,26 @@ const offers = offerIds.map((id) => ({ id, ...o18.items[id], meta: offerMeta[id]
           </div>
 
           <!-- Méthode : frise pleine largeur, mêmes pastilles d'icône que les raisons -->
-          <div class="border-t border-line pt-6 lg:col-span-2 lg:row-start-3">
+          <div class="border-t border-line pt-6 md:col-span-2 md:row-start-3">
             <h4 class="font-sans text-xl font-semibold">{o18.howTitle}</h4>
-            <ol class="mt-4 grid gap-8 md:grid-cols-3 md:gap-x-8">
+            {/* Téléphone : frise verticale (pastille à gauche, trait vers l'étape suivante) ; tablette et bureau : frise horizontale. */}
+            <ol class="mt-4 grid md:grid-cols-3 md:gap-x-8">
               {o.steps.map((s, k) => {
                 const StepIcon = o.meta.stepIcons[k];
+                const last = k === o.steps.length - 1;
                 return (
-                  <li>
-                    <div class="flex items-center gap-4">
+                  <li class="flex gap-4 md:block">
+                    <div class="flex flex-col items-center md:flex-row md:gap-4">
                       <span class="grid size-11 shrink-0 place-items-center rounded-2xl bg-accent-soft text-accent-fg">
                         <StepIcon class="size-6" aria-hidden="true" />
                       </span>
-                      {k < o.steps.length - 1 && <span class="hidden h-px flex-1 bg-line-strong md:block" aria-hidden="true"></span>}
+                      {!last && <span class="my-2 w-px flex-1 bg-line-strong md:my-0 md:h-px md:w-auto" aria-hidden="true"></span>}
                     </div>
-                    <p class="mt-4 text-xs font-bold tracking-[0.08em] text-accent-fg uppercase">{o18.step} {k + 1}</p>
-                    <h5 class="mt-1 font-heading text-lg leading-tight font-semibold tracking-tight">{s.title}</h5>
-                    <p class="mt-2 text-base leading-snug text-muted">{s.text}</p>
+                    <div class:list={['min-w-0 pt-2.5 md:pt-0', !last && 'pb-7 md:pb-0']}>
+                      <p class="text-xs font-bold tracking-[0.08em] text-accent-fg uppercase md:mt-4">{o18.step} {k + 1}</p>
+                      <h5 class="mt-1 font-heading text-lg leading-tight font-semibold tracking-tight">{s.title}</h5>
+                      <p class="mt-2 text-base leading-snug text-muted">{s.text}</p>
+                    </div>
                   </li>
                 );
               })}
@@ -101,8 +109,8 @@ const offers = offerIds.map((id) => ({ id, ...o18.items[id], meta: offerMeta[id]
           </div>
 
           <!-- Appel à l'action : à côté de la promesse sur grand écran, après la méthode sur mobile -->
-          <div class="lg:col-start-1 lg:row-start-2 lg:self-start">
-            <a href={localePath(lang, o.meta.cta)} class="btn btn-primary !px-7 !py-4 !text-base" data-umami-event={`cta-offre-${o.id}`}>
+          <div class="md:col-start-1 md:row-start-2 md:self-start">
+            <a href={localePath(lang, o.meta.cta)} class="btn btn-primary !px-7 !py-4 !text-base max-sm:w-full" data-umami-event={`cta-offre-${o.id}`}>
               {o.cta} <ArrowRight class="size-5" aria-hidden="true" />
             </a>
           </div>
@@ -129,6 +137,20 @@ const offers = offerIds.map((id) => ({ id, ...o18.items[id], meta: offerMeta[id]
       });
       panels.forEach((p) => (p.hidden = p.dataset.offer !== id));
     }
+
+    // Onglets collants (téléphone, tablette) : ombre quand ils flottent au-dessus du texte ; un changement d'onglet ramène au début du panneau.
+    const bar = root.querySelector<HTMLElement>('[data-tabs-bar]')!;
+    const header = document.querySelector<HTMLElement>('[data-header]');
+    const isStuck = () => getComputedStyle(bar).position === 'sticky' && bar.getBoundingClientRect().top <= (header?.offsetHeight ?? 64) + 0.5 && panels.some((p) => !p.hidden && p.getBoundingClientRect().top < bar.getBoundingClientRect().bottom + 8);
+    const syncStuck = () => bar.toggleAttribute('data-stuck', isStuck());
+    addEventListener('scroll', syncStuck, { passive: true });
+    syncStuck();
+    const toPanelTop = () => {
+      if (!isStuck()) return;
+      const panel = panels.find((p) => !p.hidden)!;
+      const top = panel.getBoundingClientRect().top + scrollY - (header?.offsetHeight ?? 64) - bar.offsetHeight - 16;
+      scrollTo({ top, behavior: 'instant' });
+    };
     const scrollToOffers = () => root!.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' });
     const fromHash = () => {
       const id = location.hash.replace('#offre-', '');
@@ -138,6 +160,7 @@ const offers = offerIds.map((id) => ({ id, ...o18.items[id], meta: offerMeta[id]
     tabs.forEach((tab, i) => {
       tab.addEventListener('click', () => {
         select(tab.dataset.offer!);
+        toPanelTop();
         history.replaceState(null, '', `#offre-${tab.dataset.offer}`);
       });
       tab.addEventListener('keydown', (e) => {

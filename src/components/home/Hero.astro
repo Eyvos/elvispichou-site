@@ -18,16 +18,16 @@ const scriptTexts = {
 };
 ---
 
-<section id="accueil" data-i18n={JSON.stringify(scriptTexts)} class="pt-8 pb-16 sm:pt-12 lg:flex lg:min-h-[calc(100svh-4rem)] lg:py-14 tall:py-6">
-  <div class="container-page flex flex-col gap-10 lg:justify-between lg:gap-12 tall:gap-8">
+<section id="accueil" data-i18n={JSON.stringify(scriptTexts)} class="pt-6 pb-10 sm:pt-12 sm:pb-16 lg:flex lg:min-h-[calc(100svh-4rem)] lg:py-14 tall:py-6">
+  <div class="container-page flex flex-col gap-8 sm:gap-10 lg:justify-between lg:gap-12 tall:gap-8">
     <div class="grid gap-x-12 gap-y-6 lg:gap-x-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
       {/* Identité : photo, métier et preuve, regroupés sur le côté (D-44). Sur mobile : au-dessus du titre. */}
-      <div data-reveal="right" data-reveal-delay="200" class="order-first flex items-center gap-4 lg:order-none lg:col-start-2 lg:row-start-1 lg:gap-8 tall:w-[270px] tall:flex-col tall:items-start tall:gap-8">
+      <div data-reveal="right" data-reveal-delay="200" class="order-first flex items-center gap-5 lg:order-none lg:col-start-2 lg:row-start-1 lg:gap-8 tall:w-[270px] tall:flex-col tall:items-start tall:gap-8">
         {/* Le conteneur ne rogne pas : la pastille de lieu dépasse à moitié sous la photo (D-56). */}
-        <div class="relative size-[72px] shrink-0 sm:size-20 lg:size-auto lg:aspect-[4/5] lg:w-[150px] tall:aspect-auto tall:h-[280px] tall:w-full">
+        <div class="relative aspect-[4/5] w-28 shrink-0 sm:w-32 lg:w-[150px] tall:aspect-auto tall:h-[280px] tall:w-full">
           <div class="absolute inset-0 overflow-hidden rounded-2xl border border-line bg-surface-2 lg:rounded-card">
             {photo ? (
-              <Image src={photo} alt={h.photoAlt} widths={[270, 540]} sizes="(min-width: 1024px) 270px, 80px" loading="eager" fetchpriority="high" class="size-full object-cover object-[50%_20%]" />
+              <Image src={photo} alt={h.photoAlt} widths={[270, 540]} sizes="(min-width: 1024px) 270px, 128px" loading="eager" fetchpriority="high" class="size-full object-cover object-[50%_20%]" />
             ) : (
               // Sans photo : monogramme (comme sur /profil). En développement, rappel du fichier attendu.
               <div class="grid size-full place-items-center">
@@ -66,7 +66,7 @@ const scriptTexts = {
           </span>
         </h1>
         {/* Contrôle de l'animation du verbe (RGAA 13.8) : posé par script juste après la dernière ligne du titre (texte fixe, jamais recouvert par le verbe). */}
-        <button type="button" data-verb-pause aria-pressed="false" class="group absolute top-0 left-0 inline-grid size-6 place-items-center rounded-full text-muted transition hover:text-ink">
+        <button type="button" data-verb-pause aria-pressed="false" class="group absolute top-0 left-0 inline-grid size-6 place-items-center rounded-full text-muted transition before:absolute before:-inset-2.5 before:content-[''] hover:text-ink">
           <Pause class="size-3.5" data-icon-pause aria-hidden="true" /><Play class="hidden size-3.5" data-icon-play aria-hidden="true" />
           <span class="sr-only" data-verb-pause-label>{h.pauseLabel}</span>
           <span aria-hidden="true" data-verb-pause-tip class="pointer-events-none invisible absolute top-full right-0 z-20 mt-2 rounded-lg bg-ink px-3 py-1.5 text-[13px] leading-snug font-semibold whitespace-nowrap text-bg opacity-0 transition group-hover:visible group-hover:opacity-100 group-focus-visible:visible group-focus-visible:opacity-100 data-[show]:visible data-[show]:opacity-100">
@@ -76,44 +76,46 @@ const scriptTexts = {
       </div>
     </div>
 
-    {/* Cartes + accès profil forment un seul groupe serré (D-53) ; l'espace libre reste entre ce groupe et le titre. */}
-    <div class="flex flex-col gap-6 lg:gap-5">
-    <div class="relative grid grid-cols-1 gap-4 lg:grid-cols-2">
+    {/* Cartes + accès profil forment un seul groupe serré (D-53) ; l'espace libre reste entre ce groupe et le titre.
+        Téléphone : deux cartes distinctes empilées, badge dans la carte, sans dé (D-119). Tablette : côte à côte, comme sur bureau. */}
+    <div class="flex flex-col gap-5 sm:gap-6 lg:gap-5">
+    <div class="relative grid grid-cols-1 gap-5 md:grid-cols-2 md:gap-4">
       {offers.map((o, i) => (
         <>
           <article
             data-reveal="zoom"
             data-reveal-delay={i === 0 ? '350' : '500'}
             class:list={[
-              'group lift relative flex min-w-0 flex-col rounded-card p-6 min-[400px]:p-7 sm:p-9',
+              'group lift relative flex min-w-0 flex-col rounded-card p-6 min-[400px]:p-7 lg:p-9',
               i === 0
-                ? 'bg-accent pb-20 text-accent-ink lg:pb-9'
-                : 'border border-line-strong bg-surface-2 pt-16 text-ink lg:pt-9',
+                ? 'bg-accent text-accent-ink md:pb-7 lg:pb-9'
+                : 'border border-line-strong bg-surface-2 text-ink md:pt-7 lg:pt-9',
             ]}
           >
             <span
-              class="absolute top-0 left-7 z-10 max-w-[11rem] -translate-y-1/2 rounded-2xl bg-ink px-4 py-1.5 text-center text-sm leading-tight font-bold tracking-wide text-bg uppercase xl:text-[15px] ring-4 ring-bg sm:left-9 sm:max-w-none sm:rounded-full sm:whitespace-nowrap"
+              class="mb-4 self-start rounded-full bg-ink px-4 py-1.5 text-sm leading-tight font-bold tracking-wide text-bg uppercase md:absolute md:top-0 md:left-7 md:z-10 md:mb-0 md:-translate-y-1/2 md:whitespace-nowrap md:ring-4 md:ring-bg lg:left-9 xl:text-[15px]"
             >
               {o.target}
             </span>
             <div class="flex items-start gap-3">
               <span class="font-display text-3xl leading-none font-semibold xl:text-4xl">{o.num}</span>
-              <h2 class="font-heading text-2xl leading-tight font-semibold tracking-tight lg:min-h-[2.5em] xl:text-[clamp(1.25rem,1.9vw,1.625rem)]">{o.title}</h2>
+              <h2 class="font-heading text-[1.375rem] leading-tight font-semibold tracking-tight md:min-h-[3.75em] md:text-2xl lg:min-h-[2.5em] xl:text-[clamp(1.25rem,1.9vw,1.625rem)]">{o.title}</h2>
             </div>
             <div class:list={['flex flex-1 flex-col', i === 0 ? 'lg:pr-6' : 'lg:pl-6']}>
+              {/* Téléphone : la promesse sans encadré ; tablette et bureau : encadré. */}
               <p
                 class:list={[
-                  'mt-5 rounded-2xl px-5 py-4 text-base leading-relaxed xl:text-lg lg:flex lg:min-h-[5.5rem] lg:items-center',
-                  i === 0 ? 'bg-[color-mix(in_srgb,var(--color-accent)_78%,black)]' : 'bg-surface',
+                  'mt-3 text-base leading-relaxed md:mt-5 md:rounded-2xl md:px-5 md:py-4 xl:text-lg lg:flex lg:min-h-[5.5rem] lg:items-center',
+                  i === 0 ? 'md:bg-[color-mix(in_srgb,var(--color-accent)_78%,black)]' : 'md:bg-surface',
                 ]}
               >
                 {o.pitch}
               </p>
-              <hr class:list={['mt-6 border-t-2', i === 0 ? 'border-accent-ink' : 'border-line-strong']} />
-              <ul class="mt-5 mb-6 space-y-2 text-[15px] leading-relaxed xl:text-base">
+              <hr class:list={['mt-6 hidden border-t-2 md:block', i === 0 ? 'border-accent-ink' : 'border-line-strong']} />
+              <ul class="mt-4 mb-5 space-y-1.5 text-[15px] leading-snug md:mt-5 md:mb-6 md:space-y-2 md:leading-relaxed xl:text-base">
                 {o.points.map((p) => (
                   <li class="flex items-start gap-2">
-                    <Check class="mt-[3px] size-[18px] shrink-0" aria-hidden="true" />
+                    <Check class="mt-[2px] size-4 shrink-0 md:mt-[3px] md:size-[18px]" aria-hidden="true" />
                     {p}
                   </li>
                 ))}
@@ -133,15 +135,15 @@ const scriptTexts = {
           </article>
 
           {i === 0 && (
-            /* Le dé : dans le flux entre les cartes empilées (à droite, pour ne pas chevaucher le badge de la carte 2), centré sur la jointure côte à côte. */
-            <div class="pointer-events-none relative z-10 -my-[54px] flex justify-end pr-3 sm:pr-8 md:-my-[62px] lg:absolute lg:inset-0 lg:m-0 lg:items-center lg:justify-center lg:pr-0">
+            /* Le dé : centré sur la jointure des cartes côte à côte (tablette, bureau) ; absent sur téléphone, où les cartes sont empilées (D-119). */
+            <div class="pointer-events-none absolute inset-0 z-10 hidden items-center justify-center md:flex">
               <button
                 type="button"
                 data-die-btn
                 data-reveal="pop" data-reveal-delay="800" class="pointer-events-auto grid cursor-pointer place-items-center rounded-full bg-bg p-2.5 transition duration-300 hover:scale-110 hover:-rotate-12 active:scale-95"
                 aria-label={h.dieLabel}
               >
-                <canvas data-die width="208" height="208" class="size-[88px] text-ink md:size-[104px]" aria-hidden="true"></canvas>
+                <canvas data-die width="208" height="208" class="size-[104px] text-ink" aria-hidden="true"></canvas>
               </button>
               <p class="sr-only" role="status" data-die-status></p>
             </div>
@@ -150,14 +152,15 @@ const scriptTexts = {
       ))}
     </div>
 
-    {/* Accès profil : volontairement discret (D-45), sans bordure, plus petit que les offres. */}
-    <div data-reveal="up" data-reveal-delay="650" class="flex flex-col gap-4 rounded-card bg-surface px-6 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-8">
-      <div>
-        <h2 class="font-heading text-base font-semibold sm:text-lg">{h.profileTitle}</h2>
-        <p class="mt-1 text-[15px] text-muted">{h.profileText}</p>
+    {/* Accès profil : volontairement discret (D-45), sans bordure, plus petit que les offres.
+        Téléphone : une ligne fine (question + flèche), tout le bloc est touchable (D-119). */}
+    <div data-reveal="up" data-reveal-delay="650" class="relative flex items-center justify-between gap-4 rounded-2xl bg-surface px-4 py-3 sm:rounded-card sm:px-8 sm:py-5">
+      <div class="min-w-0">
+        <h2 class="font-heading text-[15px] leading-snug font-semibold sm:text-lg">{h.profileTitle}</h2>
+        <p class="mt-1 hidden text-[15px] text-muted sm:block">{h.profileText}</p>
       </div>
-      <a href={localePath(lang, '/profil')} class="btn btn-ghost shrink-0 px-6 py-3 text-sm" data-umami-event="profil-home">
-        {h.profileCta} <ArrowRight class="size-4" aria-hidden="true" />
+      <a href={localePath(lang, '/profil')} class="btn btn-ghost shrink-0 px-6 py-3 text-sm max-sm:!border-0 max-sm:!bg-transparent max-sm:!p-2 max-sm:text-accent-fg max-sm:!shadow-none max-sm:after:absolute max-sm:after:inset-0 max-sm:after:rounded-2xl" data-umami-event="profil-home">
+        <span class="max-sm:sr-only">{h.profileCta}</span> <ArrowRight class="size-5 sm:size-4" aria-hidden="true" />
       </a>
     </div>
     </div>

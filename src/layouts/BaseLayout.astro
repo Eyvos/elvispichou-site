@@ -62,7 +62,7 @@ const umamiSrc = import.meta.env.PUBLIC_UMAMI_SRC ?? 'https://cloud.umami.is/scr
 <html lang={lang} data-theme="dark">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
@@ -84,11 +84,11 @@ const umamiSrc = import.meta.env.PUBLIC_UMAMI_SRC ?? 'https://cloud.umami.is/scr
          n'apparaissent que si la page n'est pas prête au bout de 0,45 s. Pose aussi `.js` pour les apparitions. -->
     <script is:inline>
       (function () {
-        var d = document, h = d.documentElement, shown = false, tick;
+        var d = document, h = d.documentElement, shown = false, ready = false, tick;
         h.classList.add('js', 'loading');
         setTimeout(function () { if (!window.__reveal) h.classList.remove('js'); }, 6000);
         var timer = setTimeout(function () {
-          if (d.readyState === 'complete') return;
+          if (ready) return;
           shown = true;
           h.classList.add('loader-show');
           tick = setInterval(function () {
@@ -97,6 +97,8 @@ const umamiSrc = import.meta.env.PUBLIC_UMAMI_SRC ?? 'https://cloud.umami.is/scr
           }, 110);
         }, 450);
         function finish() {
+          if (ready) return;
+          ready = true;
           clearTimeout(timer);
           if (!shown) { h.classList.remove('loading'); return; }
           shown = false;
@@ -106,6 +108,12 @@ const umamiSrc = import.meta.env.PUBLIC_UMAMI_SRC ?? 'https://cloud.umami.is/scr
           h.classList.add('loader-done');
           setTimeout(function () { h.classList.remove('loading', 'loader-show', 'loader-done'); }, 1000);
         }
+        // Page lisible = HTML analysé et polices chargées (au plus 2,5 s d'attente des polices) ; les images ne retiennent plus l'écran (réseau mobile).
+        d.addEventListener('DOMContentLoaded', function () {
+          var fonts = d.fonts && d.fonts.ready;
+          if (!fonts) return finish();
+          Promise.race([fonts, new Promise(function (r) { setTimeout(r, 2500); })]).then(finish);
+        });
         addEventListener('load', finish);
         setTimeout(finish, 15000);
       })();

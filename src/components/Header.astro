@@ -14,7 +14,7 @@ const home = localePath(lang, '/');
 <header class="sticky top-0 z-40 border-b border-line bg-bg/95 backdrop-blur transition-shadow data-[scrolled]:shadow-[0_8px_24px_-16px_rgb(0_0_0/0.6)]" data-header>
   <div class="container-page flex h-16 items-center justify-between gap-3">
     <!-- Marque -->
-    <a href={home} class="flex shrink-0 items-center gap-2 font-display text-[15px] font-semibold tracking-tight min-[380px]:text-base" aria-label={fmt(h.brandLabel, { name: site.name })}>
+    <a href={home} class="flex h-10 shrink-0 items-center gap-2 font-display text-[15px] font-semibold tracking-tight min-[380px]:text-base" aria-label={fmt(h.brandLabel, { name: site.name })}>
       <span>Elvis Pichou<span class="text-accent-fg">.</span></span>
     </a>
 
@@ -62,7 +62,7 @@ const home = localePath(lang, '/');
       </button>
 
       <!-- Sélecteur de langue : bouton rond (icône de traduction 文A) qui ouvre la liste des langues -->
-      <div class="relative hidden sm:block" data-lang-menu>
+      <div class="relative" data-lang-menu>
         <button
           type="button"
           data-lang-toggle
@@ -98,7 +98,8 @@ const home = localePath(lang, '/');
       </div>
       </div>
 
-      <a href={localePath(lang, '/#contact')} class="btn btn-primary !px-3.5 !py-2.5 min-[380px]:!px-4" data-umami-event="cta-header">
+      <!-- Sous 360 px, la place manque : l'action reste dans le menu burger (D-119). -->
+      <a href={localePath(lang, '/#contact')} class="btn btn-primary !px-4 !py-2.5 max-[359px]:hidden" data-umami-event="cta-header">
         <span class="xl:hidden">{h.ctaShort}</span><span class="hidden xl:inline">{h.ctaLong}</span>
       </a>
 
@@ -122,10 +123,9 @@ const home = localePath(lang, '/');
   <div id="mobile-menu" hidden class="absolute inset-x-0 top-full h-[calc(100dvh-4rem)] overflow-y-auto overscroll-contain border-t border-line bg-bg lg:hidden">
     <nav aria-label={h.navMobile} class="container-page flex min-h-full flex-col py-6">
       <ul class="divide-y divide-line">
-        {nav.map((item, i) => (
+        {nav.map((item) => (
           <li>
             <a href={localePath(lang, item.href)} data-nav-link data-mobile-link class="group flex items-center gap-4 py-4 font-heading text-xl font-semibold aria-[current=true]:text-accent-fg">
-              <span aria-hidden="true" class="w-6 text-sm font-bold text-muted group-aria-[current=true]:text-accent-fg">{String(i + 1).padStart(2, '0')}</span>
               <span class="flex-1">{h.nav[item.key]}</span>
               <ArrowRight class="size-5 text-muted" aria-hidden="true" />
             </a>
@@ -138,7 +138,6 @@ const home = localePath(lang, '/');
             aria-current={onProfile ? 'page' : undefined}
             class="flex items-center gap-4 py-4 text-base font-semibold text-muted aria-[current=page]:text-ink"
           >
-            <span class="w-6" aria-hidden="true"></span>
             <span class="flex-1">{t.common.technicalProfile}</span>
             <ArrowRight class="size-5" aria-hidden="true" />
           </a>
@@ -146,22 +145,6 @@ const home = localePath(lang, '/');
       </ul>
 
       <div class="mt-auto flex flex-col gap-4 pt-8">
-        <div role="group" aria-label={h.languageMenu} class="flex items-center gap-2 rounded-full border border-line-strong p-1.5">
-          <Languages class="ml-3 size-5 shrink-0 text-muted" aria-hidden="true" />
-          {langOptions.map((o) => (
-            <a
-              href={o.href}
-              lang={o.code}
-              hreflang={o.code}
-              data-lang-switch
-              data-mobile-link
-              aria-current={o.current ? 'true' : undefined}
-              class="flex-1 rounded-full px-4 py-2.5 text-center text-base font-semibold aria-[current=true]:bg-accent aria-[current=true]:text-accent-ink"
-              data-umami-event="lang-switch"
-              data-umami-event-lang={o.code}
-            >{o.label}</a>
-          ))}
-        </div>
         <a href={localePath(lang, '/#contact')} data-mobile-link class="btn btn-primary w-full" data-umami-event="cta-header-mobile">{h.ctaLong}</a>
       </div>
     </nav>
@@ -193,8 +176,10 @@ const home = localePath(lang, '/');
   .nav-link:hover {
     color: var(--color-ink);
   }
-  .nav-link:hover::after {
-    transform: scaleX(0.4);
+  @media (hover: hover) {
+    .nav-link:hover::after {
+      transform: scaleX(0.4);
+    }
   }
   .nav-link[aria-current='true'],
   .nav-link[aria-current='page'] {
@@ -205,8 +190,10 @@ const home = localePath(lang, '/');
     transform: scaleX(1);
   }
   /* Icône de langue : petit balancement au survol. */
-  .lang-btn:hover .lang-icon {
-    animation: lang-wiggle 0.6s ease-in-out;
+  @media (hover: hover) {
+    .lang-btn:hover .lang-icon {
+      animation: lang-wiggle 0.6s ease-in-out;
+    }
   }
   @keyframes lang-wiggle {
     0% { transform: rotate(0) scale(1); }

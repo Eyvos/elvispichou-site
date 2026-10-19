@@ -98,12 +98,18 @@ Hiérarchie d'accueil (D-40, D-44) : sur-titre « Développeur web freelance » 
 | Frise méthode | 4 cercles `accent` avec icône Lucide, numéro, pointillés, pastille « ce que vous recevez » |
 | Icônes | `@lucide/astro`, trait fin, `aria-hidden` (décoratives) |
 
+## Téléphone et tablette (D-118)
+
+Règles et motifs dans `06-experience-mobile.md`. En bref : aucun bouton flottant (D-119), onglets collants (`stick:`), contrôles
+segmentés fins, carrousel `swipe` pour la réassurance, cartes distinctes sans dé sur téléphone, espacements serrés, pied de page gris
+`surface` (comme les sections grises, D-120), marge latérale `--gutter` (zones sûres iOS), mouvements au survol réservés à `@media (hover: hover)`.
+
 ## Le dé (D-12, D-21)
 
-- Icosaèdre en fil de fer dessiné sur `<canvas>` (`src/lib/die.ts`), **grand** (104 px, 88 px sur mobile), posé **entre les deux cartes**.
+- Icosaèdre en fil de fer dessiné sur `<canvas>` (`src/lib/die.ts`), **grand** (104 px), posé **entre les deux cartes** côte à côte ; **absent sur téléphone** (< 768 px, D-119).
 - Un clic le lance ; la face qui s'arrête choisit le verbe du titre. **Un 20 donne toujours « simplifient »**.
 - **Tableau d'aéroport** (D-47, D-48) : le **mot entier** roule vers le haut (600 ms), le suivant monte du bas ; un verbe toutes les 4 s, 5 tours puis arrêt ; pause au survol du titre ; **sans animation** avec `prefers-reduced-motion` (le verbe change, sans mouvement). Taille du verbe fixe, calée sur le mot le plus long. Pas de lien survol de carte ↔ verbe. Ne jamais conditionner la rotation à `document.hidden` (le navigateur intégré le renvoie à tort).
-- Sur les cartes empilées (< 1024 px), le dé est **à droite** pour ne pas chevaucher le badge de la carte 2 ; centré sur la jointure en côte à côte.
+- Cartes côte à côte dès 768 px : dé centré sur la jointure ; cartes empilées (téléphone) : pas de dé (D-119).
 - Animation du verbe : **« rouleau »** (l'ancien sort par le haut, le nouveau monte du bas). Lancer automatique 0,9 s après le chargement.
 - Vitesse indépendante de la fréquence d'écran ; animation suspendue hors écran ; **aucune animation** avec `prefers-reduced-motion`
   (le clic tire une position au hasard, le verbe change sans animation).

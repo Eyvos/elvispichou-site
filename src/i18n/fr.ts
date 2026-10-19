@@ -270,6 +270,8 @@ export const fr = {
     cta: 'Me proposer une mission',
     experiences: 'Expériences',
     experiencesHint: 'Cliquez sur une expérience : les compétences utilisées s’allument dans la stack.',
+    /** Téléphone et tablette : la stack est loin sous les expériences, les compétences s'affichent dans la carte touchée (D-118). */
+    experiencesHintTouch: 'Touchez une expérience pour afficher les compétences utilisées.',
     caseLink: 'Étude de cas détaillée →',
     stack: 'Stack',
     stackGroups: { frontend: 'Frontend', backend: 'Backend', data: 'Données', infra: 'Infra & qualité', integrations: 'Intégrations' },

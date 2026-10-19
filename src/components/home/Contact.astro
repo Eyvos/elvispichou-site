@@ -17,20 +17,106 @@ const steps = [PenLine, MailCheck, Phone].map((Icon, i) => ({ Icon, ...c.steps[i
 const scriptTexts = { ...c.msg, sending: c.sending, submit: c.submit };
 ---
 
-<section id="contact" class="pt-10 pb-20 sm:pt-14 sm:pb-24">
-  <div class="container-page grid gap-12 lg:grid-cols-[1fr_1.45fr] lg:gap-10">
-    <div>
+<section id="contact" class="pt-8 pb-12 sm:pt-14 sm:pb-24">
+  {/* Téléphone et tablette : le formulaire vient juste après l'introduction (le visiteur qui touche « Contact » voit tout de suite un champ),
+      la frise « ce qui se passe ensuite » et l'email après lui. Bureau : frise à gauche, formulaire à droite (D-87), inchangé (D-118). */}
+  <div class="container-page grid gap-8 sm:gap-10 lg:grid-cols-[1fr_1.45fr] lg:grid-rows-[auto_1fr] lg:gap-x-10 lg:gap-y-0">
+    <div class="lg:col-start-1 lg:row-start-1">
       <p class="eyebrow">{c.eyebrow}</p>
       <h2 class="section-title">{c.title}</h2>
       <p class="mt-5 max-w-md leading-relaxed text-muted">
         {c.intro}
       </p>
+    </div>
 
-      <!-- Ce qui se passe après l'envoi : rassure les prospects qui n'ont jamais travaillé avec un freelance -->
-      <ol class="mt-10">
+    <form
+      id="contact-form"
+      method="post"
+      action="/api/contact"
+      class="rounded-card border border-line bg-surface p-4 min-[400px]:p-5 sm:p-9 lg:col-start-2 lg:row-span-2 lg:row-start-1"
+      data-i18n={JSON.stringify(scriptTexts)}
+      novalidate
+    >
+      <input type="hidden" name="lang" value={lang} />
+      <p class="mb-6 text-sm text-muted">{c.requiredNote[0]}<span class="text-accent-fg">*</span>{c.requiredNote[1]}</p>
+
+      <fieldset>
+        <legend class="text-sm font-medium">{c.projectLegend}</legend>
+        {/* Téléphone : les trois options sur une seule ligne, à parts égales (D-119). */}
+        <div class="mt-2 grid grid-cols-3 gap-1.5 sm:flex sm:flex-wrap sm:gap-2">
+          {projectTypes.map((o, i) => (
+            <label class="choice inline-flex items-center justify-center rounded-full border border-line px-2 py-1.5 text-center text-[13px] leading-tight max-md:min-h-11 pointer-coarse:min-h-11 sm:px-4 sm:py-2 sm:text-sm">
+              <input type="radio" name="projectType" value={o.v} class="sr-only" checked={i === 2} />
+              {o.l}
+            </label>
+          ))}
+        </div>
+      </fieldset>
+
+      <div class="mt-6">
+        <div class="grid gap-5 sm:grid-cols-2">
+          <label class="block text-sm">
+            <span class="font-medium">{c.name} <span class="text-accent-fg" aria-hidden="true">*</span></span>
+            <input name="name" required aria-describedby="err-name" autocomplete="name" autocapitalize="words" enterkeyhint="next" maxlength="100" class="field" />
+            <span id="err-name" data-err class="mt-1 block text-sm font-medium text-accent-fg"></span>
+          </label>
+          <label class="block text-sm">
+            <span class="font-medium">{c.email} <span class="text-accent-fg" aria-hidden="true">*</span></span>
+            <input name="email" type="email" inputmode="email" required aria-describedby="err-email" autocomplete="email" autocapitalize="off" spellcheck="false" enterkeyhint="next" maxlength="200" class="field" />
+            <span id="err-email" data-err class="mt-1 block text-sm font-medium text-accent-fg"></span>
+          </label>
+          <label class="block text-sm sm:col-span-2">
+            <span class="font-medium">{c.company}</span>
+            <input name="company" autocomplete="organization" autocapitalize="words" enterkeyhint="next" maxlength="120" class="field" />
+          </label>
+        </div>
+      </div>
+
+      <div class="mt-5">
+        <label class="block text-sm">
+          <span class="font-medium">{c.message} <span class="text-accent-fg" aria-hidden="true">*</span></span>
+          <textarea name="message" required minlength="20" maxlength="5000" rows="6" aria-describedby="err-message" class="field min-h-40 resize-y"
+            placeholder={c.placeholder}></textarea>
+          <span id="err-message" data-err class="mt-1 block text-sm font-medium text-accent-fg"></span>
+        </label>
+
+        <fieldset class="mt-5">
+          <legend class="text-sm font-medium">{c.budgetLegend} <span class="text-muted font-normal">{c.optional}</span></legend>
+          <div class="mt-2 flex flex-wrap gap-2">
+            {budgets.map((b, i) => (
+              <label class="choice inline-flex items-center rounded-full max-md:min-h-11 pointer-coarse:min-h-11 border border-line px-4 py-2 text-sm">
+                <input type="radio" name="budget" value={b.v} class="sr-only" checked={i === 0} />
+                {b.l}
+              </label>
+            ))}
+          </div>
+        </fieldset>
+      </div>
+
+      <!-- Anti-spam : champ piège invisible + horodatage -->
+      <div class="hidden" aria-hidden="true">
+        <label>{c.honeypot} <input name="website" tabindex="-1" autocomplete="off" /></label>
+      </div>
+      <input type="hidden" name="startedAt" value="" />
+
+      <p class="mt-7 text-[13px] leading-relaxed text-muted">
+        {c.privacy[0]}<a class="underline hover:text-ink" href={localePath(lang, '/mentions-legales#donnees')}>{c.privacy[1]}</a>{c.privacy[2]}
+      </p>
+
+      <div class="mt-6 flex flex-wrap items-center gap-4">
+        <button type="submit" class="btn btn-primary max-sm:w-full max-sm:!py-3.5 max-sm:!text-base" data-umami-event="contact-submit">
+          {c.submit}
+        </button>
+        <p data-status role="status" aria-live="polite" class="text-sm"></p>
+      </div>
+    </form>
+
+    <div class="lg:col-start-1 lg:row-start-2">
+      <!-- Ce qui se passe après l'envoi : rassure les prospects qui n'ont jamais travaillé avec un freelance. Tablette : trois colonnes. -->
+      <ol class="md:max-lg:grid md:max-lg:grid-cols-3 md:max-lg:gap-6 lg:mt-10">
         {steps.map(({ Icon, title, text }, i) => (
-          <li class="relative flex gap-4 pb-8 last:pb-0">
-            {i < steps.length - 1 && <span class="absolute top-12 bottom-1 left-[1.375rem] w-px bg-line-strong" aria-hidden="true"></span>}
+          <li class="relative flex gap-4 pb-6 last:pb-0 sm:pb-8 md:max-lg:pb-0">
+            {i < steps.length - 1 && <span class="absolute top-12 bottom-1 left-[1.375rem] w-px bg-line-strong md:max-lg:hidden" aria-hidden="true"></span>}
             <span class="relative grid size-11 shrink-0 place-items-center rounded-2xl bg-accent-soft text-accent-fg">
               <Icon class="size-5" aria-hidden="true" />
             </span>
@@ -42,7 +128,7 @@ const scriptTexts = { ...c.msg, sending: c.sending, submit: c.submit };
         ))}
       </ol>
 
-      <dl class="mt-10 space-y-5 border-t border-line pt-8 text-sm">
+      <dl class="mt-8 space-y-5 border-t border-line pt-6 text-sm sm:mt-10 sm:pt-8">
         <div>
           <dt class="text-muted">{c.preferWriting}</dt>
           <dd class="mt-2">
@@ -65,86 +151,6 @@ const scriptTexts = { ...c.msg, sending: c.sending, submit: c.submit };
       </dl>
     </div>
 
-    <form
-      id="contact-form"
-      method="post"
-      action="/api/contact"
-      class="rounded-card border border-line bg-surface p-6 sm:p-9"
-      data-i18n={JSON.stringify(scriptTexts)}
-      novalidate
-    >
-      <input type="hidden" name="lang" value={lang} />
-      <p class="mb-6 text-sm text-muted">{c.requiredNote[0]}<span class="text-accent-fg">*</span>{c.requiredNote[1]}</p>
-
-      <fieldset>
-        <legend class="text-sm font-medium">{c.projectLegend}</legend>
-        <div class="mt-2 flex flex-wrap gap-2">
-          {projectTypes.map((o, i) => (
-            <label class="choice rounded-full border border-line px-4 py-2 text-sm">
-              <input type="radio" name="projectType" value={o.v} class="sr-only" checked={i === 2} />
-              {o.l}
-            </label>
-          ))}
-        </div>
-      </fieldset>
-
-      <div class="mt-6">
-        <div class="grid gap-5 sm:grid-cols-2">
-          <label class="block text-sm">
-            <span class="font-medium">{c.name} <span class="text-accent-fg" aria-hidden="true">*</span></span>
-            <input name="name" required aria-describedby="err-name" autocomplete="name" maxlength="100" class="field" />
-            <span id="err-name" data-err class="mt-1 block text-sm font-medium text-accent-fg"></span>
-          </label>
-          <label class="block text-sm">
-            <span class="font-medium">{c.email} <span class="text-accent-fg" aria-hidden="true">*</span></span>
-            <input name="email" type="email" required aria-describedby="err-email" autocomplete="email" maxlength="200" class="field" />
-            <span id="err-email" data-err class="mt-1 block text-sm font-medium text-accent-fg"></span>
-          </label>
-          <label class="block text-sm sm:col-span-2">
-            <span class="font-medium">{c.company}</span>
-            <input name="company" autocomplete="organization" maxlength="120" class="field" />
-          </label>
-        </div>
-      </div>
-
-      <div class="mt-5">
-        <label class="block text-sm">
-          <span class="font-medium">{c.message} <span class="text-accent-fg" aria-hidden="true">*</span></span>
-          <textarea name="message" required minlength="20" maxlength="5000" rows="6" aria-describedby="err-message" class="field min-h-40 resize-y"
-            placeholder={c.placeholder}></textarea>
-          <span id="err-message" data-err class="mt-1 block text-sm font-medium text-accent-fg"></span>
-        </label>
-
-        <fieldset class="mt-5">
-          <legend class="text-sm font-medium">{c.budgetLegend} <span class="text-muted font-normal">{c.optional}</span></legend>
-          <div class="mt-2 flex flex-wrap gap-2">
-            {budgets.map((b, i) => (
-              <label class="choice rounded-full border border-line px-4 py-2 text-sm">
-                <input type="radio" name="budget" value={b.v} class="sr-only" checked={i === 0} />
-                {b.l}
-              </label>
-            ))}
-          </div>
-        </fieldset>
-      </div>
-
-      <!-- Anti-spam : champ piège invisible + horodatage -->
-      <div class="hidden" aria-hidden="true">
-        <label>{c.honeypot} <input name="website" tabindex="-1" autocomplete="off" /></label>
-      </div>
-      <input type="hidden" name="startedAt" value="" />
-
-      <p class="mt-7 text-[13px] leading-relaxed text-muted">
-        {c.privacy[0]}<a class="underline hover:text-ink" href={localePath(lang, '/mentions-legales#donnees')}>{c.privacy[1]}</a>{c.privacy[2]}
-      </p>
-
-      <div class="mt-6 flex flex-wrap items-center gap-4">
-        <button type="submit" class="btn btn-primary" data-umami-event="contact-submit">
-          {c.submit}
-        </button>
-        <p data-status role="status" aria-live="polite" class="text-sm"></p>
-      </div>
-    </form>
   </div>
 </section>
 
@@ -167,9 +173,11 @@ const scriptTexts = { ...c.msg, sending: c.sending, submit: c.submit };
   if (form) {
     const statusEl = form.querySelector<HTMLElement>('[data-status]')!;
     const submit = form.querySelector<HTMLButtonElement>('button[type=submit]')!;
-    const setStatus = (text: string, ok: boolean) => {
+    const setStatus = (text: string, ok: boolean, reveal = true) => {
       statusEl.textContent = text;
       statusEl.className = `text-sm ${ok ? 'text-ok-fg' : 'text-accent-fg'}`;
+      // Téléphone : le message peut être sous le clavier ou hors écran, on le ramène à la vue.
+      if (reveal) statusEl.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
     };
     // Textes de la langue courante, posés par le serveur (voir `src/i18n/`).
     const T = JSON.parse(form.dataset.i18n ?? '{}') as Record<string, string>;
@@ -205,7 +213,7 @@ const scriptTexts = { ...c.msg, sending: c.sending, submit: c.submit };
         if (!ok && valid) { f.focus(); valid = false; }
       });
       if (!valid) {
-        setStatus(T.errors, false);
+        setStatus(T.errors, false, false); // le focus est déjà sur le premier champ en erreur
         return;
       }
 

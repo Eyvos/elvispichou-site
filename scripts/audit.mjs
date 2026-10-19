@@ -259,6 +259,34 @@ else add('PASS', 'i18n-pages', 'toutes les pages sont servies dans chaque langue
 if (/<html lang=\{lang\}/.test(layout) && /hreflang/.test(layout) && /og:locale/.test(layout)) add('PASS', 'i18n-seo', 'html lang, hreflang et og:locale dépendent de la langue');
 else add('FAIL', 'i18n-seo', 'BaseLayout doit poser <html lang={lang}>, les liens hreflang et og:locale', 'src/layouts/BaseLayout.astro');
 
+// ───────────────────────── 6. Expérience mobile (D-118) ─────────────────────────
+// Zones sûres d'iOS, variante d'appareil définie ; pas de bouton d'action flottant (retiré à la demande d'Elvis, D-119).
+const mobileFail = [];
+if (/MobileActionBar/.test(layout)) mobileFail.push("barre d'action flottante réintroduite (retirée par D-119)");
+if (!/viewport-fit=cover/.test(layout)) mobileFail.push('viewport sans viewport-fit=cover (zones sûres iOS)');
+if (!/@custom-variant stick\b/.test(css)) mobileFail.push('variante stick: absente de global.css');
+if (!/--gutter/.test(css)) mobileFail.push('marge latérale --gutter (zones sûres) absente de global.css');
+mobileFail.forEach((m) => add('FAIL', 'mobile-plateforme', m, 'src/layouts/BaseLayout.astro'));
+if (!mobileFail.length) add('PASS', 'mobile-plateforme', "zones sûres et variantes d'appareil en place, aucun bouton flottant");
+
+// Survol en CSS brut : uniquement dans @media (hover: hover) (au toucher, un :hover reste « collé » après le doigt).
+// Tolérés : couleurs et ombres (sans effet de mouvement) ; interdit : transform / animation / translate / scale déclenchés par :hover hors média.
+let hoverHits = 0;
+for (const f of [...astroFiles, 'src/styles/global.css']) {
+  const src = read(f);
+  for (const m of src.matchAll(/([^{}]*:hover[^{}]*)\{([^}]*)\}/g)) {
+    const moves = [...m[2].matchAll(/\b(transform|animation|translate|scale|rotate)\s*:\s*([^;]+)/g)].filter((d) => d[2].trim() !== 'none');
+    if (!moves.length) continue;
+    const before = src.slice(0, m.index);
+    const open = before.lastIndexOf('@media (hover: hover)');
+    const inHover = open >= 0 && (before.slice(open).match(/\{/g) || []).length > (before.slice(open).match(/\}/g) || []).length;
+    if (inHover || ignore(m[1])) continue;
+    hoverHits++;
+    add('FAIL', 'mobile-survol', `mouvement au survol hors @media (hover: hover) → ${m[1].trim().slice(0, 80)}`, `${f}:${before.split('\n').length}`);
+  }
+}
+if (!hoverHits) add('PASS', 'mobile-survol', 'aucun mouvement au survol hors @media (hover: hover)');
+
 // ───────────────────────── Sortie ─────────────────────────
 const order = { FAIL: 0, WARN: 1, PASS: 2 };
 results.sort((a, b) => order[a.level] - order[b.level]);

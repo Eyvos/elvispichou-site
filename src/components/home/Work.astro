@@ -11,25 +11,25 @@ const order = ['trik3r', 'chariot', 'gendarmerie'];
 const cases = (await getCases(lang)).sort((a, b) => order.indexOf(a.slug) - order.indexOf(b.slug));
 ---
 
-<section id="realisations" class="border-y border-line bg-surface pt-10 pb-20 sm:pt-14 sm:pb-24">
+<section id="realisations" class="border-y border-line bg-surface pt-8 pb-10 sm:pt-14 sm:pb-24">
   <div class="container-page">
     <p class="eyebrow">{t.work.eyebrow}</p>
     <h2 class="section-title">{t.work.title}</h2>
 
-    <div class="mt-10 grid gap-5 md:grid-cols-2">
+    <div class="mt-6 grid gap-4 sm:mt-10 sm:gap-5 md:grid-cols-2">
       {cases.map((c) => <CaseCard entry={c} slug={c.slug} />)}
 
-      <div class="flex min-w-0 flex-col gap-5 rounded-card border border-accent bg-accent-soft p-7 text-ink sm:p-8">
+      <div class="flex min-w-0 flex-col gap-5 rounded-card border border-accent bg-accent-soft p-6 text-ink sm:p-8">
         <p class="text-xs font-bold tracking-[0.1em] text-accent-fg uppercase">{t.work.ctaEyebrow}</p>
         <h3 class="font-heading text-2xl leading-tight font-semibold sm:text-3xl">{t.work.ctaTitle}</h3>
         <p class="text-base leading-relaxed xl:text-lg">
           {t.work.ctaText}
         </p>
         <div class="mt-auto flex flex-wrap items-center gap-x-6 gap-y-3 pt-2">
-          <a href={localePath(lang, '/?projet=outil#contact')} class="group inline-flex items-center justify-center gap-3 rounded-full bg-accent px-6 py-3.5 text-base font-bold whitespace-nowrap text-accent-ink transition duration-200 hover:-translate-y-0.5 hover:brightness-110 hover:shadow-[0_12px_26px_-10px_rgb(0_0_0/0.5)] active:translate-y-0 active:scale-[0.97]" data-umami-event="work-devis">
+          <a href={localePath(lang, '/?projet=outil#contact')} class="group inline-flex items-center justify-center gap-3 rounded-full bg-accent px-6 py-3.5 text-base font-bold whitespace-nowrap text-accent-ink max-sm:w-full transition duration-200 hover:-translate-y-0.5 hover:brightness-110 hover:shadow-[0_12px_26px_-10px_rgb(0_0_0/0.5)] active:translate-y-0 active:scale-[0.97]" data-umami-event="work-devis">
             {t.work.quote} <ArrowRight class="size-5 shrink-0 transition group-hover:translate-x-1" aria-hidden="true" />
           </a>
-          <a href={localePath(lang, '/profil')} class="text-sm font-semibold underline underline-offset-4 transition-all duration-200 hover:underline-offset-8" data-umami-event="work-profil">{t.work.profile}</a>
+          <a href={localePath(lang, '/profil')} class="inline-flex min-h-10 items-center text-sm font-semibold underline underline-offset-4 transition-all duration-200 hover:underline-offset-8" data-umami-event="work-profil">{t.work.profile}</a>
         </div>
       </div>
     </div>

@@ -26,6 +26,11 @@ La documentation dans `docs/` est la source de vérité (design, structure, déc
    portrait et paysage, tactile et souris) **sans casser le rendu PC**. Concevoir mobile d'abord, puis vérifier à 320, 375, 768, 1024 et 1280 px :
    aucun défilement horizontal, rien de coupé ni de superposé, cibles tactiles ≥ 40 px, champs à 16 px en tactile.
 
+8. **Expérience mobile (D-118)** : téléphone et tablette sont des expériences à part entière, au service de la prise de contact.
+   Un élément pensé pour le bureau est **repensé** pour le toucher (jamais rétréci ni bricolé), le bureau ne change pas. Lire
+   `docs/06-experience-mobile.md` (règles + motifs à réutiliser : onglets collants, contrôle segmenté, carrousel `swipe`,
+   formulaire d'abord, effet sous le doigt). Pas de bouton flottant, espacements serrés sur téléphone (D-119).
+
 ## Rappels essentiels
 
 - Texte et labels en Inter ; Space Mono seulement pour les URL, puces de stack et glyphe de code ; jamais de texte semi-transparent.

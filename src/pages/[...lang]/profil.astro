@@ -67,21 +67,23 @@ const caseIds = new Set(cases.map((c) => c.slug));
 ---
 
 <BaseLayout title={p.title} description={p.description}>
+  {/* Alternance des fonds comme sur l'accueil (D-120) : gris (synthèse) → fond de page (expériences et stack) → gris (formation) → fond de page (ce site) → pied de page gris. */}
   {/* 1 · Global */}
-  <section class="border-b border-line">
-    <div class="container-page grid gap-8 py-12 sm:py-16 lg:grid-cols-[minmax(0,1fr)_auto] lg:gap-14 lg:py-20">
-      <div class="flex w-fit flex-col items-center gap-5 lg:col-start-2 lg:row-start-1">
-        <div class="relative aspect-[4/5] w-28 overflow-hidden rounded-2xl border border-line bg-surface-2 sm:w-[9.5rem] lg:w-72 lg:rounded-card">
+  <section class="border-b border-line bg-surface">
+    <div class="container-page grid gap-6 py-8 sm:gap-8 sm:py-16 lg:grid-cols-[minmax(0,1fr)_auto] lg:gap-14 lg:py-20">
+      {/* Téléphone et tablette : grande photo calée à gauche, liens Malt / LinkedIn / GitHub en colonne à sa droite (D-119). Bureau : photo à droite, liens centrés dessous. */}
+      <div class="flex items-center gap-6 lg:col-start-2 lg:row-start-1 lg:w-fit lg:flex-col lg:gap-5">
+        <div class="relative aspect-[4/5] w-36 shrink-0 overflow-hidden rounded-2xl border border-line bg-surface-2 sm:w-44 lg:w-72 lg:rounded-card">
           {photo ? (
-            <Image src={photo} alt={p.photoAlt} widths={[288, 576]} sizes="(min-width: 1024px) 288px, 152px" loading="eager" fetchpriority="high" class="size-full object-cover object-[50%_20%]" />
+            <Image src={photo} alt={p.photoAlt} widths={[288, 576]} sizes="(min-width: 1024px) 288px, 176px" loading="eager" fetchpriority="high" class="size-full object-cover object-[50%_20%]" />
           ) : (
             <div class="grid size-full place-items-center"><span class="font-display text-4xl font-semibold text-accent-fg" aria-hidden="true">EP</span></div>
           )}
         </div>
-                  <p class="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-sm font-semibold">
+          <p class="flex flex-col items-start gap-1 text-sm font-semibold lg:flex-row lg:flex-wrap lg:items-center lg:justify-center lg:gap-x-5 lg:gap-y-2">
             {site.links.cv && <a href={site.links.cv} class="underline decoration-line-strong underline-offset-4 hover:decoration-ink" download data-umami-event="cv-download">{p.cv}</a>}
             {socials.map((l) => (
-              <a href={l.href} class="inline-flex items-center gap-2 underline decoration-line-strong underline-offset-4 hover:decoration-ink" target="_blank" rel="noopener me">
+              <a href={l.href} class="inline-flex items-center gap-2 underline decoration-line-strong max-lg:min-h-10 underline-offset-4 hover:decoration-ink" target="_blank" rel="noopener me">
                 <svg class="size-4 shrink-0" viewBox={viewBoxes[l.label] ?? '0 0 24 24'} aria-hidden="true" set:html={icons[l.label]} />{l.label}<span class="sr-only">{t.common.newWindow}</span>
               </a>
             ))}
@@ -117,13 +119,13 @@ const caseIds = new Set(cases.map((c) => c.slug));
   </section>
 
   {/* 2 · Corps : expériences à gauche (un clic allume leurs compétences dans la stack), stack à droite */}
-  <section class="container-page py-20">
-    <div class="grid gap-16 lg:grid-cols-[minmax(0,1.9fr)_minmax(0,1fr)] lg:items-start lg:gap-16">
+  <section class="container-page py-12 sm:py-20">
+    <div class="grid gap-12 sm:gap-16 lg:grid-cols-[minmax(0,1.9fr)_minmax(0,1fr)] lg:items-start lg:gap-16">
       <div id="experiences">
         <h2 class="text-2xl font-semibold">{p.experiences}</h2>
-        <p class="mt-3 max-w-xl text-muted">{p.experiencesHint}</p>
+        <p class="mt-3 max-w-xl text-muted"><span class="lg:hidden">{p.experiencesHintTouch}</span><span class="max-lg:hidden">{p.experiencesHint}</span></p>
 
-        <ol class="xp-line relative mt-12 space-y-10 pl-6 lg:grid lg:grid-cols-2 lg:space-y-0 lg:pl-0">
+        <ol class="xp-line relative mt-8 space-y-6 pl-6 sm:mt-12 sm:space-y-10 lg:grid lg:grid-cols-2 lg:space-y-0 lg:pl-0">
           {experiences.map((e, i) => {
             const host = e.url?.replace('https://', '');
             return (
@@ -145,10 +147,19 @@ const caseIds = new Set(cases.map((c) => c.slug));
                     <span class="mt-0.5 block font-semibold text-accent-fg">{e.org}</span>
                     <span class="mt-3 block text-sm leading-relaxed text-muted">{e.text}</span>
                   </button>
+                  {/* Téléphone et tablette : la stack est loin plus bas, les compétences s'ouvrent dans la carte touchée (D-118). Bureau : elles s'allument dans la stack (D-103). */}
+                  {e.skills.length > 0 && (
+                    <div class="xp-skills px-6 pb-5">
+                      <p class="text-xs font-bold tracking-[0.1em] text-accent-fg uppercase">{p.stack}</p>
+                      <ul class="mt-2 flex flex-wrap gap-2">
+                        {e.skills.map((i) => <li data-skill={i} class="rounded-md border border-line-strong bg-surface px-2.5 py-1 font-mono text-[13px]">{skillLabel(i)}</li>)}
+                      </ul>
+                    </div>
+                  )}
                   {(caseIds.has(e.id) || e.url) && (
                     <p class="flex flex-wrap gap-x-5 gap-y-1 px-6 pb-6 text-sm font-medium">
-                      {caseIds.has(e.id) && <a href={localePath(lang, `/realisations/${e.id}`)} class="text-accent-fg">{p.caseLink}</a>}
-                      {e.url && <a href={e.url} class="font-mono text-[13px] text-accent-fg" target="_blank" rel="noopener">{host}<span class="sr-only">{t.common.newWindow}</span></a>}
+                      {caseIds.has(e.id) && <a href={localePath(lang, `/realisations/${e.id}`)} class="text-accent-fg max-lg:inline-flex max-lg:min-h-10 max-lg:items-center pointer-coarse:inline-flex pointer-coarse:min-h-10 pointer-coarse:items-center">{p.caseLink}</a>}
+                      {e.url && <a href={e.url} class="font-mono text-[13px] text-accent-fg max-lg:inline-flex max-lg:min-h-10 max-lg:items-center pointer-coarse:inline-flex pointer-coarse:min-h-10 pointer-coarse:items-center" target="_blank" rel="noopener">{host}<span class="sr-only">{t.common.newWindow}</span></a>}
                     </p>
                   )}
                 </div>
@@ -175,8 +186,8 @@ const caseIds = new Set(cases.map((c) => c.slug));
   </section>
 
   {/* 3 · Formation, à l'horizontale sous les deux colonnes */}
-  <section id="formation" class="border-t border-line">
-    <div class="container-page py-16">
+  <section id="formation" class="border-t border-line bg-surface">
+    <div class="container-page py-10 sm:py-16">
       <h2 class="text-2xl font-semibold">{p.education}</h2>
       <ul class="mt-8 grid gap-y-6 md:grid-cols-3">
         {p.educationItems.map((e) => (
@@ -190,8 +201,8 @@ const caseIds = new Set(cases.map((c) => c.slug));
     </div>
   </section>
 
-  <section id="ce-site" class="border-t border-line bg-surface-2/50">
-    <div class="container-page py-16">
+  <section id="ce-site" class="border-t border-line">
+    <div class="container-page py-10 sm:py-16">
       <p class="eyebrow">{p.thisSite.eyebrow}</p>
       <h2 class="section-title max-w-3xl">{p.thisSite.title}</h2>
       <div class="mt-8 grid gap-8 text-sm leading-relaxed text-muted md:grid-cols-3">
@@ -205,11 +216,19 @@ const caseIds = new Set(cases.map((c) => c.slug));
 </BaseLayout>
 
 <style is:global>
+  .xp-skills { display: none; }
+  @media (max-width: 1023.98px) {
+    [data-xp][data-open] .xp-skills { display: block; animation: xp-skills-in 0.25s ease-out; }
+  }
+  @keyframes xp-skills-in { from { opacity: 0; transform: translateY(-4px); } }
+  /* Bureau seulement : sur téléphone et tablette, les compétences s'ouvrent dans la carte touchée et la stack ne se colore plus (D-119). */
+  @media (min-width: 1024px) {
   .skill[data-on] {
     background: var(--c-accent);
     border-color: var(--c-accent);
     color: var(--c-accent-ink);
     font-weight: 700;
+  }
   }
   /* Cartes d'expérience : elles se soulèvent et s'éclairent au survol pour montrer qu'elles sont cliquables. */
   .xp-card { transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s, border-color 0.25s, background-color 0.25s; }
@@ -228,8 +247,10 @@ const caseIds = new Set(cases.map((c) => c.slug));
   }
   .xp-conn { left: -1.5rem; width: 1.5rem; height: 2px; translate: 0 -50%; background: var(--c-line); }
   .xp-conn::after { content: ''; position: absolute; inset: 0; background: var(--c-accent-fg); transform: scaleX(0); transform-origin: left; transition: transform 0.4s ease-out; }
-  [data-xp]:hover .xp-dot { scale: 1.2; }
-  [data-xp]:hover .xp-conn::after { transform: scaleX(1); }
+  @media (hover: hover) {
+    [data-xp]:hover .xp-dot { scale: 1.2; }
+    [data-xp]:hover .xp-conn::after { transform: scaleX(1); }
+  }
   [data-xp][data-open] .xp-dot { scale: 1.2; background: var(--c-accent-fg); animation: xp-pulse 1.8s ease-out infinite; }
   [data-xp][data-open] .xp-conn::after { transform: scaleX(1); }
   @keyframes xp-pulse {

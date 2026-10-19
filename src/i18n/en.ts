@@ -263,6 +263,7 @@ export const en: Dict = {
     cta: 'Offer me a mission',
     experiences: 'Experience',
     experiencesHint: 'Click an experience: the skills used light up in the stack.',
+    experiencesHintTouch: 'Tap an experience to show the skills used.',
     caseLink: 'Detailed case study →',
     stack: 'Stack',
     stackGroups: { frontend: 'Frontend', backend: 'Backend', data: 'Data', infra: 'Infrastructure & quality', integrations: 'Integrations' },

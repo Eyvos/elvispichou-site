@@ -11,11 +11,13 @@ toutes les décisions prises au fil des échanges avec Claude. Si le code et la 
 | [03-structure-et-contenu.md](03-structure-et-contenu.md) | Plan du site, ordre des sections, navigation, modèles de contenu, images | On ajoute ou déplace une section ou une page |
 | [04-decisions.md](04-decisions.md) | Journal des décisions (avec dates et raisons), pistes écartées, points ouverts | Avant toute modification, et après chaque décision |
 | [05-technique.md](05-technique.md) | Stack, commandes, variables d'environnement, analytics, CI | On touche au code, au déploiement ou aux outils |
+| [06-experience-mobile.md](06-experience-mobile.md) | Règles fonctionnelles du téléphone et de la tablette, motifs à réutiliser, audit mobile | On ajoute ou modifie une fonctionnalité, une section ou une page |
 
 ## Règles d'usage
 
 0. **Tout nouveau contenu est écrit en français ET en anglais** (D-110) : textes dans `src/i18n/`, jamais en dur.
 0. **Toute nouvelle fonctionnalité doit être responsive sur tous les appareils** (D-114), vérifiée de 320 px à grand écran sans casser le PC.
+0. **Le téléphone et la tablette sont repensés, pas rétrécis** (D-118) : règles de `06-experience-mobile.md`.
 1. **Avant de modifier** : lire `04-decisions.md` et le fichier du domaine concerné.
 2. **Pendant** : ne pas contredire une décision « Actif » sans l'avoir mise en discussion.
 3. **Après** : lancer `npm run audit` (contrôles automatiques), corriger, puis mettre à jour la doc.

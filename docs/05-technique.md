@@ -73,6 +73,8 @@ Sans clé Resend, les demandes s'affichent dans la console (développement).
 | `i18n-contenu` | Chaque étude de cas existe dans toutes les langues, avec les mêmes champs | D-110 |
 | `i18n-pages` | Toute page est servie dans chaque langue (`src/pages/[...lang]/`) | D-110 |
 | `i18n-seo` | `<html lang>`, `hreflang` et `og:locale` suivent la langue | D-109 |
+| `mobile-plateforme` | `viewport-fit=cover`, variante `stick:` et marge `--gutter` définies ; aucune barre d'action flottante | D-118, D-119 |
+| `mobile-survol` | Aucun mouvement (`transform`, `animation`, `translate`, `scale`, `rotate`) déclenché par `:hover` hors `@media (hover: hover)` | D-118 |
 
 Une ligne peut être exemptée avec `audit-ignore` (attribut ou commentaire), **à condition d'écrire la raison à côté** et de lister
 l'exception dans `02-design-system.md`.

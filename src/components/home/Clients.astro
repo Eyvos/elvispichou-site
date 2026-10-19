@@ -16,19 +16,19 @@ const marks: Record<string, { icon: typeof Leaf; bg: string }> = {
 };
 ---
 
-<div class="py-10 sm:py-12">
+<div class="py-8 sm:py-12">
   <div class="container-page xl:max-w-[96rem] xl:px-6">
-    <ul aria-labelledby="clients-titre" class="grid gap-3 sm:grid-cols-2 xl:grid-cols-[9.5rem_repeat(4,minmax(0,1fr))]">
-      <li class="sm:col-span-2 xl:col-span-1 xl:flex xl:items-center">
-        <h2 id="clients-titre" class="font-heading text-lg leading-tight font-semibold xl:text-xl">{t.clients.title}</h2>
-      </li>
+    {/* Téléphone : carrousel à glisser (la carte suivante dépasse pour inviter au geste) ; dès 640 px, grille ; bureau large : titre en tête de ligne. */}
+    <div class="grid gap-3 xl:grid-cols-[9.5rem_minmax(0,1fr)]">
+      <h2 id="clients-titre" class="font-heading text-lg leading-tight font-semibold xl:flex xl:items-center xl:text-xl">{t.clients.title}</h2>
+    <ul aria-labelledby="clients-titre" class="max-sm:swipe sm:grid sm:grid-cols-2 sm:gap-3 xl:grid-cols-4">
       {clients.map((c) => {
         const logo = getLogo(c.id);
         const mark = marks[c.id];
         const text = t.clients.items[c.id];
         const Mark = mark?.icon;
         return (
-          <li class="group lift flex items-center gap-4 rounded-card border border-line bg-surface px-4 py-3">
+          <li class="group lift flex items-center gap-4 rounded-card border border-line bg-surface px-4 py-3 max-sm:w-[82%]">
             {mark && Mark ? (
               <span data-audit-ignore="logo de substitution : icône de la discipline sur fond de couleur" class={`grid size-16 shrink-0 place-items-center rounded-2xl text-white transition duration-300 group-hover:scale-105 group-hover:-rotate-3 ${mark.bg}`}>
                 <Mark class="size-8" aria-hidden="true" />
@@ -44,11 +44,11 @@ const marks: Record<string, { icon: typeof Leaf; bg: string }> = {
               <p class="text-[13px] text-muted">{text.work}</p>
               <p class="mt-auto pt-1 text-[13px]">
                 {c.url ? (
-                  <a href={c.url} target="_blank" rel="noopener" class="font-bold whitespace-nowrap text-accent-fg underline-offset-2 hover:underline" data-umami-event="client-link" data-umami-event-client={c.id}>
+                  <a href={c.url} target="_blank" rel="noopener" class="inline-flex items-center font-bold whitespace-nowrap text-accent-fg underline-offset-2 hover:underline max-sm:min-h-10 pointer-coarse:min-h-10" data-umami-event="client-link" data-umami-event-client={c.id}>
                     {new URL(c.url).host}<span class="sr-only">{t.common.newWindow}</span>
                   </a>
                 ) : c.case ? (
-                  <a href={localePath(lang, `/realisations/${c.case}`)} class="inline-flex items-center gap-0.5 group font-bold text-accent-fg hover:underline">
+                  <a href={localePath(lang, `/realisations/${c.case}`)} class="inline-flex items-center gap-0.5 group font-bold text-accent-fg hover:underline max-sm:min-h-10 pointer-coarse:min-h-10">
                     {t.clients.caseStudy}<ArrowUpRight class="size-3.5 transition group-hover:-translate-y-0.5 group-hover:translate-x-0.5" aria-hidden="true" />
                   </a>
                 ) : null}
@@ -58,5 +58,6 @@ const marks: Record<string, { icon: typeof Leaf; bg: string }> = {
         );
       })}
     </ul>
+    </div>
   </div>
 </div>

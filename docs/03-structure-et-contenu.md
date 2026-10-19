@@ -12,7 +12,7 @@
 /api/contact            Seule route serveur : formulaire de contact (commune aux deux langues)
 ```
 
-Toutes les pages existent en français (défaut, sans préfixe) et en anglais (`/en`). Sélecteur de langue : bouton rond (globe) dans l'en-tête, liste « Français / English » au clic ; deux boutons côte à côte dans le menu mobile ;
+Toutes les pages existent en français (défaut, sans préfixe) et en anglais (`/en`). Sélecteur de langue : bouton rond (globe) dans l'en-tête, liste « Français / English » au clic ; le même bouton sur téléphone (plus de sélecteur dans le menu burger, D-119) ;
 il garde la section et les paramètres de la page courante. Règles de traduction : `05-technique.md` § Traduction (D-110).
 
 ## Accueil : ordre des sections
@@ -35,7 +35,8 @@ Règle (D-17) : **toute nouvelle section de l'accueil reçoit une entrée de men
 - Sous les deux cartes de l'accueil : **bloc visible** « Vous voulez en savoir plus sur mes compétences ? » + bouton secondaire « Voir mon profil technique » (D-27, D-36, D-41).
 - **Disponibilité** : plus affichée dans la barre de navigation (D-76) ; elle reste sur `/profil`.
 - Bouton d'action : « Parler de mon projet » (« Contact » en version courte). Bascule clair/sombre toujours présente.
-- **Menu mobile** (< 1024 px) : bouton burger, panneau plein écran, mêmes entrées numérotées que le menu principal + Profil technique, disponibilité et bouton d'action en bas ;
+  **Téléphone** : bouton « Contact » et sélecteur de langue dans l'en-tête (le bouton est masqué sous 360 px et reste dans le menu) ; aucun bouton flottant (D-119).
+- **Menu mobile** (< 1024 px) : bouton burger, panneau plein écran, mêmes entrées que le menu principal (sans numéros, D-119) + Profil technique, bouton d'action en bas ;
   défilement de la page verrouillé, focus gardé dans le menu ; se ferme au clic sur un lien, hors du panneau et avec Échap (D-75).
 
 ## Offres : comportement (D-18)
@@ -77,7 +78,7 @@ anti-spam (champ piège + délai de 3 s), fonctionne sans JavaScript. Accusé de
 
 ## Profil technique (D-100)
 
-`/profil` se lit comme un CV interactif : synthèse en haut (photo à droite, chiffres vérifiés, lieu et langues, **un seul bouton** ; Malt, LinkedIn,
+`/profil` se lit comme un CV interactif, fonds alternés comme l'accueil (D-120) : synthèse en haut (photo à droite, chiffres vérifiés, lieu et langues, **un seul bouton** ; Malt, LinkedIn,
 GitHub en liens simples avec logo, sous la photo (D-105) ; plus de mention de disponibilité, D-103), puis deux colonnes : **Expériences** (frise en quinconce) à gauche, **Stack** à droite, puis **Formation** en trois cartes à l'horizontale, et « Ce site » (D-104). Un clic sur une expérience met en
 évidence ses compétences dans la stack (`skills` de chaque expérience = libellés de `stack`, dans `src/pages/profil.astro`). Les expériences
 renvoient vers l'étude de cas quand elle existe ; les deux sites clients (Lortal, Ingrid) renvoient vers leur URL (D-101).

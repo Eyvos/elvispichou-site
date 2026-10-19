@@ -13,46 +13,55 @@ const socials = [
 ].filter((s): s is { label: string; href: string } => Boolean(s.href));
 ---
 
-<footer class="mt-16 border-t border-line [main:has(#contact)+&]:mt-0 [main:has(#ce-site)+&]:mt-0">
-  <div class="container-page grid gap-6 py-8 sm:grid-cols-[1.5fr_1fr_1fr]">
+<footer class="mt-16 border-t border-line bg-surface [main:has(#contact)+&]:mt-0 [main:has(#ce-site)+&]:mt-0">
+  {/* Fond gris des sections grises, `surface` (D-120). Téléphone : présentation, puis liens en lignes qui passent à la ligne (sans titres visibles), pour un pied de page compact. */}
+  <div class="container-page grid gap-3 py-6 sm:grid-cols-[1.5fr_1fr_1fr] sm:gap-6 sm:py-8">
     <div>
       <p class="font-display text-lg font-semibold">Elvis Pichou<span class="text-accent-fg">.</span></p>
-      <p class="mt-1 max-w-sm text-sm text-muted">{t.site.tagline}</p>
-      <p class="mt-2 text-sm text-muted">{t.site.location}</p>
+      <p class="mt-1 max-w-sm text-sm text-muted max-sm:hidden">{t.site.tagline}</p>
+      <p class="mt-1 text-sm text-muted sm:mt-2">{t.site.location}</p>
     </div>
     <div>
-      <p id="footer-site" class="text-sm font-semibold">{f.siteTitle}</p>
+      <p id="footer-site" class="text-sm font-semibold max-sm:sr-only">{f.siteTitle}</p>
       <nav aria-labelledby="footer-site">
-      <ul class="mt-2 space-y-1.5 text-sm text-muted">
-        <li><a class="hover:text-ink" href={localePath(lang, '/#offre')}>{f.offers}</a></li>
-        <li><a class="hover:text-ink" href={localePath(lang, '/#realisations')}>{f.projects}</a></li>
-        <li><a class="hover:text-ink" href={localePath(lang, '/profil')} data-umami-event="profil-footer">{t.common.technicalProfile}</a></li>
-        <li><a class="hover:text-ink" href={localePath(lang, '/mentions-legales')}>{f.legal}</a></li>
+      {/* Toucher : chaque lien fait 40 px de haut (D-114) ; à la souris, liste resserrée comme avant. */}
+      <ul class="flex flex-wrap gap-x-5 text-sm text-muted sm:mt-2 sm:block sm:space-y-1.5">
+        <li><a class="flink hover:text-ink" href={localePath(lang, '/#offre')}>{f.offers}</a></li>
+        <li><a class="flink hover:text-ink" href={localePath(lang, '/#realisations')}>{f.projects}</a></li>
+        <li><a class="flink hover:text-ink" href={localePath(lang, '/profil')} data-umami-event="profil-footer">{t.common.technicalProfile}</a></li>
+        <li><a class="flink hover:text-ink" href={localePath(lang, '/mentions-legales')}>{f.legal}</a></li>
       </ul>
       </nav>
     </div>
     <div>
-      <p class="text-sm font-semibold">{f.elsewhere}</p>
-      <ul class="mt-2 space-y-1.5 text-sm text-muted">
+      <p id="footer-elsewhere" class="text-sm font-semibold max-sm:sr-only">{f.elsewhere}</p>
+      <ul class="-ml-2.5 flex flex-wrap gap-x-1 text-sm text-muted sm:mt-2 sm:ml-0 sm:block sm:space-y-1.5">
         {socials.map((s) => (
           <li>
-            <a class="inline-flex items-center gap-2 hover:text-ink" href={s.href} rel="me noopener" target="_blank">
-              {icons[s.label] && <svg class="size-4 shrink-0" viewBox={viewBoxes[s.label] ?? '0 0 24 24'} aria-hidden="true" set:html={icons[s.label]} />}
-              {s.label}<span class="sr-only">{t.common.newWindow}</span>
+            <a class="flink inline-flex items-center gap-2 hover:text-ink max-sm:size-10 max-sm:justify-center" href={s.href} rel="me noopener" target="_blank">
+              {icons[s.label] && <svg class="size-5 shrink-0 sm:size-4" viewBox={viewBoxes[s.label] ?? '0 0 24 24'} aria-hidden="true" set:html={icons[s.label]} />}
+              <span class="max-sm:sr-only">{s.label}</span><span class="sr-only">{t.common.newWindow}</span>
             </a>
           </li>
         ))}
         <li>
-          <a class="inline-flex items-center gap-2 hover:text-ink" href={`mailto:${site.email}`}>
-            <svg class="size-4 shrink-0" viewBox="0 0 24 24" aria-hidden="true" set:html={icons.Email} />
-            {site.email}
+          <a class="flink inline-flex items-center gap-2 break-all hover:text-ink max-sm:size-10 max-sm:justify-center" href={`mailto:${site.email}`}>
+            <svg class="size-5 shrink-0 sm:size-4" viewBox="0 0 24 24" aria-hidden="true" set:html={icons.Email} />
+            <span class="max-sm:sr-only">{site.email}</span>
           </a>
         </li>
       </ul>
     </div>
   </div>
-  <div class="container-page flex flex-col gap-1 border-t border-line py-4 text-[13px] text-muted sm:flex-row sm:justify-between">
+  <div class="container-page flex flex-col gap-1 border-t border-line py-3 text-[13px] sm:py-4 text-muted sm:flex-row sm:justify-between">
     <p>© {new Date().getFullYear()} {site.name}</p>
     <p>{f.built} <a class="underline hover:text-ink" href={localePath(lang, '/profil#ce-site')}>{f.howBuilt}</a></p>
   </div>
 </footer>
+
+<style>
+  /* Liens du pied de page : cible tactile de 40 px sur écran tactile, sans changer l'allure à la souris. */
+  @media (pointer: coarse), (max-width: 639.98px) {
+    .flink { display: flex; align-items: center; min-height: 2.5rem; }
+  }
+</style>

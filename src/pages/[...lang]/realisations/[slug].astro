@@ -28,6 +28,7 @@ const d = entry.data;
 const { Content } = await render(entry);
 const shot = getScreenshot(entry.slug);
 const kindLabel = t.common.caseKind[d.kind];
+const ctaHref = localePath(lang, `/?projet=${d.kind === 'site' ? 'site' : 'outil'}#contact`);
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -44,9 +45,9 @@ const jsonLd = {
 <BaseLayout title={d.title} description={d.summary} jsonLd={jsonLd}>
   <article>
     <header class="border-b border-line">
-      <div class="container-page grid gap-12 py-14 sm:py-20 lg:grid-cols-[1.15fr_1fr] lg:items-center">
+      <div class="container-page grid gap-8 py-8 sm:gap-12 sm:py-20 lg:grid-cols-[1.15fr_1fr] lg:items-center">
         <div>
-        <a href={localePath(lang, '/#realisations')} class="inline-block text-sm text-muted transition duration-200 hover:-translate-x-1 hover:text-ink"><span aria-hidden="true">←</span> {c.back}</a>
+        <a href={localePath(lang, '/#realisations')} class="inline-flex items-center gap-1 text-sm text-muted max-lg:min-h-10 pointer-coarse:min-h-10 transition duration-200 hover:-translate-x-1 hover:text-ink"><span aria-hidden="true">←</span> {c.back}</a>
         <div class="mt-8 flex flex-wrap items-center gap-2 text-[13px]">
           <span class="rounded-full bg-accent-soft px-2.5 py-1 font-medium text-accent-fg">{kindLabel}</span>
           <span class="text-muted">{d.client} · {d.sector}</span>
@@ -81,8 +82,15 @@ const jsonLd = {
       </div>
     </header>
 
-    <div class="container-page grid gap-14 py-14 lg:grid-cols-[1fr_20rem]">
+    <div class="container-page grid gap-10 py-10 sm:gap-14 sm:py-14 lg:grid-cols-[1fr_20rem]">
       <div class="min-w-0">
+        {/* Téléphone et tablette : les résultats (la preuve) avant le récit, au lieu d'attendre la fin de page (D-118). */}
+        <div class="mb-8 rounded-card border border-line bg-surface p-6 lg:hidden">
+          <p class="text-xs font-bold uppercase tracking-[0.1em] text-muted">{c.results}</p>
+          <ul class="mt-4 space-y-3 text-sm">
+            {d.outcomes.map((o) => <li class="flex gap-2.5"><span class="text-ok-fg" aria-hidden="true">●</span>{o}</li>)}
+          </ul>
+        </div>
         <div class="rounded-2xl bg-surface-2 p-6">
           <p class="text-xs font-bold uppercase tracking-[0.1em] text-muted">{c.problem}</p>
           <p class="mt-2 leading-relaxed">{d.problem}</p>
@@ -120,17 +128,17 @@ const jsonLd = {
       </div>
 
       <div class="lg:sticky lg:top-24 lg:self-start">
-        <div class="rounded-card border border-line bg-surface p-6">
+        <div class="rounded-card border border-line bg-surface p-6 max-lg:hidden">
           <p class="text-xs font-bold uppercase tracking-[0.1em] text-muted">{c.results}</p>
           <ul class="mt-4 space-y-3 text-sm">
             {d.outcomes.map((o) => <li class="flex gap-2.5"><span class="text-ok-fg" aria-hidden="true">●</span>{o}</li>)}
           </ul>
         </div>
-        <div class="mt-4 rounded-card bg-ink p-6 text-bg">
+        <div class="rounded-card bg-ink p-6 text-bg lg:mt-4">
           <p class="font-display text-lg font-semibold">{c.similarTitle}</p>
           <p class="mt-2 text-sm text-bg">{c.similarText1}</p>
           <p class="mt-2 text-sm text-bg">{c.similarText2}</p>
-          <a href={localePath(lang, `/?projet=${d.kind === 'site' ? 'site' : 'outil'}#contact`)} class="btn btn-primary mt-5 w-full" data-umami-event="cta-case">
+          <a href={ctaHref} class="btn btn-primary mt-5 w-full" data-umami-event="cta-case">
             {c.cta}
           </a>
         </div>
