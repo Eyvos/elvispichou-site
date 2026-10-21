@@ -84,6 +84,12 @@ l'exception dans `02-design-system.md`.
 Build (avec `astro check`), Lighthouse CI (médiane de 3 passages par page, D-121) sur `/`, `/profil/`, une étude de cas et leurs versions `/en/` : performance ≥ 95, accessibilité = 100,
 bonnes pratiques ≥ 95, SEO = 100. Le contrôle `npm run audit` est exécuté avant.
 
+## Sécurité (D-133)
+
+- `public/_headers` : en-têtes de sécurité et CSP, appliqués par Cloudflare aux fichiers statiques (pages prérendues). Les réponses de `/api/contact` n'y passent pas. Tout nouveau script ou domaine tiers doit être ajouté à la CSP.
+- `/api/contact` : limiteur en mémoire (`src/lib/rate-limit.ts`), propre à chaque instance, donc un simple filet. À doubler dans le tableau de bord Cloudflare : règle de limitation de débit sur `POST /api/contact` (ex. 5 requêtes / 10 min / IP), et Turnstile si le spam augmente (à déclarer dans les mentions légales).
+- Les trois secrets du formulaire se saisissent comme **secrets** Cloudflare, pas comme variables en clair.
+
 ## Limites connues
 
 - Chrome n'est pas installé sur la machine de développement : Lighthouse ne tourne qu'en CI.

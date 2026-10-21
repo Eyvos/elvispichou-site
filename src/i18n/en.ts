@@ -233,6 +233,7 @@ export const en: Dict = {
       email: 'Invalid email address.',
       message: 'Your message must be at least 20 characters long.',
       invalid: 'Invalid form.',
+      tooMany: 'Too many requests in a short time. Please try again in a few minutes, or email me directly.',
       sendFailed: 'The message could not be sent. Please email me directly.',
     },
   },

@@ -240,6 +240,7 @@ export const fr = {
       email: 'Adresse email invalide.',
       message: 'Votre message doit faire au moins 20 caractères.',
       invalid: 'Formulaire invalide.',
+      tooMany: 'Trop de demandes en peu de temps. Réessayez dans quelques minutes, ou écrivez-moi directement par email.',
       sendFailed: "Le message n'a pas pu être envoyé. Écrivez-moi directement par email.",
     },
   },

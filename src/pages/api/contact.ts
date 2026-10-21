@@ -1,6 +1,7 @@
 import type { APIRoute } from 'astro';
 import { env } from 'cloudflare:workers';
 import { contactSchema, deliverContact, looksLikeSpam, parseLocale } from '../../lib/contact';
+import { allow } from '../../lib/rate-limit';
 import { getDict, localePath } from '../../i18n';
 
 export const prerender = false;
@@ -10,8 +11,10 @@ export const prerender = false;
  * - Appel JS (Accept: application/json) → réponse JSON.
  * - Envoi HTML classique (sans JS) → redirection vers /?envoi=ok|erreur#contact (ou /en/… selon la langue du formulaire).
  */
-export const POST: APIRoute = async ({ request, redirect }) => {
+export const POST: APIRoute = async ({ request, redirect, clientAddress }) => {
   const wantsJson = request.headers.get('accept')?.includes('application/json');
+  // Un message de 5000 caractères pèse bien moins de 32 Ko : au-delà, ce n'est pas un visiteur.
+  if (Number(request.headers.get('content-length') ?? 0) > 32_768) return new Response(null, { status: 413 });
   const form = await request.formData();
   const lang = parseLocale(form.get('lang'));
   const e = getDict(lang).contact.server;
@@ -26,6 +29,12 @@ export const POST: APIRoute = async ({ request, redirect }) => {
   const parsed = contactSchema(lang).safeParse(Object.fromEntries(form));
   if (!parsed.success) {
     return reply(false, 400, parsed.error.issues[0]?.message ?? e.invalid);
+  }
+
+  // Limites : 5 envois / 10 min par IP, 2 / heure par adresse (l'accusé de réception ne doit pas servir à harceler un tiers).
+  const ip = request.headers.get('cf-connecting-ip') ?? clientAddress ?? 'inconnue';
+  if (!allow(`ip:${ip}`, 5, 600_000) || !allow(`mail:${parsed.data.email.toLowerCase()}`, 2, 3_600_000)) {
+    return reply(false, 429, e.tooMany);
   }
 
   try {
