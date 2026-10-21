@@ -72,6 +72,25 @@ export const fr = {
     pausedTip: 'Animation en pause · cliquer pour reprendre',
     dieLabel: 'Lancer le dé pour changer le verbe du titre',
     dieStatus: 'Dé : {value}. Le verbe du titre est « {verb} ».',
+    /** Défi du dé (D-130) : « ? » au niveau du dé → petit wizard en bas de page. 20 = critique, 10-19 = réussi, 2-9 = raté, 1 = échec critique. */
+    wizard: {
+      openLabel: 'Un petit défi avec le dé',
+      openTip: 'Un petit défi ?',
+      closeLabel: 'Fermer le défi',
+      result: 'Résultat : {n}',
+      roll: 'Lancer le dé',
+      again: 'Relancer le dé',
+      later: 'Non merci',
+      close: 'Fermer',
+      contact: 'Parler de mon projet',
+      chariot: 'Découvrir Chariot',
+      invite: { eyebrow: 'Au fait…', title: 'Je suis passionné de jeu de rôle.', text: 'Ça vous intéresse de lancer un dé ? Essayez de faire plus que 10.' },
+      rolling: { eyebrow: 'Le dé roule…', title: 'Les dés sont jetés.', text: 'Un instant de suspense.' },
+      crit: { title: 'Succès critique !', text: 'Un 20 pile. Ça tombe bien : ça vous intéresse d’entendre parler de Chariot, l’application de jeu de rôle que j’ai cofondée ?' },
+      win: { title: 'Beau jet !', text: 'C’est réussi. Une bonne base pour parler de votre projet ?' },
+      lose: { title: 'Dommage…', text: 'Le dé n’était pas d’humeur. Retentez votre chance ?' },
+      fail: { title: 'Échec critique !', text: 'Un 1 : le pire jet possible. Même les plus grands aventuriers en ont fait un. Retentez ?' },
+    },
     cards: {
       outil: {
         target: 'TPE, PME',

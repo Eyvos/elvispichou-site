@@ -1,6 +1,7 @@
 ---
 import { Image } from 'astro:assets';
 import { ArrowRight, Check, MapPin, Pause, Play } from '@lucide/astro';
+import DiceWizard from './DiceWizard.astro';
 import { getPhoto } from '../../lib/assets';
 import { useI18n, localePath } from '../../i18n';
 
@@ -79,7 +80,7 @@ const scriptTexts = {
     {/* Cartes + accès profil forment un seul groupe serré (D-53) ; l'espace libre reste entre ce groupe et le titre.
         Téléphone : deux cartes distinctes empilées, badge dans la carte, sans dé (D-119). Tablette : côte à côte, comme sur bureau. */}
     <div class="flex flex-col gap-5 sm:gap-6 lg:gap-5">
-    <div class="relative grid grid-cols-1 gap-5 md:grid-cols-2 md:gap-4">
+    <div data-die-stage class="relative grid grid-cols-1 gap-5 md:grid-cols-2 md:gap-4">
       {offers.map((o, i) => (
         <>
           <article
@@ -137,14 +138,31 @@ const scriptTexts = {
           {i === 0 && (
             /* Le dé : centré sur la jointure des cartes côte à côte (tablette, bureau) ; absent sur téléphone, où les cartes sont empilées (D-119). */
             <div class="pointer-events-none absolute inset-0 z-10 hidden items-center justify-center md:flex">
-              <button
-                type="button"
-                data-die-btn
-                data-reveal="pop" data-reveal-delay="800" class="pointer-events-auto grid cursor-pointer place-items-center rounded-full bg-bg p-2.5 transition duration-300 hover:scale-110 hover:-rotate-12 active:scale-95"
-                aria-label={h.dieLabel}
-              >
-                <canvas data-die width="208" height="208" class="size-[104px] text-ink" aria-hidden="true"></canvas>
-              </button>
+              <div class="relative">
+                {/* Calque des effets du défi (D-130) : les triangles et anneaux partent du centre du dé ; l'étiquette annonce le résultat d'un lancer direct. */}
+                <div data-die-fx aria-hidden="true" class="pointer-events-none absolute inset-0 z-20"></div>
+                <span data-die-label aria-hidden="true" class="die-label pointer-events-none absolute bottom-full left-1/2 z-30 mb-2 rounded-full bg-ink px-3.5 py-1.5 text-[13px] leading-tight font-bold whitespace-nowrap text-bg" hidden></span>
+                <button
+                  type="button"
+                  data-die-btn
+                  data-reveal="pop" data-reveal-delay="800" class="pointer-events-auto grid cursor-pointer place-items-center rounded-full bg-bg p-2.5 transition duration-300 hover:scale-110 hover:-rotate-12 active:scale-95"
+                  aria-label={h.dieLabel}
+                >
+                  <canvas data-die width="208" height="208" class="size-[104px] text-ink" aria-hidden="true"></canvas>
+                </button>
+                {/* « ? » : ouvre le petit défi du dé (D-130). Zone tactile de 40 px par le pseudo-élément. */}
+                <button
+                  type="button"
+                  data-wizard-open
+                  data-reveal="pop" data-reveal-delay="1100"
+                  aria-haspopup="dialog" aria-expanded="false" aria-controls="de-wizard"
+                  aria-label={h.wizard.openLabel}
+                  class="wiz-hint group pointer-events-auto absolute top-0 -right-1 z-10 grid size-7 place-items-center rounded-full bg-ink text-sm leading-none font-bold text-bg ring-4 ring-bg transition duration-200 before:absolute before:-inset-1.5 before:content-[''] hover:scale-110 active:scale-95"
+                >
+                  <span aria-hidden="true">?</span>
+                  <span aria-hidden="true" class="pointer-events-none invisible absolute right-0 bottom-full mb-2 rounded-lg bg-ink px-3 py-1.5 text-[13px] leading-snug font-semibold whitespace-nowrap text-bg opacity-0 ring-1 ring-line-strong transition group-hover:visible group-hover:opacity-100 group-focus-visible:visible group-focus-visible:opacity-100">{h.wizard.openTip}</span>
+                </button>
+              </div>
               <p class="sr-only" role="status" data-die-status></p>
             </div>
           )}
@@ -166,6 +184,8 @@ const scriptTexts = {
     </div>
   </div>
 </section>
+
+<DiceWizard />
 
 <style is:global>
   /* Verbe « tableau d'aéroport » : le mot entier roule vers le haut, le suivant monte du bas. */
@@ -275,15 +295,20 @@ const scriptTexts = {
     // Le dé n'existe que là où il est affiché (cartes côte à côte, dès 768 px, D-119) : sur téléphone, aucun dessin ni lancer.
     const wide = matchMedia('(min-width: 768px)');
     let die: ReturnType<typeof createDie> | undefined;
+    let manualRoll = false;
     const ensureDie = () => {
       if (die || !wide.matches) return;
       die = createDie(canvas, {
         reducedMotion: reduced,
         onResult(value) {
+          const manual = manualRoll;
+          manualRoll = false;
           let next = value === 20 ? VERBS[0] : VERBS[value % VERBS.length];
           if (next === current) next = VERBS[(VERBS.indexOf(next) + 1) % VERBS.length];
           setVerb(next);
           if (status) status.textContent = T.dieStatus.replace('{value}', String(value)).replace('{verb}', next);
+          // Défi du dé (D-130) : seuls les lancers du visiteur comptent ; DiceWizard.astro écoute cet événement.
+          if (manual) document.dispatchEvent(new CustomEvent('die:result', { detail: { value } }));
         },
       });
       if (!reduced) setTimeout(() => die?.roll(), 900);
@@ -291,10 +316,16 @@ const scriptTexts = {
     ensureDie();
     wide.addEventListener('change', ensureDie);
 
-    button.addEventListener('click', () => {
+    // Lancer du visiteur : un clic sur le dé, ou la demande du wizard (événement `die:roll`).
+    const roll = () => {
+      if (!die) return;
       ticks = MAX_TICKS; // l'utilisateur prend la main : la rotation automatique s'arrête
-      die?.roll();
+      manualRoll = true;
+      document.dispatchEvent(new CustomEvent('die:rolling'));
+      die.roll();
       (window as any).umami?.track('die-roll');
-    });
+    };
+    button.addEventListener('click', roll);
+    document.addEventListener('die:roll', roll);
   }
 </script>
