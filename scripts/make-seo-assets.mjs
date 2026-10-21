@@ -30,5 +30,7 @@ for (const [lang, t] of Object.entries(cards)) {
 // Icônes : Google demande un multiple de 48 px ; iOS utilise l'icône 180 px.
 const icon = readFileSync('public/favicon.svg');
 await sharp(icon, { density: 600 }).resize(48, 48).png().toFile('public/favicon-48.png');
-await sharp(icon, { density: 600 }).resize(180, 180).png().toFile('public/apple-touch-icon.png');
+// iOS arrondit lui-même les coins : l'icône Apple est pleine (sans coins transparents, qui deviendraient noirs).
+const fullBleed = Buffer.from(icon.toString().replace(/ rx="[\d.]+"/, ''));
+await sharp(fullBleed, { density: 600 }).resize(180, 180).png().toFile('public/apple-touch-icon.png');
 console.log('Visuels SEO générés dans public/');
