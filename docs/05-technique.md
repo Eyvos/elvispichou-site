@@ -86,7 +86,7 @@ bonnes pratiques ≥ 95, SEO = 100. Le contrôle `npm run audit` est exécuté a
 
 ## Sécurité (D-133)
 
-- `public/_headers` : en-têtes de sécurité et CSP, appliqués par Cloudflare aux fichiers statiques (pages prérendues). Les réponses de `/api/contact` n'y passent pas. Tout nouveau script ou domaine tiers doit être ajouté à la CSP. Umami Cloud : script sur `cloud.umami.is`, envoi des visites vers `gateway.umami.is` (D-135) ; si Umami change encore de domaine d'envoi, les stats s'arrêtent sans erreur visible : vérifier l'adresse `/api/send` dans son script.
+- `public/_headers` : en-têtes de sécurité et CSP, appliqués par Cloudflare aux fichiers statiques (pages prérendues). Les réponses de `/api/contact` n'y passent pas. Tout nouveau script ou domaine tiers doit être ajouté à la CSP. Umami Cloud : script sur `cloud.umami.is`, envoi des visites vers `gateway.umami.is` (D-137) ; si Umami change encore de domaine d'envoi, les stats s'arrêtent sans erreur visible : vérifier l'adresse `/api/send` dans son script.
 - `/api/contact` : limiteur en mémoire (`src/lib/rate-limit.ts`), propre à chaque instance, donc un simple filet. À doubler dans le tableau de bord Cloudflare : règle de limitation de débit sur `POST /api/contact` (ex. 5 requêtes / 10 min / IP), et Turnstile si le spam augmente (à déclarer dans les mentions légales).
 - Les trois secrets du formulaire se saisissent comme **secrets** Cloudflare, pas comme variables en clair.
 
