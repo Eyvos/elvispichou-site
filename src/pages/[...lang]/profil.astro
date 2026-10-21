@@ -18,7 +18,7 @@ const photo = getPhoto();
 
 // Les compétences sont des identifiants : noms propres tels quels, 'unit-tests' et 'geolocation' traduits (`profile.skills`).
 const stack = [
-  { group: 'frontend', items: ['TypeScript', 'React', 'Next.js', 'Astro', 'Tailwind CSS'] },
+  { group: 'frontend', items: ['TypeScript', 'React', 'Next.js', 'Astro', 'Tailwind CSS', 'WordPress', 'SEO'] },
   { group: 'backend', items: ['Node.js', 'NestJS', 'Symfony', 'API REST', 'Socket.IO'] },
   { group: 'data', items: ['PostgreSQL', 'MongoDB', 'Redis'] },
   { group: 'infra', items: ['Docker', 'GitHub Actions', 'GitLab CI', 'Traefik', 'Grafana', 'Linux', 'unit-tests'] },
@@ -29,12 +29,12 @@ const skillLabel = (id: string) => (p.skills as Record<string, string>)[id] ?? i
 /**
  * `skills` doit reprendre les libellés de `stack` : un clic sur une expérience met ces puces en évidence.
  * Chariot, Trik3r, Gendarmerie : piles des études de cas (bloc « Sous le capot »).
- * Lortal : WordPress existant, hors de la stack, donc aucune compétence mise en évidence.
+ * Lortal : WordPress existant, SEO. Le SEO est aussi porté par Chariot, Trik3r et Ingrid (D-131).
  */
 const experiences = [
   {
     id: 'chariot' as const,
-    skills: ['TypeScript', 'React', 'Next.js', 'NestJS', 'Node.js', 'API REST', 'MongoDB', 'PostgreSQL', 'Redis', 'Socket.IO', 'Keycloak', 'Stripe', 'Webhooks', 'Docker', 'Traefik', 'Grafana', 'GitHub Actions', 'unit-tests'],
+    skills: ['TypeScript', 'React', 'Next.js', 'NestJS', 'Node.js', 'API REST', 'MongoDB', 'PostgreSQL', 'Redis', 'Socket.IO', 'Keycloak', 'Stripe', 'Webhooks', 'Docker', 'Traefik', 'Grafana', 'GitHub Actions', 'SEO', 'unit-tests'],
   },
   {
     id: 'gendarmerie' as const,
@@ -42,16 +42,16 @@ const experiences = [
   },
   {
     id: 'trik3r' as const,
-    skills: ['TypeScript', 'React', 'Next.js', 'NestJS', 'Node.js', 'Tailwind CSS', 'API REST', 'MongoDB', 'Stripe', 'Webhooks', 'geolocation', 'Docker', 'unit-tests'],
+    skills: ['TypeScript', 'React', 'Next.js', 'NestJS', 'Node.js', 'Tailwind CSS', 'API REST', 'MongoDB', 'Stripe', 'Webhooks', 'geolocation', 'Docker', 'SEO', 'unit-tests'],
   },
   {
     id: 'lortal' as const,
-    skills: [] as string[],
+    skills: ['WordPress', 'SEO'],
     url: 'https://sophrologue-lortal.fr',
   },
   {
     id: 'ingrid' as const,
-    skills: ['React', 'Next.js', 'Tailwind CSS', 'PostgreSQL'],
+    skills: ['React', 'Next.js', 'Tailwind CSS', 'PostgreSQL', 'SEO'],
     url: 'https://ingrid-medium.fr',
   },
 ].map((e) => ({ url: undefined as string | undefined, ...e, ...p.experienceItems[e.id] }));
