@@ -66,7 +66,7 @@ const cases = await getCases(lang);
 const caseIds = new Set(cases.map((c) => c.slug));
 ---
 
-<BaseLayout title={p.title} description={p.description}>
+<BaseLayout title={p.title} description={p.description} pageType="ProfilePage" crumbs={[{ name: p.title, path: '/profil' }]}>
   {/* Alternance des fonds comme sur l'accueil (D-120) : gris (synthèse) → fond de page (expériences et stack) → gris (formation) → fond de page (ce site) → pied de page gris. */}
   {/* 1 · Global */}
   <section class="border-b border-line bg-surface">

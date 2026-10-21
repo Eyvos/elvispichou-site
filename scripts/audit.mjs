@@ -259,6 +259,21 @@ else add('PASS', 'i18n-pages', 'toutes les pages sont servies dans chaque langue
 if (/<html lang=\{lang\}/.test(layout) && /hreflang/.test(layout) && /og:locale/.test(layout)) add('PASS', 'i18n-seo', 'html lang, hreflang et og:locale dépendent de la langue');
 else add('FAIL', 'i18n-seo', 'BaseLayout doit poser <html lang={lang}>, les liens hreflang et og:locale', 'src/layouts/BaseLayout.astro');
 
+// Référencement (D-134) : balises de partage, données structurées et images de partage présentes.
+const seoNeeds = ['og:image', 'twitter:image', 'twitter:title', 'name="robots"', 'application/ld+json', 'BreadcrumbList', 'WebSite', 'rel="canonical"'];
+const seoMissing = seoNeeds.filter((n) => !layout.includes(n));
+for (const f of ['public/og-fr.png', 'public/og-en.png', 'public/apple-touch-icon.png', 'public/favicon-48.png']) if (!existsSync(join(ROOT, f))) seoMissing.push(f);
+if (!/Sitemap:/.test(read('public/robots.txt'))) seoMissing.push('Sitemap dans robots.txt');
+if (seoMissing.length) add('FAIL', 'seo-base', `référencement incomplet : ${seoMissing.join(', ')}`, 'src/layouts/BaseLayout.astro');
+else add('PASS', 'seo-base', 'canonical, robots, Open Graph + Twitter avec image, JSON-LD (WebSite, fil d\'Ariane), icônes et robots.txt en place');
+const seoLengths = [];
+for (const l of ['fr', 'en']) {
+  const m = read(`src/i18n/${l}.ts`).match(/description:\s*['"]([^\n]*?)['"],\n\s*(?:breadcrumbHome|ogImageAlt)/);
+  if (!m) seoLengths.push(`${l} : description du site introuvable`);
+  else if (m[1].length > 165) seoLengths.push(`${l} : description de ${m[1].length} caractères (max 165)`);
+}
+if (seoLengths.length) add('WARN', 'seo-description', seoLengths.join(' ; '), 'src/i18n');
+
 // ───────────────────────── 6. Expérience mobile (D-118) ─────────────────────────
 // Zones sûres d'iOS, variante d'appareil définie ; pas de bouton d'action flottant (retiré à la demande d'Elvis, D-119).
 const mobileFail = [];

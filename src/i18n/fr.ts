@@ -8,8 +8,13 @@ export const fr = {
   site: {
     role: 'Développeur web freelance',
     tagline: 'Je conçois des outils web qui simplifient le travail des entreprises.',
+    /** Titre de l'accueil (balise <title>, précédée du nom) : métier + ville. */
+    homeTitle: 'Développeur web freelance à Toulouse',
     description:
-      "Développeur web freelance à Toulouse : outils sur mesure pour TPE et PME, sites vitrines pour indépendants et commerçants. Un interlocuteur unique, du besoin jusqu'à la mise en ligne.",
+      'Développeur web freelance à Toulouse : outils sur mesure pour TPE et PME, sites vitrines pour indépendants et commerçants. Du besoin à la mise en ligne.',
+    breadcrumbHome: 'Accueil',
+    /** Texte alternatif de l'image de partage (Open Graph). */
+    ogImageAlt: 'Elvis Pichou, développeur web freelance à Toulouse : des outils web qui simplifient le travail des entreprises.',
     location: 'Toulouse — missions 100 % à distance',
     /** Services déclarés dans les données structurées (JSON-LD). */
     services: ['Création de sites vitrines', 'Outils web et applications sur mesure'],

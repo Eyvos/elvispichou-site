@@ -8,8 +8,11 @@ export const en: Dict = {
   site: {
     role: 'Freelance web developer',
     tagline: 'I build web tools that simplify the work of businesses.',
+    homeTitle: 'Freelance web developer in Toulouse',
     description:
-      'Freelance web developer in Toulouse, France: custom tools for small and medium businesses, showcase websites for freelancers and shopkeepers. A single point of contact, from the first brief to launch.',
+      'Freelance web developer in Toulouse, France: custom tools for small and medium businesses, showcase websites for freelancers and shopkeepers. From brief to launch.',
+    breadcrumbHome: 'Home',
+    ogImageAlt: 'Elvis Pichou, freelance web developer in Toulouse: web tools that simplify the work of businesses.',
     location: 'Toulouse — 100% remote work',
     services: ['Showcase website design', 'Custom web tools and applications'],
     offerCatalog: 'Services',

@@ -1,5 +1,6 @@
 ---
 import { render } from 'astro:content';
+import { getImage } from 'astro:assets';
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import { site } from '../../../config/site';
 import BrowserFrame from '../../../components/ui/BrowserFrame.astro';
@@ -32,9 +33,14 @@ const shot = getScreenshot(entry.slug);
 const kindLabel = t.common.caseKind[d.kind];
 const ctaHref = localePath(lang, `/?projet=${d.kind === 'site' ? 'site' : 'outil'}#contact`);
 
+// Image de partage : la capture de l'étude (JPEG 1200 px, lisible partout) ; sans capture, l'image par défaut de la langue.
+const ogImage = shot ? (await getImage({ src: shot, width: 1200, format: 'jpeg' })).src : undefined;
+
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'CreativeWork',
+  url: new URL(Astro.url.pathname, site.url).href,
+  ...(ogImage && { image: new URL(ogImage, site.url).href }),
   inLanguage: lang,
   name: d.title,
   description: d.summary,
@@ -44,7 +50,7 @@ const jsonLd = {
 };
 ---
 
-<BaseLayout title={d.title} description={d.summary} jsonLd={jsonLd}>
+<BaseLayout title={d.title} description={d.summary} jsonLd={jsonLd} image={ogImage} ogType="article" crumbs={[{ name: d.title, path: `/realisations/${entry.slug}` }]}>
   <article>
     {/*
       1 · En 30 secondes. Bureau et tablette : le texte à gauche, centré sur le visuel ; téléphone : titre, visuel, chiffres, puis le bouton

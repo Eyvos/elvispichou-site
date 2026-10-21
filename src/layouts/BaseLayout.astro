@@ -3,7 +3,7 @@ import '../styles/global.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import { site } from '../config/site';
-import { useI18n, switchLocalePath, locales, localeMeta } from '../i18n';
+import { useI18n, switchLocalePath, localePath, locales, localeMeta } from '../i18n';
 import loaderCss from '../styles/loader.css?raw';
 
 interface Props {
@@ -14,14 +14,24 @@ interface Props {
   noindex?: boolean;
   /** Publie les liens hreflang vers l'autre langue (désactivé pour la page 404). */
   alternates?: boolean;
+  /** Image de partage : chemin (`/og-fr.png`) ou adresse complète. Par défaut, l'image de la langue. */
+  image?: string;
+  /** Type Open Graph : `article` pour une étude de cas. */
+  ogType?: 'website' | 'article' | 'profile';
+  /** Type schema.org de la page (`ProfilePage`, `CollectionPage`…). */
+  pageType?: string;
+  /** Fil d'Ariane (après l'accueil), publié en données structurées. `path` sans préfixe de langue. */
+  crumbs?: { name: string; path: string }[];
 }
 
 const { lang, t } = useI18n(Astro.url);
-const { title, description = t.site.description, jsonLd, noindex = false, alternates = true } = Astro.props;
-const fullTitle = title ? `${title} · ${site.name}` : `${site.name} · ${t.site.role}`;
+const { title, description = t.site.description, jsonLd, noindex = false, alternates = true, image, ogType = 'website', pageType = 'WebPage', crumbs = [] } = Astro.props;
+const fullTitle = title ? `${title} · ${site.name}` : `${site.name} · ${t.site.homeTitle}`;
 const canonical = new URL(Astro.url.pathname, site.url).href;
 // Même page dans chaque langue : hreflang pour les moteurs de recherche (x-default = français).
 const alternateLinks = locales.map((l) => ({ hreflang: localeMeta[l].hreflang, href: new URL(switchLocalePath(Astro.url.pathname, l), site.url).href }));
+const imageUrl = new URL(image ?? `/og-${lang}.png`, site.url).href;
+const isDefaultImage = !image;
 const otherLocales = locales.filter((l) => l !== lang);
 
 // Qui je suis et ce que je vends, pour les moteurs de recherche.
@@ -34,6 +44,7 @@ const baseJsonLd = {
       name: site.name,
       jobTitle: t.site.role,
       url: site.url,
+      address: { '@type': 'PostalAddress', addressLocality: 'Toulouse', addressCountry: 'FR' },
       sameAs: Object.values(site.links).filter((l) => l?.startsWith('http')),
     },
     {
@@ -43,6 +54,7 @@ const baseJsonLd = {
       url: site.url,
       description: t.site.description,
       founder: { '@id': `${site.url}/#person` },
+      address: { '@type': 'PostalAddress', addressLocality: 'Toulouse', addressCountry: 'FR' },
       areaServed: { '@type': 'Country', name: t.site.areaServed },
       knowsLanguage: ['fr', 'en'],
       hasOfferCatalog: {
@@ -51,6 +63,37 @@ const baseJsonLd = {
         itemListElement: t.site.services.map((name) => ({ '@type': 'Offer', itemOffered: { '@type': 'Service', name } })),
       },
     },
+    {
+      '@type': 'WebSite',
+      '@id': `${site.url}/#website`,
+      url: site.url,
+      name: site.name,
+      inLanguage: locales.map((l) => localeMeta[l].hreflang),
+      publisher: { '@id': `${site.url}/#person` },
+    },
+    {
+      '@type': pageType,
+      '@id': `${canonical}#webpage`,
+      url: canonical,
+      name: fullTitle,
+      description,
+      inLanguage: localeMeta[lang].hreflang,
+      isPartOf: { '@id': `${site.url}/#website` },
+      primaryImageOfPage: { '@type': 'ImageObject', url: imageUrl },
+      ...(crumbs.length && { breadcrumb: { '@id': `${canonical}#breadcrumb` } }),
+    },
+    ...(crumbs.length
+      ? [{
+          '@type': 'BreadcrumbList',
+          '@id': `${canonical}#breadcrumb`,
+          itemListElement: [{ name: t.site.breadcrumbHome, path: '/' }, ...crumbs].map((c, i) => ({
+            '@type': 'ListItem',
+            position: i + 1,
+            name: c.name,
+            item: new URL(localePath(lang, c.path).replace(/([^/])$/, '$1/'), site.url).href, // même adresse que le canonical (avec « / » final)
+          })),
+        }]
+      : []),
   ],
 };
 
@@ -68,8 +111,11 @@ const umamiSrc = import.meta.env.PUBLIC_UMAMI_SRC ?? 'https://cloud.umami.is/scr
     <link rel="canonical" href={canonical} />
     {alternates && alternateLinks.map((a) => <link rel="alternate" hreflang={a.hreflang} href={a.href} />)}
     {alternates && <link rel="alternate" hreflang="x-default" href={alternateLinks[0].href} />}
-    {noindex && <meta name="robots" content="noindex" />}
+    {noindex ? <meta name="robots" content="noindex" /> : <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />}
+    <meta name="author" content={site.name} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="sitemap" href="/sitemap-index.xml" />
     <meta name="theme-color" content="#0f1016" />
     <!-- Thème posé avant le premier rendu pour éviter tout flash : sombre par défaut, choix mémorisé ensuite. -->
@@ -119,14 +165,21 @@ const umamiSrc = import.meta.env.PUBLIC_UMAMI_SRC ?? 'https://cloud.umami.is/scr
       })();
     </script>
 
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={ogType} />
     <meta property="og:locale" content={localeMeta[lang].og} />
     {otherLocales.map((l) => <meta property="og:locale:alternate" content={localeMeta[l].og} />)}
     <meta property="og:site_name" content={site.name} />
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={imageUrl} />
+    {isDefaultImage && <meta property="og:image:width" content="1200" />}
+    {isDefaultImage && <meta property="og:image:height" content="630" />}
+    <meta property="og:image:alt" content={isDefaultImage ? t.site.ogImageAlt : fullTitle} />
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={imageUrl} />
 
     <script type="application/ld+json" set:html={JSON.stringify(baseJsonLd)} />
     {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
