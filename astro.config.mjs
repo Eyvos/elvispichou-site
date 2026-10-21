@@ -16,6 +16,8 @@ export default defineConfig({
       i18n: { defaultLocale: 'fr', locales: { fr: 'fr-FR', en: 'en-US' } },
     }),
   ],
+  // CSS en ligne : plus de feuille bloquant le rendu (Lighthouse, FCP/LCP en mobile simulé). ~19 Ko, rechargés avec le HTML.
+  build: { inlineStylesheets: 'always' },
   vite: {
     plugins: [tailwindcss()],
   },
