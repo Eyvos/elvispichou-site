@@ -1,7 +1,7 @@
 // Génère les visuels de référencement dans public/ : images de partage (Open Graph, 1200×630, une par langue) et icônes.
 // À relancer si l'identité change : node scripts/make-seo-assets.mjs
 import sharp from 'sharp';
-import { readFileSync } from 'node:fs';
+import { readFileSync, writeFileSync } from 'node:fs';
 
 // Couleurs du thème sombre (src/styles/global.css).
 const c = { bg: '#0f1016', surface: '#161821', line: '#2c2e3a', ink: '#f3f0e8', muted: '#adadb6', accent: '#3f54f5', accentFg: '#94a1ff' };
@@ -33,4 +33,22 @@ await sharp(icon, { density: 600 }).resize(48, 48).png().toFile('public/favicon-
 // iOS arrondit lui-même les coins : l'icône Apple est pleine (sans coins transparents, qui deviendraient noirs).
 const fullBleed = Buffer.from(icon.toString().replace(/ rx="[\d.]+"/, ''));
 await sharp(fullBleed, { density: 600 }).resize(180, 180).png().toFile('public/apple-touch-icon.png');
+// favicon.ico (16, 32 et 48 px en PNG) : demandé d'office par certains robots et navigateurs à la racine du site.
+const sizes = [16, 32, 48];
+const pngs = await Promise.all(sizes.map((s) => sharp(icon, { density: 600 }).resize(s, s).png().toBuffer()));
+const header = Buffer.alloc(6 + 16 * sizes.length);
+header.writeUInt16LE(1, 2);
+header.writeUInt16LE(sizes.length, 4);
+let offset = header.length;
+sizes.forEach((s, i) => {
+  const e = 6 + 16 * i;
+  header.writeUInt8(s, e);
+  header.writeUInt8(s, e + 1);
+  header.writeUInt16LE(1, e + 4);
+  header.writeUInt16LE(32, e + 6);
+  header.writeUInt32LE(pngs[i].length, e + 8);
+  header.writeUInt32LE(offset, e + 12);
+  offset += pngs[i].length;
+});
+writeFileSync('public/favicon.ico', Buffer.concat([header, ...pngs]));
 console.log('Visuels SEO générés dans public/');

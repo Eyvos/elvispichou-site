@@ -262,7 +262,7 @@ else add('FAIL', 'i18n-seo', 'BaseLayout doit poser <html lang={lang}>, les lien
 // Référencement (D-134) : balises de partage, données structurées et images de partage présentes.
 const seoNeeds = ['og:image', 'twitter:image', 'twitter:title', 'name="robots"', 'application/ld+json', 'BreadcrumbList', 'WebSite', 'rel="canonical"'];
 const seoMissing = seoNeeds.filter((n) => !layout.includes(n));
-for (const f of ['public/og-fr.png', 'public/og-en.png', 'public/apple-touch-icon.png', 'public/favicon-48.png']) if (!existsSync(join(ROOT, f))) seoMissing.push(f);
+for (const f of ['public/og-fr.png', 'public/og-en.png', 'public/apple-touch-icon.png', 'public/favicon-48.png', 'public/favicon.ico']) if (!existsSync(join(ROOT, f))) seoMissing.push(f);
 if (!/Sitemap:/.test(read('public/robots.txt'))) seoMissing.push('Sitemap dans robots.txt');
 if (seoMissing.length) add('FAIL', 'seo-base', `référencement incomplet : ${seoMissing.join(', ')}`, 'src/layouts/BaseLayout.astro');
 else add('PASS', 'seo-base', 'canonical, robots, Open Graph + Twitter avec image, JSON-LD (WebSite, fil d\'Ariane), icônes et robots.txt en place');
