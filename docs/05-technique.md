@@ -12,7 +12,7 @@
 | Hébergement | Cloudflare Workers (adaptateur `@astrojs/cloudflare`) |
 | Formulaire | Route serveur `src/pages/api/contact.ts`, validation Zod, envoi via Resend |
 | Analytics | Umami (sans cookie), script chargé si `PUBLIC_UMAMI_WEBSITE_ID` est défini |
-| SEO | Sitemap bilingue, canonical, `hreflang`, `robots` (aperçus larges), Open Graph + Twitter avec image (`public/og-fr.png`, `og-en.png`, capture pour les études ; régénérer avec `node scripts/make-seo-assets.mjs`), icônes (48 px, Apple), JSON-LD `Person` + `ProfessionalService` (Toulouse) + `WebSite` + `WebPage`/`ProfilePage` + `BreadcrumbList`, `robots.txt` (`/api/` exclu), règle d'audit `seo-base` |
+| SEO | Sitemap bilingue, canonical, `hreflang`, `robots` (aperçus larges), Open Graph + Twitter avec image (`public/og-fr.png`, `og-en.png`, capture pour les études ; régénérer avec `node scripts/make-seo-assets.mjs`), icônes (favicon d20 D-135, 48 px, Apple), JSON-LD `Person` + `ProfessionalService` (Toulouse) + `WebSite` + `WebPage`/`ProfilePage` + `BreadcrumbList`, `robots.txt` (`/api/` exclu), règle d'audit `seo-base` |
 | Traduction (D-109) | Français (défaut, sans préfixe) et anglais (`/en`) : routage Astro `src/pages/[...lang]/`, dictionnaires typés `src/i18n/` |
 
 ## Traduction (D-109, D-110)
@@ -67,7 +67,7 @@ Sans clé Resend, les demandes s'affichent dans la console (développement).
 | `vocabulaire` | Expression « outil métier » absente | D-04 |
 | `ancres` | Chaque `#x` pointe vers un `id` existant | D-17 |
 | `navigation`, `navigation-mobile` | Chaque section de l'accueil est dans le menu ; le menu mobile réutilise la même liste | D-17 |
-| `theme` | Sombre par défaut, mémorisé, script anti-flash | D-09 |
+| `theme` | Thème du système (sombre à défaut), mémorisé, script anti-flash | D-136 |
 | `docs`, `docs-tokens` | Docs présentes ; valeurs de `global.css` citées dans `02-design-system.md` | D-24 |
 | `i18n-texte` | Aucun texte visible, `aria-label`, `alt`, `title` ou `placeholder` en dur dans un composant (hors mentions légales) | D-110 |
 | `i18n-contenu` | Chaque étude de cas existe dans toutes les langues, avec les mêmes champs | D-110 |

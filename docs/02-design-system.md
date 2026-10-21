@@ -11,9 +11,9 @@ signale toute dérive (`docs-tokens`).
 - **Le dé est la signature** (D-12, D-21) : une seule idée forte, pas dix.
 - Pas de thème plaqué (affiche, dossier, boutique, jeu de rôle littéral) : jugés trop IA, pas assez pro ou déjà vus (voir `04-decisions.md`).
 
-## Thème (D-09)
+## Thème (D-136, remplace D-09)
 
-- **Sombre par défaut.** Le thème clair est au choix (bouton soleil/lune dans l'en-tête), mémorisé dans `localStorage`.
+- **Thème du système au premier passage** (`prefers-color-scheme`) ; **sombre** si le navigateur n'en indique pas ou sans JavaScript. Le bouton soleil/lune de l'en-tête permet de changer, et ce choix est mémorisé dans `localStorage` (il l'emporte ensuite sur le système).
 - Le thème est posé par un script en ligne dans `BaseLayout.astro` **avant le premier rendu** (pas de flash).
 - Sombre = `:root`, clair = `:root[data-theme="light"]`. Tout est exprimé en tokens : aucune couleur en dur dans les composants.
 

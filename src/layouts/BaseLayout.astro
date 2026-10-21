@@ -118,10 +118,14 @@ const umamiSrc = import.meta.env.PUBLIC_UMAMI_SRC ?? 'https://cloud.umami.is/scr
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="sitemap" href="/sitemap-index.xml" />
     <meta name="theme-color" content="#0f1016" />
-    <!-- Thème posé avant le premier rendu pour éviter tout flash : sombre par défaut, choix mémorisé ensuite. -->
+    <!-- Thème posé avant le premier rendu pour éviter tout flash : choix mémorisé, sinon thème du système, sinon sombre (D-136). -->
     <script is:inline>
-      try { document.documentElement.dataset.theme = localStorage.getItem('theme') === 'light' ? 'light' : 'dark'; }
-      catch { document.documentElement.dataset.theme = 'dark'; }
+      (() => {
+        let theme;
+        try { theme = localStorage.getItem('theme'); } catch {}
+        if (theme !== 'light' && theme !== 'dark') theme = matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+        document.documentElement.dataset.theme = theme;
+      })();
     </script>
 
     <!-- Styles de l'écran de chargement en ligne : le dé et les textes n'attendent ni la feuille de style ni le fond. -->

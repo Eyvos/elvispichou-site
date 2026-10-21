@@ -193,8 +193,8 @@ else add('PASS', 'navigation-mobile', 'menu mobile présent et alimenté par la 
 
 // ───────────────────────── 4. Thème et docs ─────────────────────────
 const layout = read('src/layouts/BaseLayout.astro');
-if (/data-theme="dark"/.test(layout) && /localStorage/.test(layout)) add('PASS', 'theme', 'sombre par défaut, choix mémorisé, posé avant le rendu');
-else add('FAIL', 'theme', 'thème sombre par défaut / script anti-flash absent de BaseLayout.astro (décision D-09)', 'src/layouts/BaseLayout.astro');
+if (/data-theme="dark"/.test(layout) && /localStorage/.test(layout) && /prefers-color-scheme: light/.test(layout)) add('PASS', 'theme', 'thème du système (sombre à défaut), choix mémorisé, posé avant le rendu');
+else add('FAIL', 'theme', 'thème du système / sombre à défaut / script anti-flash absent de BaseLayout.astro (décision D-136)', 'src/layouts/BaseLayout.astro');
 
 for (const d of ['README.md', '01-produit-et-positionnement.md', '02-design-system.md', '03-structure-et-contenu.md', '04-decisions.md', '05-technique.md']) {
   if (!existsSync(join(ROOT, 'docs', d))) add('FAIL', 'docs', `fichier manquant : docs/${d}`, 'docs/');

@@ -34,6 +34,6 @@ La documentation dans `docs/` est la source de vérité (design, structure, déc
 ## Rappels essentiels
 
 - Texte et labels en Inter ; Space Mono seulement pour les URL, puces de stack et glyphe de code ; jamais de texte semi-transparent.
-- Thème sombre par défaut ; couleurs uniquement via les tokens ; coins `rounded-card`.
+- Thème du système au premier passage, sombre à défaut (D-136) ; couleurs uniquement via les tokens ; coins `rounded-card`.
 - Jamais « outil métier » dans un texte (en anglais : « custom tool »). Aucun fait ou chiffre absent de `docs/01-produit-et-positionnement.md`.
 - Toute section de l'accueil a une entrée dans `nav` (`src/config/site.ts`).
