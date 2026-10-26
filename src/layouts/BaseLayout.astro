@@ -81,6 +81,7 @@ const baseJsonLd = {
       isPartOf: { '@id': `${site.url}/#website` },
       primaryImageOfPage: { '@type': 'ImageObject', url: imageUrl },
       ...(crumbs.length && { breadcrumb: { '@id': `${canonical}#breadcrumb` } }),
+      ...(pageType === 'ProfilePage' && { mainEntity: { '@id': `${site.url}/#person` } }),
     },
     ...(crumbs.length
       ? [{
