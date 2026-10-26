@@ -41,9 +41,20 @@ export function useI18n(url: URL) {
  */
 export function localePath(locale: Locale, path: string): string {
   if (/^[a-z][a-z0-9+.-]*:/i.test(path) || path.startsWith('//')) return path;
-  const clean = path.startsWith('/') ? path : `/${path}`;
+  const clean = withTrailingSlash(path.startsWith('/') ? path : `/${path}`);
   if (locale === defaultLocale) return clean;
   return clean === '/' ? `/${locale}/` : `/${locale}${clean}`;
+}
+
+/**
+ * Ajoute le « / » final des pages (`/profil` → `/profil/`), forme servie par l'hébergeur : évite une redirection 307 par lien (D-139).
+ * Laisse intacts ancres, paramètres, fichiers (`/og-fr.png`) et `/api/`.
+ */
+function withTrailingSlash(path: string): string {
+  const i = path.search(/[?#]/);
+  const [base, rest] = i < 0 ? [path, ''] : [path.slice(0, i), path.slice(i)];
+  if (base.endsWith('/') || /\.[a-z0-9]+$/i.test(base) || base.startsWith('/api/')) return path;
+  return `${base}/${rest}`;
 }
 
 /** Chemin sans préfixe de langue : `/en/profil` → `/profil`. */
